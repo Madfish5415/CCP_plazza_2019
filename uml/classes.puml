@@ -1,0 +1,9 @@
+@startuml
+
+interface ICook
+interface IKitchen
+interface IPizza
+interface IReception
+interface IStorage
+
+@enduml
