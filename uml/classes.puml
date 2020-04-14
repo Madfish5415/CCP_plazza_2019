@@ -1,9 +1,57 @@
 @startuml
 
-interface ICook
-interface IKitchen
-interface IPizza
-interface IReception
-interface IStorage
+interface ICook {
+    + std::vector<std::shared_ptr<IPizza>> getPizzas() const = 0;
+}
+
+interface IKitchen {
+    + bool isSaturated() const = 0;
+}
+
+interface IOrder {
+    + std::vector<std::shared_ptr<IPizza>> getPizzas() const = 0;
+}
+
+enum PizzaSize {
+    S = 1,
+    M = 2,
+    L = 4,
+    XL = 8,
+    XXL = 16
+}
+
+enum PizzaStatus {
+    UNCOOKED,
+    COOKED
+}
+
+enum PizzaType {
+    Regina = 1,
+    Margarita = 2,
+    Americana = 4,
+    Fantasia = 8
+}
+
+interface IPizza {
+    + virtual ~IPizza() = 0;
+
+    + int getCookTime() const = 0;
+    + std::map<std::string, int> getIngredients() const = 0;
+    + PizzaSize getSize() const = 0;
+    + PizzaStatus getStatus() const = 0;
+    + PizzaType getType() const = 0;
+}
+
+interface IReception {
+    + std::vector<std::shared_ptr<IOrder>> getOrders() const = 0;
+}
+
+interface IStorage {
+    + virtual ~IStorage() = 0;
+
+    + std::map<std::string, int> getIngredients() const = 0;
+    + void addIngredient(std::string ingredient, int quantity) = 0;
+    + void removeIngredient(std::string ingredient, int quantity) = 0;
+}
 
 @enduml
