@@ -1,15 +1,28 @@
 @startuml
 
 interface ICook {
-    + std::vector<std::shared_ptr<IPizza>> getPizzas() const = 0;
+    + virtual ~ICook() = 0;
+
+    + std::thread& getThread() const = 0;
+    + std::vector<std::shared_ptr<IPizza>>& getPizzas() const = 0;
+
+    + void cook(std::shared_ptr<IPizza> pizza) = 0;
 }
 
 interface IKitchen {
+    + virtual ~IKitchen() = 0;
+
     + bool isSaturated() const = 0;
+
+    + void cook(std::shared_ptr<IPizza> pizza);
 }
 
 interface IOrder {
-    + std::vector<std::shared_ptr<IPizza>> getPizzas() const = 0;
+    + virtual ~IOrder() = 0;
+
+    + std::vector<std::shared_ptr<IPizza>>& getPizzas() const = 0;
+
+    + void ready(IPizza& pizza) = const;
 }
 
 enum PizzaSize {
@@ -36,22 +49,58 @@ interface IPizza {
     + virtual ~IPizza() = 0;
 
     + int getCookTime() const = 0;
-    + std::map<std::string, int> getIngredients() const = 0;
+    + std::map<std::string, int>& getIngredients() const = 0;
+    + IOrder& getOrder() const = 0;
     + PizzaSize getSize() const = 0;
     + PizzaStatus getStatus() const = 0;
     + PizzaType getType() const = 0;
 }
 
 interface IReception {
+    + virtual ~IReception() = 0;
+
     + std::vector<std::shared_ptr<IOrder>> getOrders() const = 0;
+
+    + void ready(IOrder& order) = 0;
 }
 
 interface IStorage {
     + virtual ~IStorage() = 0;
 
-    + std::map<std::string, int> getIngredients() const = 0;
+    + std::map<std::string, int>& getIngredients() const = 0;
+
     + void addIngredient(std::string ingredient, int quantity) = 0;
     + void removeIngredient(std::string ingredient, int quantity) = 0;
+}
+
+class Cook {
+    + std::thread _thread;
+    + std::vector<std::shared_ptr<IPizza>> _pizzas;
+
+    + Cook();
+    + ~Cook();
+
+    + std::thread& getThread() const;
+    + std::vector<std::shared_ptr<IPizza>>& getPizzas() const override;
+
+    + void cook(std::shared_ptr<IPizza> pizza) override;
+}
+
+abstract APizza {
+    + int _cookTime;
+    + std::map<std::string, int> _ingredients;
+    + PizzaSize _size;
+    + PizzaStatus _status;
+    + PizzaType _type;
+
+    + APizza(PizzaType type, int cookTime, std::map<std::string, int>& ingredients);
+    + ~APizza() override = 0;
+
+    + int getCookTime() const override;
+    + std::map<std::string, int>& getIngredients() override;
+    + PizzaSize getSize() const override;
+    + PizzaStatus getStatus() const override;
+    + PizzaType getType() const override;
 }
 
 @enduml
