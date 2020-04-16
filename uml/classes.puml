@@ -12,9 +12,10 @@ interface ICook {
 interface IKitchen {
     + virtual ~IKitchen() = 0;
 
+    + std::vector<std::shared_ptr<ICook>>& getCooks() const = 0;
     + bool isSaturated() const = 0;
 
-    + void cook(std::shared_ptr<IPizza> pizza);
+    + void cook(std::shared_ptr<IPizza> pizza) = 0;
 }
 
 interface IOrder {
@@ -22,27 +23,7 @@ interface IOrder {
 
     + std::vector<std::shared_ptr<IPizza>>& getPizzas() const = 0;
 
-    + void ready(IPizza& pizza) = const;
-}
-
-enum PizzaSize {
-    S = 1,
-    M = 2,
-    L = 4,
-    XL = 8,
-    XXL = 16
-}
-
-enum PizzaStatus {
-    UNCOOKED,
-    COOKED
-}
-
-enum PizzaType {
-    Regina = 1,
-    Margarita = 2,
-    Americana = 4,
-    Fantasia = 8
+    + void ready(IPizza& pizza) = 0;
 }
 
 interface IPizza {
@@ -54,7 +35,33 @@ interface IPizza {
     + PizzaSize getSize() const = 0;
     + PizzaStatus getStatus() const = 0;
     + PizzaType getType() const = 0;
+
+    + std::string pack() const = 0;
+    + std::string unpack() const = 0;
 }
+
+enum PizzaSize {
+    S = 1,
+    M = 2,
+    L = 4,
+    XL = 8,
+    XXL = 16
+}
+IPizza +-- PizzaSize
+
+enum PizzaStatus {
+    UNCOOKED,
+    COOKED
+}
+IPizza +-- PizzaStatus
+
+enum PizzaType {
+    Regina = 1,
+    Margarita = 2,
+    Americana = 4,
+    Fantasia = 8
+}
+IPizza +-- PizzaType
 
 interface IReception {
     + virtual ~IReception() = 0;
@@ -73,19 +80,6 @@ interface IStorage {
     + void removeIngredient(std::string ingredient, int quantity) = 0;
 }
 
-class Cook {
-    + std::thread _thread;
-    + std::vector<std::shared_ptr<IPizza>> _pizzas;
-
-    + Cook();
-    + ~Cook();
-
-    + std::thread& getThread() const;
-    + std::vector<std::shared_ptr<IPizza>>& getPizzas() const override;
-
-    + void cook(std::shared_ptr<IPizza> pizza) override;
-}
-
 abstract APizza {
     + int _cookTime;
     + std::map<std::string, int> _ingredients;
@@ -101,6 +95,75 @@ abstract APizza {
     + PizzaSize getSize() const override;
     + PizzaStatus getStatus() const override;
     + PizzaType getType() const override;
+
+    + std::string pack() const override;
+    + std::string unpack() const override;
 }
+IPizza <|-- APizza
+
+class Cook {
+    + std::vector<std::shared_ptr<IPizza>> _pizzas;
+    + std::thread _thread;
+
+    + Cook();
+    + ~Cook() override;
+
+    + std::thread& getThread() const;
+    + std::vector<std::shared_ptr<IPizza>>& getPizzas() const override;
+
+    + void cook(std::shared_ptr<IPizza> pizza) override;
+}
+ICook <|-- Cook
+
+class Kitchen {
+    + std::vector<std::shared_ptr<ICook>> _cooks;
+
+    + Kitchen();
+    + ~Kitchen() override;
+
+    + std::vector<std::shared_ptr<ICook>>& getCooks() const override;
+    + bool isSaturated() const override;
+
+    + void cook(std::shared_ptr<IPizza> pizza) override;
+}
+IKitchen <|-- Kitchen
+
+class Order {
+    + std::vector<std::shared_ptr<IPizza>> _pizzas;
+
+    + Order();
+    + ~Order() override;
+
+    + std::vector<std::shared_ptr<IPizza>>& getPizzas() const override;
+
+    + void ready(IPizza& pizza) const override;
+}
+IOrder <|-- Order
+
+class Reception {
+    + std::vector<std::shared_ptr<IOrder>> _orders;
+
+    + Reception();
+    + ~Reception() override;
+
+    + std::vector<std::shared_ptr<IOrder>> getOrders() const override;
+
+    + void ready(IOrder& order) override;
+}
+IReception <|-- Reception
+
+class Storage {
+    + std::map<std::string, int> _ingredients;
+    + std::mutex _mutex;
+
+    + Storage();
+    + ~Storage() override;
+
+    + std::map<std::string, int>& getIngredients() const override;
+
+    + void addIngredient(std::string ingredient, int quantity) override;
+    + void removeIngredient(std::string ingredient, int quantity) override;
+}
+IStorage <|-- Storage
 
 @enduml
