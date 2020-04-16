@@ -166,4 +166,20 @@ class Storage {
 }
 IStorage <|-- Storage
 
+class PizzaFactory {
+    + using Constructor = std::function<std::shared_ptr<IPizza>()>;
+
+    + static std::shared_ptr<IPizza> Create(PizzaType type, PizzaSize size);
+    + static void Register(PizzaType type, Constructor constructor);
+
+    - static std::map<PizzaType, Constructor> constructors();
+}
+
+class KitchenManager {
+    + std::vector<int> _pids;
+
+    + KitchenManager();
+    + ~KitchenManager();
+}
+
 @enduml
