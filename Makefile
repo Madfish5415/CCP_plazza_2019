@@ -10,7 +10,7 @@ TEST_NAME			=		tests/unit_tests
 TEST_SH_NAME		=		tests/tests.sh
 
 COV_DIR				=		obj
-INCL_DIR			=		include
+INCL_DIR			=		src
 OBJ_DIR				=		obj
 SRC_DIR				=		src
 TEST_DIR			=		tests
@@ -19,9 +19,15 @@ AR					=		ar rcs
 CC					=		g++
 RM					=		rm -rf
 
+LDLIBS				=		-pthread
+
 MAIN_SRC			=		main.cpp
 
-PROJ_SRC			=
+PROJ_SRC			=		kitchen/Cook.cpp			\
+							kitchen/Kitchen.cpp			\
+							kitchen/Storage.cpp			\
+							pizza/IPizza.cpp			\
+							pizza/Pizza.cpp				\
 
 TEST_SRC			=
 
