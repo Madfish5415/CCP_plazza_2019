@@ -35,7 +35,7 @@ class IPizza {
 
   public:
     virtual std::string pack() const = 0;
-    virtual void unpack(const std::string& pack) const = 0;
+    virtual void unpack(const std::string& pack) = 0;
 };
 
 } // namespace pizza

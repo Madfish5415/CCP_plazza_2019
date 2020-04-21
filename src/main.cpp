@@ -5,6 +5,7 @@
 ** main.cpp
 */
 
+#include <iostream>
 #include <vector>
 
 #include "kitchen/Kitchen.hpp"
@@ -89,6 +90,10 @@ int main()
         if (kitchen.handle(pizza))
             pizzas.pop_front();
     }
+
+    std::cout << p1->pack() << std::endl;
+    p1->unpack(p2->pack());
+    std::cout << p1->pack() << std::endl;
 
     return 0;
 }

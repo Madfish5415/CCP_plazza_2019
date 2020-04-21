@@ -14,10 +14,10 @@ namespace pizza {
 
 class Pizza : public IPizza {
   private:
-    const PizzaType _type;
-    const Ingredients _ingredients;
-    const PizzaSize _size;
-    const CookTime _cookTime;
+    PizzaType _type;
+    Ingredients _ingredients;
+    PizzaSize _size;
+    CookTime _cookTime;
 
   public:
     Pizza(PizzaType type, const Ingredients& ingredients, PizzaSize size,
@@ -32,7 +32,7 @@ class Pizza : public IPizza {
 
   public:
     std::string pack() const override;
-    void unpack(const std::string &pack) const override;
+    void unpack(const std::string &pack) override;
 };
 
 } // namespace pizza
