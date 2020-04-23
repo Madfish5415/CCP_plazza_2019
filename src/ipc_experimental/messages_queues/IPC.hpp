@@ -20,12 +20,13 @@ class IPC {
         IPC(int mqId = -1);
         ~IPC();
 
-        int getMQId() const { return this->_mqId; };
+        int getKey() const { return this->_key; };
         void sendMessage(std::string);
         int lookForMessages();
+        std::vector<std::string> getMessages() const { return this->messages; };
     protected:
     private:
-        int _mqId;
+        int _key;
         int _msgId;
         message_t _message;
         std::vector<std::string> messages;
