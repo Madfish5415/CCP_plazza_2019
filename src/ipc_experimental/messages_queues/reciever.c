@@ -5,6 +5,8 @@
 ** reciever
 */
 
+#include <unistd.h>
+#include <string.h>
 #include "include/msg_queue.h"
 
 int main() {
@@ -13,19 +15,21 @@ int main() {
     int msgid;
 
     // ftok to generate unique key
-    key = ftok("progfile", 65);
+    key = ftok("../main.cpp", 65);
 
     // msgget creates a message queue
     // and returns identifier
-    msgid = msgget(key, 0666 | IPC_CREAT);
+    msgid = msgget(456789, 0666 | IPC_CREAT);
 
     // msgrcv to receive message
-    msgrcv(msgid, &message, sizeof(message), 1, 0);
+    while (strcmp(message.message_text, "STOP")) {
+        msgrcv(msgid, &message, sizeof(message), 1, 0);
 
-    // display the message
-    printf("Data Received is : %s \n",
-                    message.message_text);
-
+        // display the message
+        printf("Data Received is : %s \n",
+                        message.message_text);
+        sleep(2);
+    }
     // to destroy the message queue
     msgctl(msgid, IPC_RMID, NULL);
 
