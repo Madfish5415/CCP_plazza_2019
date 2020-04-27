@@ -28,7 +28,6 @@ int main() {
         // display the message
         printf("Data Received is : %s \n",
                         message.message_text);
-        sleep(2);
     }
     // to destroy the message queue
     msgctl(msgid, IPC_RMID, NULL);

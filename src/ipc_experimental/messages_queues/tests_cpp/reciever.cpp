@@ -11,12 +11,12 @@
 
 int main(int argc, char **argv)
 {
-    IPC reciever(atoi(argv[1]));
+    ipc::Waiter reciever(atoi(argv[1]));
 
     while (1) {
         reciever.lookForMessages();
-        // for (auto it = reciever.getMessages().begin(); it != reciever.getMessages().end(); it++)
-        //     printf("%s\n", it->c_str());
+        for (auto it = reciever.getMessages().begin(); it != reciever.getMessages().end(); it++)
+            printf("%s\n", it->c_str());
         sleep(2);
     }
 }

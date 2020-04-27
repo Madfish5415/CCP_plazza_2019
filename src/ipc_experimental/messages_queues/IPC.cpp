@@ -5,24 +5,28 @@
 ** IPC
 */
 
+#include <time.h>
 #include <random>
 #include <sys/ipc.h>
 #include <sys/msg.h>
 #include "IPC.hpp"
 
-IPC::IPC(int key)
+ipc::Waiter::Waiter(int key)
 {
+    time_t t;
+
+    srand((unsigned) time(&t));
     this->_key = key == -1 ? rand() % 10000 : key;
     printf("%d\n", this->_key);
     this->_msgId = msgget(this->_key, 0666 | IPC_CREAT);
 }
 
-IPC::~IPC()
+ipc::Waiter::~Waiter()
 {
     msgctl(this->_key, IPC_RMID, NULL);
 }
 
-void IPC::sendMessage(std::string message)
+void ipc::Waiter::sendMessage(std::string message)
 {
     this->_message.type = 1;
     if (message.length() >= 256)
@@ -31,7 +35,7 @@ void IPC::sendMessage(std::string message)
     msgsnd(this->_msgId, &this->_message, sizeof(this->_message), 0);
 }
 
-int IPC::lookForMessages()
+int ipc::Waiter::lookForMessages()
 {
     std::string msg;
 
@@ -40,6 +44,5 @@ int IPC::lookForMessages()
         return (-1);
     }
     msg.assign(this->_message.text);
-    printf("%s\n", this->_message.text);
     this->messages.push_back(msg);
 }

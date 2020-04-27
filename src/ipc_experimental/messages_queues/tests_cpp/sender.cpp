@@ -10,7 +10,7 @@
 
 int main()
 {
-    IPC sender;
+    ipc::Waiter sender;
     std::string message;
 
     while (1) {
