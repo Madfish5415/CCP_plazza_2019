@@ -63,9 +63,10 @@ interface IKitchen {
     + std::list<ICook>& getCooks() const override;
     + KitchenState getState() const override;
     + Storage getStorage() const override;
+    + Process getProcess() const override;
     + Waiter getWaiter() const override;
 
-    + bool handle(std::shared_ptr<IPizza> pizza) override;
+    + void cook();
     + void ready(std::shared_ptr<IPizza> pizza) override;
 }
 
@@ -115,7 +116,7 @@ class Kitchen {
     + Storage getStorage() const override;
     + Waiter getWaiter() const override;
 
-    + bool handle(std::shared_ptr<IPizza> pizza) override;
+    + void cook();
     + void ready(std::shared_ptr<IPizza> pizza) override;
 }
 IKitchen <|-- Kitchen
@@ -239,6 +240,7 @@ interface IOrder {
 interface IReception {
     + virtual ~IReception() = 0;
 
+    + std::string getInput() const = 0;
     + std::list<IOrder>& getOrders() const = 0;
 
     + void ready(IOrder& order) = 0;
@@ -267,12 +269,14 @@ class Parser {
 }
 
 class Reception {
+    - std::list<Kitchen> _kitchens;
     - std::list<IOrder> _orders;
     - Waiter _waiter;
 
     + Reception();
     + ~Reception() override;
 
+    + std::string getInput() const override;
     + std::list<IOrder>& getOrders() const override;
 
     + void ready(IOrder& order) override;
