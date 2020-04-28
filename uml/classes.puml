@@ -257,6 +257,9 @@ class Order {
 IOrder <|-- Order
 
 class Parser {
+    - std::vector<std::tuple<std::string, std::string, std::string, unsigned int>> _pizzaList;
+    - std::string _command;
+
     + Parser(const std::string& formatted);
     + ~Parser();
 
