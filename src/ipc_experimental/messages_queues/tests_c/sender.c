@@ -27,7 +27,7 @@ int main()
 
     while (i < 100) {
         printf("Write Data : ");
-        sprintf(message.message_text, "%d", i++);
+        asprintf(message.message_text, "%d", i++);
 
         // msgsnd to send message
         msgsnd(msgid, &message, sizeof(message), 0);

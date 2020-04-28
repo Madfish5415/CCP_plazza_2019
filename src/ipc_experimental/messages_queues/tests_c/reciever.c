@@ -17,6 +17,8 @@ int main() {
     // ftok to generate unique key
     key = ftok("../main.cpp", 65);
 
+    message.message_text = strdup("");
+
     // msgget creates a message queue
     // and returns identifier
     msgid = msgget(456789, 0666 | IPC_CREAT);

@@ -14,7 +14,7 @@
 
 typedef struct {
     long message_type;
-    char message_text[100];
+    char *message_text;
 } msg_queue_t;
 
 #endif /* !MSG_QUEUE_H_ */
