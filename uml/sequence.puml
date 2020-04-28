@@ -2,25 +2,40 @@
 
 actor User
 
+activate stdin
+activate Reception
+activate Waiter
+
 User -> stdin: Send 3 different pizzas
 Reception -> Parser: IOrder getInput()
+activate Parser
 Parser -> stdin: Read the input
-stdin -> Parser: Return command
-Parser -> Reception: Retrun IOrder
+stdin --> Parser: Return command
+return IOrder
+deactivate Parser
 Reception -> Kitchen: Create Kitchen if any is free
+activate Kitchen
 Kitchen -> Cook: Create the number of cooks allowed
+activate Cook
 Kitchen -> Storage: Create the storage of ingredients
-Kitchen -> Reception: Return the reference to the kitchen
+activate Storage
+Kitchen --> Reception: Return the reference to the kitchen
 Reception -> Waiter: void send(const std::string& message)
 Waiter -> Kitchen: Send the Order in message queue
 Kitchen -> Cook:  Send pizza to Cook
+activate Kitchen
 Cook -> Storage: Get the needed ingredients
 Storage -> Storage: If storage is empty, it refills
-Storage -> Cook: Return the ingredients
+Storage --> Cook: Return the ingredients
 Cook -> Cook: Wait until pizza is cooked
-Cook -> Kitchen: Pizza is ready
-Kitchen -> Waiter: Pizza is ready
-Waiter -> Reception: Pizza is ready
+Cook --> Kitchen: Pizza is ready
+deactivate Kitchen
+Kitchen --> Waiter: Pizza is ready
+deactivate Kitchen
+deactivate Cook
+deactivate Storage
+Waiter --> Reception: Pizza is ready
+Reception --> User: Order ready
 
 
 
