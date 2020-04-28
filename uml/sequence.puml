@@ -1,3 +1,27 @@
-@startuml
+@startuml plazza
 
-@enduml
+actor User
+
+User -> stdin: Send 3 different pizzas
+Reception -> Parser: IOrder getInput()
+Parser -> stdin: Read the input
+stdin -> Parser: Return command
+Parser -> Reception: Retrun IOrder
+Reception -> Kitchen: Create Kitchen if any is free
+Kitchen -> Cook: Create the number of cooks allowed
+Kitchen -> Storage: Create the storage of ingredients
+Kitchen -> Reception: Return the reference to the kitchen
+Reception -> Waiter: void send(const std::string& message)
+Waiter -> Kitchen: Send the Order in message queue
+Kitchen -> Cook:  Send pizza to Cook
+Cook -> Storage: Get the needed ingredients
+Storage -> Storage: If storage is empty, it refills
+Storage -> Cook: Return the ingredients
+Cook -> Cook: Wait until pizza is cooked
+Cook -> Kitchen: Pizza is ready
+Kitchen -> Waiter: Pizza is ready
+Waiter -> Reception: Pizza is ready
+
+
+
+@endumlæ
