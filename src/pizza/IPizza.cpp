@@ -2,10 +2,7 @@
 ** EPITECH PROJECT, 2020
 ** CPP_plazza_2019
 ** File description:
-** main.cpp
+** IPizza.cpp
 */
 
-int main()
-{
-    return 0;
-}
+#include "IPizza.hpp"
