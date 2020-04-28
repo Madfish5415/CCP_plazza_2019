@@ -7,34 +7,35 @@ activate Reception
 activate Waiter
 
 User -> stdin: Send 3 different pizzas
-Reception -> Parser: IOrder getInput()
+Reception -> Parser: Get input (IOrder::getInput())
 activate Parser
-Parser -> stdin: Read the input
-stdin --> Parser: Return command
+Parser -> stdin: Read the input (std::cin)
+stdin --> Parser: Return input (std::string)
 return IOrder
 deactivate Parser
-Reception -> Kitchen: Create Kitchen if any is free
+Reception -> Kitchen: Create Kitchen if any is free (Reception::createKitchen())
 activate Kitchen
-Kitchen -> Cook: Create the number of cooks allowed
+Kitchen -> Cook: Create the number of cooks allowed (std::list::emplace_back())
 activate Cook
-Kitchen -> Storage: Create the storage of ingredients
+Kitchen -> Storage: Create the storage of ingredients (Kitchen::Kitchen())
 activate Storage
 Kitchen --> Reception: Return the reference to the kitchen
-Reception -> Waiter: void send(const std::string& message)
-Waiter -> Kitchen: Send the Order in message queue
-Kitchen -> Cook:  Send pizza to Cook
+Reception -> Waiter: Send pizza via MQ (Waiter::sendMessage())
+Waiter -> Kitchen: Send the message in MQ
+Kitchen -> Cook: Send pizza to Cook (Cook::handle())
 activate Kitchen
-Cook -> Storage: Get the needed ingredients
-Storage -> Storage: If storage is empty, it refills
+Cook -> Storage: Check if ingredients are available (Storage::hasIngredients())
+Storage -> Cook: Boolean (bool)
+Cook -> Storage: "Get" the needed ingredients (Storage::removeIngredients())
 Storage --> Cook: Return the ingredients
 Cook -> Cook: Wait until pizza is cooked
-Cook --> Kitchen: Pizza is ready
+Cook --> Kitchen: Pizza is ready (Kitchen::ready())
 deactivate Kitchen
-Kitchen --> Waiter: Pizza is ready
+Kitchen --> Waiter: Pizza is ready via MQ
 deactivate Kitchen
 deactivate Cook
 deactivate Storage
-Waiter --> Reception: Pizza is ready
+Waiter --> Reception: Pizza is ready via MQ
 Reception --> User: Order ready
 
 
