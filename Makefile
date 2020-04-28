@@ -21,7 +21,8 @@ RM					=		rm -rf
 
 MAIN_SRC			=		main.cpp
 
-PROJ_SRC			=
+PROJ_SRC			=		Class.cpp					\
+							reception/Process.cpp		\
 
 TEST_SRC			=
 
