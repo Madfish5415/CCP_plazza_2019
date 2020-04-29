@@ -21,7 +21,7 @@ RM					=		rm -rf
 
 MAIN_SRC			=		main.cpp
 
-PROJ_SRC			=
+PROJ_SRC			=		Parser.cpp
 
 TEST_SRC			=
 

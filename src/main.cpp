@@ -5,6 +5,16 @@
 ** main.cpp
 */
 
+#include <iostream>
+
+#include "Parser.hpp"
+
 int main() {
-    return 0;
+    std::string command;
+
+    std::getline(std::cin, command);
+
+    Parser parser(command);
+
+    parser.parse();
 }
