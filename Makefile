@@ -21,15 +21,20 @@ RM					=		rm -rf
 
 MAIN_SRC			=		main.cpp
 
-PROJ_SRC			=		kitchen/Cook.cpp			\
+PROJ_SRC			=		communication/Waiter.cpp	\
+							kitchen/Cook.cpp			\
 							kitchen/Kitchen.cpp			\
 							kitchen/Storage.cpp			\
 							pizza/Factory.cpp			\
+							pizza/Ingredients.cpp		\
 							pizza/IPizza.cpp			\
 							pizza/Pizza.cpp				\
-							reception/Process.cpp		\
+							pizza/Sizes.cpp				\
+							process/Process.cpp			\
+							reception/Input.cpp			\
+							reception/Manager.cpp		\
+							reception/Parser.cpp		\
 							reception/Reception.cpp		\
-							reception/Waiter.cpp		\
 
 TEST_SRC			=
 

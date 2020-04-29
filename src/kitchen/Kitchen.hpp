@@ -10,35 +10,25 @@
 
 #include <list>
 
-#include "../pizza/IPizza.hpp"
-#include "../reception/Process.hpp"
-#include "../reception/Waiter.hpp"
 #include "Cook.hpp"
 #include "Storage.hpp"
 
 namespace kitchen {
 
-enum KitchenState { KitchenWaiting, KitchenCooking, KitchenSaturated };
-
 class Kitchen {
   private:
     std::list<Cook> _cooks;
     Storage _storage;
-    KitchenState _state;
-    bool _working;
-    reception::Process _process;
-    reception::Waiter _waiter;
 
   public:
-    Kitchen(int cooks, int maxPizzasPerCook);
+    Kitchen(uint cooks);
     ~Kitchen();
 
   public:
-    KitchenState getState() const;
-    Storage& getStorage() const;
+    Storage& getStorage();
 
   public:
-    void ready(const pizza::IPizza::pointer& pizza);
+    bool handle(const pizza::IPizza::pointer& pizza);
 
   private:
     void cook();

@@ -14,21 +14,19 @@ namespace pizza {
 
 class Pizza : public IPizza {
   private:
-    const PizzaType _type;
-    const std::map<std::string, int> _ingredients;
-    const int _cookTime;
-    const PizzaSize _size;
+    int _cookTime;
+    std::map<std::string, int> _ingredients;
+    std::string _size;
+    std::string _type;
 
   public:
-    Pizza(PizzaType type, const std::map<std::string, int>& ingredients, int cookTime);
     ~Pizza() override;
 
   public:
     int getCookTime() const override;
     std::map<std::string, int>& getIngredients() const override;
-    PizzaSize getSize() const override;
-    PizzaType getType() const override;
-    void setSize(PizzaSize) override;
+    std::string getSize() const override;
+    std::string getType() const override;
 
   public:
     std::string pack() const override;

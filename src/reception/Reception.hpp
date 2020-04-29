@@ -8,25 +8,23 @@
 #ifndef CPP_PLAZZA_2019_SRC_RECEPTION_RECEPTION_HPP
 #define CPP_PLAZZA_2019_SRC_RECEPTION_RECEPTION_HPP
 
-#include <list>
-
-#include "../pizza/Pizza.hpp"
+#include "Manager.hpp"
 
 namespace reception {
 
 class Reception {
   private:
-    Waiter _waiter;
-    std::list<pizza::IPizza::pointer> _pizzas;
+    Manager _manager;
 
   public:
     Reception();
     ~Reception();
 
   public:
-    void ready(const pizza::IPizza::pointer& pizza);
+    void init();
+    void run();
 };
 
-}
+} // namespace reception
 
 #endif // CPP_PLAZZA_2019_SRC_RECEPTION_RECEPTION_HPP

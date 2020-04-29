@@ -12,31 +12,22 @@ namespace kitchen {
 class Kitchen;
 }
 
-#include <list>
+#include <queue>
 #include <thread>
 
 #include "../pizza/IPizza.hpp"
 
 namespace kitchen {
 
-enum CookState { CookWaiting, CookCooking, CookSaturated };
-
 class Cook {
   private:
     Kitchen& _kitchen;
-    int _maxPizzas;
     std::thread _thread;
-    std::list<pizza::IPizza::pointer> _pizzas;
-    CookState _state;
-    bool _working;
+    std::queue<pizza::IPizza::pointer> _pizzas;
 
   public:
-    explicit Cook(Kitchen& kitchen, int maxPizzas);
+    explicit Cook(Kitchen& kitchen);
     ~Cook();
-
-  public:
-    CookState getState() const;
-    bool isWorking() const;
 
   public:
     bool handle(const pizza::IPizza::pointer& pizza);

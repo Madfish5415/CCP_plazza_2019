@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2020
 ** CPP_plazza_2019
 ** File description:
-** Kitchen.cpp
+** Ingredients.cpp
 */
 
-#include "Kitchen.hpp"
+#include "Ingredients.hpp"
