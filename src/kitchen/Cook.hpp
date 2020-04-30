@@ -22,11 +22,12 @@ namespace kitchen {
 class Cook {
   private:
     Kitchen& _kitchen;
+    int _maxPizzas;
     std::thread _thread;
     std::queue<pizza::Pizza::pointer> _pizzas;
 
   public:
-    explicit Cook(Kitchen& kitchen);
+    explicit Cook(Kitchen& kitchen, int maxPizzas);
     ~Cook();
 
   public:

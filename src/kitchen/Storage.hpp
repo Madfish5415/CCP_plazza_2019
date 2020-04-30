@@ -20,7 +20,7 @@ class Storage {
     std::mutex _mutex;
 
   public:
-    Storage();
+    Storage(const std::map<std::string, int>& ingredients);
     ~Storage();
 
   public:

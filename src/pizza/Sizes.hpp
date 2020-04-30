@@ -22,7 +22,7 @@ class Sizes {
     ~Sizes();
 
   public:
-    bool has(const std::string& ingredient);
+    bool has(const std::string& ingredient) const;
 
   public:
     void load(const std::string& path);

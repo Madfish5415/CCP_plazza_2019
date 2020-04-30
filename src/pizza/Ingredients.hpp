@@ -22,7 +22,8 @@ class Ingredients {
     ~Ingredients();
 
   public:
-    bool has(const std::string& ingredient);
+    bool has(const std::string& ingredient) const;
+    std::set<std::string>& get() const;
 
   public:
     void add(const std::string& ingredient);

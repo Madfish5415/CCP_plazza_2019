@@ -24,7 +24,7 @@ class Recipes {
     ~Recipes();
 
   public:
-    bool has(const std::string& recipe);
+    bool has(const std::string& recipe) const;
 
   public:
     void load(const std::string& path);

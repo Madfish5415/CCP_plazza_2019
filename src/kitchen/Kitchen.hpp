@@ -22,7 +22,7 @@ class Kitchen {
     Storage _storage;
 
   public:
-    Kitchen(uint cooks);
+    Kitchen(uint cooks, int maxPizzasPerCook, const std::map<std::string, int>& initIngredients);
     ~Kitchen();
 
   public:
