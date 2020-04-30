@@ -15,7 +15,7 @@ class Kitchen;
 #include <queue>
 #include <thread>
 
-#include "../pizza/IPizza.hpp"
+#include "../pizza/Pizza.hpp"
 
 namespace kitchen {
 
@@ -23,14 +23,14 @@ class Cook {
   private:
     Kitchen& _kitchen;
     std::thread _thread;
-    std::queue<pizza::IPizza::pointer> _pizzas;
+    std::queue<pizza::Pizza::pointer> _pizzas;
 
   public:
     explicit Cook(Kitchen& kitchen);
     ~Cook();
 
   public:
-    bool handle(const pizza::IPizza::pointer& pizza);
+    bool handle(const pizza::Pizza::pointer& pizza);
 
   private:
     void cook();

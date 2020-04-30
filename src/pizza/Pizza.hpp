@@ -8,6 +8,7 @@
 #ifndef CPP_PLAZZA_2019_SRC_PIZZA_PIZZA_HPP
 #define CPP_PLAZZA_2019_SRC_PIZZA_PIZZA_HPP
 
+#include <memory>
 #include <string>
 
 #include "Recipe.hpp"
@@ -15,6 +16,9 @@
 namespace pizza {
 
 class Pizza {
+  public:
+    using pointer = std::shared_ptr<Pizza>;
+
   private:
     Recipe _recipe;
     std::string _size;

@@ -9,7 +9,7 @@
 #define CPP_PLAZZA_2019_SRC_RECEPTION_MANAGER_HPP
 
 #include "../kitchen/Kitchen.hpp"
-#include "../pizza/IPizza.hpp"
+#include "../pizza/Pizza.hpp"
 
 namespace reception {
 
@@ -22,7 +22,7 @@ class Manager {
     ~Manager();
 
   public:
-    void handle(const pizza::IPizza::pointer& pizza);
+    void handle(const pizza::Pizza::pointer& pizza);
 };
 
 } // namespace reception

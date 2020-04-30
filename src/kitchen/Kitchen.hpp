@@ -10,6 +10,7 @@
 
 #include <list>
 
+#include "../pizza/Pizza.hpp"
 #include "Cook.hpp"
 #include "Storage.hpp"
 
@@ -28,7 +29,7 @@ class Kitchen {
     Storage& getStorage();
 
   public:
-    bool handle(const pizza::IPizza::pointer& pizza);
+    bool handle(const pizza::Pizza::pointer& pizza);
 
   private:
     void cook();
