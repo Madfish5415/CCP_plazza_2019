@@ -27,8 +27,9 @@ PROJ_SRC			=		communication/Waiter.cpp	\
 							kitchen/Storage.cpp			\
 							pizza/Factory.cpp			\
 							pizza/Ingredients.cpp		\
-							pizza/IPizza.cpp			\
 							pizza/Pizza.cpp				\
+							pizza/Recipe.cpp			\
+							pizza/Recipes.cpp			\
 							pizza/Sizes.cpp				\
 							process/Process.cpp			\
 							reception/Input.cpp			\

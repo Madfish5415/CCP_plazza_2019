@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2020
 ** CPP_plazza_2019
 ** File description:
-** IPizza.cpp
+** Recipes.cpp
 */
 
-#include "IPizza.hpp"
+#include "Recipes.hpp"

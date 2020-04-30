@@ -8,11 +8,15 @@
 #ifndef CPP_PLAZZA_2019_SRC_PIZZA_INGREDIENTS_HPP
 #define CPP_PLAZZA_2019_SRC_PIZZA_INGREDIENTS_HPP
 
+#include <set>
 #include <string>
 
 namespace pizza {
 
 class Ingredients {
+  private:
+    std::set<std::string> _ingredients;
+
   public:
     Ingredients();
     ~Ingredients();
@@ -21,7 +25,7 @@ class Ingredients {
     bool has(const std::string& ingredient);
 
   public:
-    void load(const std::string& path);
+    void add(const std::string& ingredient);
 };
 
 } // namespace pizza

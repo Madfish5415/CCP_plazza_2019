@@ -15,21 +15,20 @@ namespace communication {
 
 class Waiter {
   private:
-    std::queue<std::string> _messages;
+    int _id;
+    std::string _name;
 
   public:
-    Waiter();
-    Waiter(int key);
+    Waiter(const std::string& name, int flags);
     ~Waiter();
 
   public:
-    int getKey() const;
-    std::queue<std::string>& getMessages() const;
+    int getId() const;
+    std::string getName() const;
 
   public:
-    void fetchMessages();
-    std::string popMessage();
-    void sendMessage(const std::string& message);
+    std::string receive() const;
+    void send(const std::string& message) const;
 };
 
 } // namespace communication

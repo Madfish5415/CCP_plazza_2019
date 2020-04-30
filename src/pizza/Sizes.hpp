@@ -8,11 +8,15 @@
 #ifndef CPP_PLAZZA_2019_SRC_PIZZA_SIZES_HPP
 #define CPP_PLAZZA_2019_SRC_PIZZA_SIZES_HPP
 
+#include <set>
 #include <string>
 
 namespace pizza {
 
 class Sizes {
+  private:
+    std::set<std::string> _ingredients;
+
   public:
     Sizes();
     ~Sizes();

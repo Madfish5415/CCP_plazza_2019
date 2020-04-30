@@ -8,29 +8,27 @@
 #ifndef CPP_PLAZZA_2019_SRC_PIZZA_PIZZA_HPP
 #define CPP_PLAZZA_2019_SRC_PIZZA_PIZZA_HPP
 
-#include "IPizza.hpp"
+#include <string>
+
+#include "Recipe.hpp"
 
 namespace pizza {
 
-class Pizza : public IPizza {
+class Pizza {
   private:
-    int _cookTime;
-    std::map<std::string, int> _ingredients;
+    Recipe _recipe;
     std::string _size;
-    std::string _type;
 
   public:
-    ~Pizza() override;
+    Pizza(Recipe& recipe, std::string size);
+    ~Pizza();
 
   public:
-    int getCookTime() const override;
-    std::map<std::string, int>& getIngredients() const override;
-    std::string getSize() const override;
-    std::string getType() const override;
+    std::string getSize() const;
 
   public:
-    std::string pack() const override;
-    void unpack(const std::string& pack) const override;
+    std::string pack() const;
+    void unpack(const std::string& pack) const;
 };
 
 } // namespace pizza
