@@ -10,6 +10,7 @@
 
 #include <list>
 
+#include "../communication/Waiter.hpp"
 #include "../pizza/Pizza.hpp"
 #include "Cook.hpp"
 #include "Storage.hpp"
@@ -17,22 +18,33 @@
 namespace kitchen {
 
 class Kitchen {
+  public:
+    enum State { Working, Finished };
+
   private:
-    std::list<Cook> _cooks;
     Storage _storage;
+    communication::Waiter _receiver;
+    communication::Waiter _sender;
+    State _state;
+    std::list<Cook> _cooks {};
 
   public:
-    Kitchen(uint cooks, int maxPizzasPerCook, const std::map<std::string, int>& initIngredients);
+    Kitchen(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients, const std::string& receiver,
+        const std::string& sender);
     ~Kitchen();
 
   public:
     Storage& getStorage();
 
   public:
-    bool handle(const pizza::Pizza::pointer& pizza);
+    void cook();
+    bool handle(const pizza::Pizza& pizza);
+    void ready(const pizza::Pizza& pizza);
+    void status() const;
 
   private:
-    void cook();
+    pizza::Pizza receive();
+    void send(const pizza::Pizza& pizza);
 };
 
 } // namespace kitchen

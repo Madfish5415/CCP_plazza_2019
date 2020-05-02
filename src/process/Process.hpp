@@ -10,45 +10,57 @@
 
 #include <unistd.h>
 
+#include <cstdlib>
+#include <cstring>
+#include <functional>
+#include <thread>
 #include <type_traits>
+
+#include "../def/def.hpp"
 
 namespace process {
 
 class Process {
   private:
-    int _pid;
+    bool _child = false;
+    int _pid = 0;
+    int _status = 0;
 
   public:
-    template<typename F, typename T, typename... TArgs,
-        std::enable_if_t<std::is_member_function_pointer<F>::value, int> = 0>
-    Process(F&& function, T&& instance, TArgs&&... args)
+    Process();
+
+    template<typename C, typename... TArgs>
+    explicit Process(C&& callable, TArgs&&... args)
     {
         this->_pid = fork();
 
-        if (this->_pid == 0)
-            (instance->*function)(args...);
-    }
+        if (this->_pid == CODE_INVALID)
+            throw std::runtime_error(strerror(errno)); // TODO: Custom Error class
 
-    template<typename F, typename... TArgs>
-    explicit Process(F&& function, TArgs&&... args)
-    {
-        this->_pid = fork();
+        if (this->_pid == 0) {
+            this->_child = true;
+            this->_pid = getpid();
 
-        if (this->_pid == 0)
-            function(args...);
+            std::invoke(callable, args...);
+
+            exit(CODE_SUCCESS);
+        }
     }
 
     ~Process();
 
   public:
-    int get_id() const;
+    int getId() const;
+    int getStatus() const;
+    bool isChild() const;
 
   public:
     void join();
 
   public:
-    static void for_sleep(int seconds);
-    static void for_usleep(int seconds);
+    static int thisId();
+    static void forSleep(unsigned int seconds);
+    static void forUSleep(unsigned int uSeconds);
 };
 
 } // namespace process

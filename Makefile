@@ -19,6 +19,8 @@ AR					=		ar rcs
 CC					=		g++
 RM					=		rm -rf
 
+LDLIBS				=		-lpthread -lrt
+
 MAIN_SRC			=		main.cpp
 
 PROJ_SRC			=		communication/Waiter.cpp	\
@@ -32,6 +34,7 @@ PROJ_SRC			=		communication/Waiter.cpp	\
 							pizza/Recipes.cpp			\
 							pizza/Sizes.cpp				\
 							process/Process.cpp			\
+							process/Kitchen.cpp			\
 							reception/Input.cpp			\
 							reception/Manager.cpp		\
 							reception/Parser.cpp		\
@@ -39,7 +42,7 @@ PROJ_SRC			=		communication/Waiter.cpp	\
 
 TEST_SRC			=
 
-CFLAGS				+=		-I $(INCL_DIR)
+CFLAGS				+=		-I $(INCL_DIR) -std=c++17
 CFLAGS				+=		-W -Wall -Wextra -Werror
 
 MAIN_OBJ			=		$(MAIN_SRC:%.cpp=$(OBJ_DIR)/%.o)

@@ -16,16 +16,17 @@ namespace pizza {
 class Recipe {
   private:
     std::string _type;
-    std::map<std::string, int> _ingredients;
+    std::map<std::string, unsigned int> _ingredients;
     int _cookTime;
 
   public:
-    Recipe(const std::string& type, const std::map<std::string, int>& ingredients, int cookTime);
+    Recipe();
+    Recipe(const std::string& type, const std::map<std::string, unsigned int>& ingredients, int cookTime);
     ~Recipe();
 
   public:
     std::string getType() const;
-    std::map<std::string, int>& getIngredients() const;
+    const std::map<std::string, unsigned int>& getIngredients() const;
     int getCookTime() const;
 
   public:

@@ -20,21 +20,28 @@ class Kitchen;
 namespace kitchen {
 
 class Cook {
+  public:
+    enum State { Working, Finished };
+
   private:
     Kitchen& _kitchen;
-    int _maxPizzas;
+    State _state;
     std::thread _thread;
-    std::queue<pizza::Pizza::pointer> _pizzas;
+    std::queue<pizza::Pizza> _pizzas {};
 
   public:
-    explicit Cook(Kitchen& kitchen, int maxPizzas);
+    explicit Cook(Kitchen& kitchen);
     ~Cook();
 
   public:
-    bool handle(const pizza::Pizza::pointer& pizza);
+    const std::queue<pizza::Pizza>& getPizzas() const;
 
-  private:
+  public:
     void cook();
+    bool handle(const pizza::Pizza& pizza);
+    void ready(const pizza::Pizza& pizza);
+    void status() const;
+    void wait();
 };
 
 } // namespace kitchen
