@@ -23,10 +23,11 @@ LDLIBS				=		-lpthread -lrt
 
 MAIN_SRC			=		main.cpp
 
-PROJ_SRC			=		communication/Waiter.cpp	\
-							kitchen/Cook.cpp			\
+PROJ_SRC			=		kitchen/Cook.cpp			\
 							kitchen/Kitchen.cpp			\
 							kitchen/Storage.cpp			\
+							mq/POSIX.cpp				\
+                            mq/Waiter.cpp				\
 							pizza/Factory.cpp			\
 							pizza/Ingredients.cpp		\
 							pizza/Pizza.cpp				\

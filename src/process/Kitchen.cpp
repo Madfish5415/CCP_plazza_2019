@@ -13,13 +13,12 @@ process::Kitchen::Kitchen(unsigned int cooks, const std::map<std::string, unsign
 {
     (void)(ingredients);
 
-    std::string receiver = "/receiver";
-    std::string sender = "/sender";
+    std::string mario = "/mario";
+    std::string luigi = "/luigi";
 
-    this->_receiver = communication::Waiter(receiver, O_RDONLY);
-    this->_sender = communication::Waiter(sender, O_WRONLY);
-    this->_process = Process([&cooks, &ingredients, &receiver, &sender]() {
-        kitchen::Kitchen k(cooks, ingredients, sender, receiver);
+    this->_waiter = mq::Waiter(mario, luigi, O_CREAT);
+    this->_process = Process([&cooks, &ingredients, &mario, &luigi]() {
+        kitchen::Kitchen k(cooks, ingredients, luigi, mario);
 
         k.cook();
     });
@@ -27,11 +26,10 @@ process::Kitchen::Kitchen(unsigned int cooks, const std::map<std::string, unsign
 
 process::Kitchen::~Kitchen()
 {
-    this->_sender.sendMessage("STOP", 2);
+    this->_waiter.sendMessage({"STOP"}, 1);
 
     this->_process.join();
-    this->_receiver.close();
-    this->_sender.close();
+    this->_waiter.close();
 }
 
 int process::Kitchen::getPizzas() const
@@ -41,15 +39,19 @@ int process::Kitchen::getPizzas() const
 
 void process::Kitchen::status()
 {
-    this->_sender.sendMessage("STATUS", 2);
+    this->_waiter.sendMessage({"STATUS"}, 1);
 }
 
 pizza::Pizza process::Kitchen::receive()
 {
-    std::string message = this->_receiver.receiveMessage(nullptr);
+    std::vector<std::string> message = this->_waiter.receiveMessage(nullptr);
+
+    if (message[0] != "PIZZA")
+        throw std::exception(); // TODO: Custom Error class
+
     pizza::Pizza pizza;
 
-    pizza.unpack(message);
+    pizza.unpack(message[1]);
     this->_pizzas -= 1;
 
     return pizza;
@@ -57,8 +59,6 @@ pizza::Pizza process::Kitchen::receive()
 
 void process::Kitchen::send(const pizza::Pizza& pizza)
 {
-    std::string message = "PIZZA " + pizza.pack();
-
-    this->_sender.sendMessage(message, 1);
+    this->_waiter.sendMessage({"PIZZA", pizza.pack()}, 1);
     this->_pizzas += 1;
 }

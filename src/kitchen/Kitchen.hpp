@@ -10,7 +10,7 @@
 
 #include <list>
 
-#include "../communication/Waiter.hpp"
+#include "../mq/Waiter.hpp"
 #include "../pizza/Pizza.hpp"
 #include "Cook.hpp"
 #include "Storage.hpp"
@@ -23,8 +23,7 @@ class Kitchen {
 
   private:
     Storage _storage;
-    communication::Waiter _receiver;
-    communication::Waiter _sender;
+    mq::Waiter _waiter;
     State _state;
     std::list<Cook> _cooks {};
 

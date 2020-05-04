@@ -8,7 +8,6 @@
 #ifndef CPP_PLAZZA_2019_SRC_RECEPTION_MANAGER_HPP
 #define CPP_PLAZZA_2019_SRC_RECEPTION_MANAGER_HPP
 
-#include "../communication/Waiter.hpp"
 #include "../kitchen/Kitchen.hpp"
 #include "../pizza/Pizza.hpp"
 

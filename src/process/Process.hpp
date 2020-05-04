@@ -1,68 +1,74 @@
 /*
 ** EPITECH PROJECT, 2020
-** CPP_plazza_2019
+** CPP_plazza_lite_2019
 ** File description:
 ** Process.hpp
 */
 
-#ifndef CPP_PLAZZA_2019_SRC_PROCESS_PROCESS_HPP
-#define CPP_PLAZZA_2019_SRC_PROCESS_PROCESS_HPP
+#ifndef CPP_PLAZZA_LITE_2019_SRC_PROCESS_PROCESS_HPP
+#define CPP_PLAZZA_LITE_2019_SRC_PROCESS_PROCESS_HPP
 
 #include <unistd.h>
 
-#include <cstdlib>
+#include <chrono>
 #include <cstring>
 #include <functional>
-#include <thread>
-#include <type_traits>
-
-#include "../def/def.hpp"
+#include <stdexcept>
 
 namespace process {
 
+class This {
+  public:
+    static int getId();
+
+  public:
+    template<typename Rep, typename Period>
+    static void sleepFor(std::chrono::duration<Rep, Period> relTime)
+    {
+        if (relTime <= relTime.zero())
+            return;
+
+        auto s = std::chrono::duration_cast<std::chrono::seconds>(relTime);
+        auto us = std::chrono::duration_cast<std::chrono::microseconds>(relTime - s);
+
+        sleep(s.count());
+        usleep(us.count());
+    }
+};
+
 class Process {
   private:
-    bool _child = false;
-    int _pid = 0;
-    int _status = 0;
+    int _id {};
+    int _status {};
 
   public:
     Process();
 
-    template<typename C, typename... TArgs>
-    explicit Process(C&& callable, TArgs&&... args)
+    template<typename Callable, typename... Args>
+    explicit Process(Callable&& callable, Args&&... args)
     {
-        this->_pid = fork();
+        this->_id = fork();
 
-        if (this->_pid == CODE_INVALID)
+        if (this->_id == -1)
             throw std::runtime_error(strerror(errno)); // TODO: Custom Error class
 
-        if (this->_pid == 0) {
-            this->_child = true;
-            this->_pid = getpid();
-
+        if (this->_id == 0) {
             std::invoke(callable, args...);
 
-            exit(CODE_SUCCESS);
+            exit(0);
         }
     }
 
     ~Process();
 
   public:
-    int getId() const;
-    int getStatus() const;
-    bool isChild() const;
+    [[nodiscard]] int getId() const;
+    [[nodiscard]] int getStatus() const;
 
   public:
     void join();
-
-  public:
-    static int thisId();
-    static void forSleep(unsigned int seconds);
-    static void forUSleep(unsigned int uSeconds);
 };
 
 } // namespace process
 
-#endif // CPP_PLAZZA_2019_SRC_PROCESS_PROCESS_HPP
+#endif // CPP_PLAZZA_LITE_2019_SRC_PROCESS_PROCESS_HPP

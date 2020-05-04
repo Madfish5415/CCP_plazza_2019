@@ -9,16 +9,15 @@
 
 int main()
 {
-    auto *k = new process::Kitchen(2, {{"doe", 10}, {"cheese", 5}});
-    pizza::Recipe margarita("Margarita", {{"doe", 1}, {"cheese", 1}}, 5);
-    pizza::Pizza p1(margarita, "10");
-    pizza::Pizza p2(margarita, "10");
+    process::Kitchen k(2, {{"doe", 10}, {"cheese", 5}});
+    pizza::Recipe margarita("Margarita", {{"doe", 1}, {"cheese", 1}}, 1);
+    pizza::Pizza p(margarita, "M");
 
-    k->send(p1);
-    k->send(p2);
-    k->status();
-
-    delete k;
+    k.status();
+    k.send(p);
+    k.send(p);
+    k.status();
+    k.send(p);
 
     return 0;
 }

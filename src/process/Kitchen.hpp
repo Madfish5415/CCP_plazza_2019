@@ -11,7 +11,7 @@
 #include <map>
 #include <string>
 
-#include "../communication/Waiter.hpp"
+#include "../mq/Waiter.hpp"
 #include "../kitchen/Kitchen.hpp"
 #include "Process.hpp"
 
@@ -19,8 +19,7 @@ namespace process {
 
 class Kitchen {
   private:
-    communication::Waiter _receiver;
-    communication::Waiter _sender;
+    mq::Waiter _waiter;
     Process _process;
     int _cooks;
     int _pizzas = 0;
