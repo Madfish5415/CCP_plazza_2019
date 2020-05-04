@@ -35,6 +35,7 @@ class Kitchen {
     pizza::Pizza receive();
     void send(const pizza::Pizza& pizza);
     void status();
+    void run();
 };
 
 }

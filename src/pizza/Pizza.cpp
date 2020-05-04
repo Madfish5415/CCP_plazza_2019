@@ -8,7 +8,6 @@
 #include "Pizza.hpp"
 
 #include <regex>
-#include <sstream>
 
 pizza::Pizza::Pizza() = default;
 
@@ -30,12 +29,12 @@ std::string pizza::Pizza::getSize() const
 
 std::string pizza::Pizza::pack() const
 {
-    std::stringstream string;
+    std::string string;
 
-    string << "recipe={" << this->_recipe.pack() << "};";
-    string << "size=" << this->_size<< ";";
+    string += "recipe={" + this->_recipe.pack() + "};";
+    string += "size=" + this->_size + ";";
 
-    return string.str();
+    return string;
 }
 
 void pizza::Pizza::unpack(const std::string& pack)

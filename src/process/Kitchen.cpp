@@ -62,3 +62,20 @@ void process::Kitchen::send(const pizza::Pizza& pizza)
     this->_waiter.sendMessage({"PIZZA", pizza.pack()}, 1);
     this->_pizzas += 1;
 }
+
+void process::Kitchen::run()
+{
+    int counter = 0;
+
+    while (counter != 3) {
+        pizza::Pizza pizza;
+
+        try {
+            pizza = this->receive();
+        } catch (std::exception& e) {
+            continue;
+        }
+
+        counter++;
+    }
+}

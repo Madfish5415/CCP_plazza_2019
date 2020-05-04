@@ -28,22 +28,34 @@ void mq::Waiter::close()
 
 std::vector<std::string> mq::Waiter::receiveMessage(unsigned int* priority)
 {
+    static int count = 0;
+
+    std::cout << count << ") receiver: " << this->_receiver.getName() << std::endl; // TODO: Remove
+
     std::string string = this->_receiver.receive(priority);
+    std::string find = string;
     std::regex word(R"(([^\s]+))");
     std::smatch match;
     std::vector<std::string> message;
 
-    while (std::regex_search(string, match, word)) {
+    while (std::regex_search(find, match, word)) {
         message.push_back(match.str(1));
 
-        string = match.suffix();
+        find = match.suffix();
     }
+
+    std::cout << count << ") received: " << string << std::endl; // TODO: Remove
+    count++;
 
     return message;
 }
 
 void mq::Waiter::sendMessage(const std::vector<std::string>& message, unsigned int priority)
 {
+    static int count = 0;
+
+    std::cout << count << ") sender: " << this->_sender.getName() << std::endl; // TODO: Remove
+
     std::string string;
 
     for (const auto& item : message) {
@@ -53,4 +65,7 @@ void mq::Waiter::sendMessage(const std::vector<std::string>& message, unsigned i
     }
 
     this->_sender.send(string, priority);
+
+    std::cout << count << ") sent: " << string << std::endl; // TODO: Remove
+    count++;
 }

@@ -20,6 +20,10 @@ kitchen::Kitchen::Kitchen(unsigned int cooks, const std::map<std::string, unsign
 }
 
 kitchen::Kitchen::~Kitchen() {
+    std::cout << process::This::getId() << " Kitchen::~Kitchen()" << std::endl; // TODO: Remove
+
+    this->_cooks.clear();
+
     this->_waiter.close();
 }
 
@@ -72,9 +76,6 @@ void kitchen::Kitchen::status() const
 pizza::Pizza kitchen::Kitchen::receive()
 {
     std::vector<std::string> message = this->_waiter.receiveMessage(nullptr);
-
-    for (const auto& item : message)
-        std::cout << "item: " << item << std::endl; // TODO: Remove
 
     if (message[0] == "PIZZA") {
         pizza::Pizza pizza;

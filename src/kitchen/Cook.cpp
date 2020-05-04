@@ -18,9 +18,9 @@ kitchen::Cook::Cook(kitchen::Kitchen& kitchen) : _kitchen(kitchen), _state(State
 
 kitchen::Cook::~Cook()
 {
-    this->_state = State::Finished;
-
     std::cout << std::this_thread::get_id() << " Cook::~Cook()" << std::endl; // TODO: Remove
+
+    this->_state = State::Finished;
 
     this->_thread.join();
 }
@@ -49,9 +49,9 @@ void kitchen::Cook::cook()
         std::this_thread::sleep_for(std::chrono::seconds(pizza.getRecipe().getCookTime()));
 
         this->_pizzas.pop();
-        // this->ready(pizza); // TODO: FIX THIS SHIT
+        this->ready(pizza);
 
-        std::cout << std::this_thread::get_id() << " finished a " << pizza.getRecipe().getType() << std::endl; // TODO: Remove
+        std::cout << std::this_thread::get_id() << " finished a(n) " << pizza.getRecipe().getType() << std::endl; // TODO: Remove
         std::cout << std::this_thread::get_id() << "'s pizza queue size: " << this->_pizzas.size() << std::endl; // TODO: Remove
     }
 

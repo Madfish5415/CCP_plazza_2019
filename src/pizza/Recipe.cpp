@@ -8,7 +8,6 @@
 #include "Recipe.hpp"
 
 #include <regex>
-#include <sstream>
 
 pizza::Recipe::Recipe() : _cookTime(0)
 {
@@ -38,21 +37,21 @@ int pizza::Recipe::getCookTime() const
 
 std::string pizza::Recipe::pack() const
 {
-    std::stringstream string;
+    std::string string;
 
-    string << "type=" << this->_type << ";";
-    string << "ingredients=";
+    string += "type=" + this->_type + ";";
+    string += "ingredients=";
 
     for (const auto& ingredient : this->_ingredients) {
         if (ingredient != *this->_ingredients.begin())
-            string << ",";
-        string << ingredient.first << ":" << ingredient.second;
+            string += ",";
+        string += ingredient.first + ":" + std::to_string(ingredient.second);
     }
 
-    string << ";";
-    string << "cookTime=" << this->_cookTime << ";";
+    string += ";";
+    string += "cookTime=" + std::to_string(this->_cookTime) + ";";
 
-    return string.str();
+    return string;
 }
 
 void pizza::Recipe::unpack(const std::string& pack)
