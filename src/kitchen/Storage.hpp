@@ -16,17 +16,18 @@ namespace kitchen {
 
 class Storage {
   private:
-    std::map<std::string, int> _ingredients;
+    std::map<std::string, unsigned int> _ingredients;
     std::mutex _mutex;
 
   public:
-    Storage(const std::map<std::string, int>& ingredients);
+    explicit Storage(const std::map<std::string, unsigned int>& ingredients);
     ~Storage();
 
   public:
-    void addIngredients(const std::map<std::string, int>& ingredients);
-    bool hasIngredients(const std::map<std::string, int>& ingredients);
-    void removeIngredients(const std::map<std::string, int>& ingredients);
+    void addIngredients(const std::map<std::string, unsigned int>& ingredients);
+    bool hasIngredients(const std::map<std::string, unsigned int>& ingredients) const;
+    void removeIngredients(const std::map<std::string, unsigned int>& ingredients);
+    void status() const;
 };
 
 } // namespace kitchen

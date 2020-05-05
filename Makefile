@@ -19,12 +19,15 @@ AR					=		ar rcs
 CC					=		g++
 RM					=		rm -rf
 
+LDLIBS				=		-lpthread -lrt
+
 MAIN_SRC			=		main.cpp
 
-PROJ_SRC			=		communication/Waiter.cpp	\
-							kitchen/Cook.cpp			\
+PROJ_SRC			=		kitchen/Cook.cpp			\
 							kitchen/Kitchen.cpp			\
 							kitchen/Storage.cpp			\
+							mq/POSIX.cpp				\
+                            mq/Waiter.cpp				\
 							pizza/Factory.cpp			\
 							pizza/Ingredients.cpp		\
 							pizza/Pizza.cpp				\
@@ -32,14 +35,16 @@ PROJ_SRC			=		communication/Waiter.cpp	\
 							pizza/Recipes.cpp			\
 							pizza/Sizes.cpp				\
 							process/Process.cpp			\
+							process/Kitchen.cpp			\
 							reception/Input.cpp			\
 							reception/Manager.cpp		\
 							reception/Parser.cpp		\
 							reception/Reception.cpp		\
+							thread/Print.cpp			\
 
 TEST_SRC			=
 
-CFLAGS				+=		-I $(INCL_DIR)
+CFLAGS				+=		-I $(INCL_DIR) -std=c++17
 CFLAGS				+=		-W -Wall -Wextra -Werror
 
 LDFLAGS			+=		-lrt

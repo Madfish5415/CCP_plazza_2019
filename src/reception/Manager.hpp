@@ -14,15 +14,9 @@
 namespace reception {
 
 class Manager {
-  private:
-    std::list<kitchen::Kitchen> _kitchens;
-
   public:
     Manager();
     ~Manager();
-
-  public:
-    void handle(const pizza::Pizza::pointer& pizza);
 };
 
 } // namespace reception

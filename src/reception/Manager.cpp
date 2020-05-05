@@ -6,3 +6,9 @@
 */
 
 #include "Manager.hpp"
+
+reception::Manager::Manager()
+{
+}
+
+reception::Manager::~Manager() = default;

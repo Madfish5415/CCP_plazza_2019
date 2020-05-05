@@ -16,23 +16,22 @@
 namespace pizza {
 
 class Pizza {
-  public:
-    using pointer = std::shared_ptr<Pizza>;
-
   private:
     Recipe _recipe;
     std::string _size;
 
   public:
-    Pizza(Recipe& recipe, std::string size);
+    Pizza();
+    Pizza(Recipe recipe, std::string size);
     ~Pizza();
 
   public:
+    const Recipe& getRecipe() const;
     std::string getSize() const;
 
   public:
     std::string pack() const;
-    void unpack(const std::string& pack) const;
+    void unpack(const std::string& pack);
 };
 
 } // namespace pizza

@@ -1,56 +1,76 @@
 /*
 ** EPITECH PROJECT, 2020
-** CPP_plazza_2019
+** CPP_plazza_lite_2019
 ** File description:
 ** Process.hpp
 */
 
-#ifndef CPP_PLAZZA_2019_SRC_PROCESS_PROCESS_HPP
-#define CPP_PLAZZA_2019_SRC_PROCESS_PROCESS_HPP
+#ifndef CPP_PLAZZA_LITE_2019_SRC_PROCESS_PROCESS_HPP
+#define CPP_PLAZZA_LITE_2019_SRC_PROCESS_PROCESS_HPP
 
 #include <unistd.h>
 
-#include <type_traits>
+#include <chrono>
+#include <cstring>
+#include <functional>
+#include <stdexcept>
+
+#include "../thread/Print.hpp"
 
 namespace process {
 
-class Process {
-  private:
-    int _pid;
+class This {
+  public:
+    static int getId();
 
   public:
-    template<typename F, typename T, typename... TArgs,
-        std::enable_if_t<std::is_member_function_pointer<F>::value, int> = 0>
-    Process(F&& function, T&& instance, TArgs&&... args)
+    template<typename Rep, typename Period>
+    static void sleepFor(std::chrono::duration<Rep, Period> relTime)
     {
-        this->_pid = fork();
+        if (relTime <= relTime.zero())
+            return;
 
-        if (this->_pid == 0)
-            (instance->*function)(args...);
+        auto s = std::chrono::duration_cast<std::chrono::seconds>(relTime);
+        auto us = std::chrono::duration_cast<std::chrono::microseconds>(relTime - s);
+
+        sleep(s.count());
+        usleep(us.count());
     }
+};
 
-    template<typename F, typename... TArgs>
-    explicit Process(F&& function, TArgs&&... args)
+class Process {
+  private:
+    int _id {};
+    int _status {};
+
+  public:
+    Process();
+
+    template<typename Callable, typename... Args>
+    explicit Process(Callable&& callable, Args&&... args)
     {
-        this->_pid = fork();
+        this->_id = fork();
 
-        if (this->_pid == 0)
-            function(args...);
+        if (this->_id == -1)
+            throw std::runtime_error(strerror(errno)); // TODO: Custom Error class
+
+        if (this->_id == 0) {
+            std::invoke(callable, args...);
+
+            exit(0);
+        }
     }
 
     ~Process();
 
   public:
-    int get_id() const;
+    [[nodiscard]] int getId() const;
+    [[nodiscard]] int getStatus() const;
 
   public:
     void join();
-
-  public:
-    static void for_sleep(int seconds);
-    static void for_usleep(int seconds);
 };
 
 } // namespace process
 
-#endif // CPP_PLAZZA_2019_SRC_PROCESS_PROCESS_HPP
+#endif // CPP_PLAZZA_LITE_2019_SRC_PROCESS_PROCESS_HPP
