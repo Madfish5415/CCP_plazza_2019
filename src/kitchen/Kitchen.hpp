@@ -38,7 +38,7 @@ class Kitchen {
   public:
     void cook();
     bool handle(const pizza::Pizza& pizza);
-    void ready(const pizza::Pizza& pizza);
+    void ready(pizza::Pizza pizza);
     void status() const;
 
   private:

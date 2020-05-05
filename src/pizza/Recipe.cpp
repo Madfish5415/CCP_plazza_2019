@@ -9,6 +9,8 @@
 
 #include <regex>
 
+#include "../thread/Print.hpp"
+
 pizza::Recipe::Recipe() : _cookTime(0)
 {
 }
@@ -39,13 +41,13 @@ std::string pizza::Recipe::pack() const
 {
     std::string string;
 
-    string += "type=" + this->_type + ";";
+    string += "type=\"" + this->_type + "\";";
     string += "ingredients=";
 
     for (const auto& ingredient : this->_ingredients) {
         if (ingredient != *this->_ingredients.begin())
             string += ",";
-        string += ingredient.first + ":" + std::to_string(ingredient.second);
+        string += "\"" + ingredient.first + "\":" + std::to_string(ingredient.second);
     }
 
     string += ";";
@@ -56,9 +58,9 @@ std::string pizza::Recipe::pack() const
 
 void pizza::Recipe::unpack(const std::string& pack)
 {
-    std::regex type("type=(.*?);");
+    std::regex type("type=\"(.*?)\";");
     std::regex ingredients("ingredients=(.*?);");
-    std::regex ingredient("([a-z]+):(\\d+)");
+    std::regex ingredient("\"([^:]+)\":(\\d+)");
     std::regex cookTime("cookTime=(.*?);");
     std::smatch match;
 

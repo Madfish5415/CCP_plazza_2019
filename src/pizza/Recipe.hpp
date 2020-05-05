@@ -34,6 +34,6 @@ class Recipe {
     void unpack(const std::string& pack);
 };
 
-}
+} // namespace pizza
 
 #endif // CPP_PLAZZA_2019_SRC_PIZZA_RECIPE_HPP

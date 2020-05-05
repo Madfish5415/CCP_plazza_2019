@@ -11,8 +11,8 @@
 #include <map>
 #include <string>
 
-#include "../mq/Waiter.hpp"
 #include "../kitchen/Kitchen.hpp"
+#include "../mq/Waiter.hpp"
 #include "Process.hpp"
 
 namespace process {
@@ -38,6 +38,6 @@ class Kitchen {
     void run();
 };
 
-}
+} // namespace process
 
 #endif // CPP_PLAZZA_2019_SRC_PROCESS_KITCHEN_HPP

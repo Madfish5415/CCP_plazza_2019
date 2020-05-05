@@ -38,10 +38,8 @@ class Cook {
 
   public:
     void cook();
-    bool handle(const pizza::Pizza& pizza);
-    void ready(const pizza::Pizza& pizza);
+    bool handle(pizza::Pizza pizza);
     void status() const;
-    void wait();
 };
 
 } // namespace kitchen

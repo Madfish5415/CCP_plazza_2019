@@ -32,7 +32,7 @@ std::string pizza::Pizza::pack() const
     std::string string;
 
     string += "recipe={" + this->_recipe.pack() + "};";
-    string += "size=" + this->_size + ";";
+    string += "size=\"" + this->_size + "\";";
 
     return string;
 }
@@ -40,7 +40,7 @@ std::string pizza::Pizza::pack() const
 void pizza::Pizza::unpack(const std::string& pack)
 {
     std::regex recipe("recipe=\\{(.*?)\\};");
-    std::regex size("size=(.*?);");
+    std::regex size("size=\"(.*?)\";");
     std::smatch match;
 
     if (std::regex_search(pack, match, recipe))

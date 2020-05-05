@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include "../def/def.hpp"
+#include "../process/Process.hpp"
 #include "Kitchen.hpp"
 
 kitchen::Cook::Cook(kitchen::Kitchen& kitchen) : _kitchen(kitchen), _state(State::Working), _thread(&Cook::cook, this)
@@ -18,7 +19,7 @@ kitchen::Cook::Cook(kitchen::Kitchen& kitchen) : _kitchen(kitchen), _state(State
 
 kitchen::Cook::~Cook()
 {
-    std::cout << std::this_thread::get_id() << " Cook::~Cook()" << std::endl; // TODO: Remove
+    thread::Print() << process::This::getId() << " Cook::~Cook()" << std::endl; // TODO: Remove
 
     this->_state = State::Finished;
 
@@ -32,7 +33,7 @@ const std::queue<pizza::Pizza>& kitchen::Cook::getPizzas() const
 
 void kitchen::Cook::cook()
 {
-    std::cout << std::this_thread::get_id() << " start cooking" << std::endl; // TODO: Remove
+    thread::Print() << std::this_thread::get_id() << " start cooking" << std::endl; // TODO: Remove
 
     while ((this->_state == State::Working) || !this->_pizzas.empty()) {
         if (this->_pizzas.empty())
@@ -48,17 +49,19 @@ void kitchen::Cook::cook()
 
         std::this_thread::sleep_for(std::chrono::seconds(pizza.getRecipe().getCookTime()));
 
+        this->_kitchen.ready(pizza);
         this->_pizzas.pop();
-        this->ready(pizza);
 
-        std::cout << std::this_thread::get_id() << " finished a(n) " << pizza.getRecipe().getType() << std::endl; // TODO: Remove
-        std::cout << std::this_thread::get_id() << "'s pizza queue size: " << this->_pizzas.size() << std::endl; // TODO: Remove
+        thread::Print() << std::this_thread::get_id() << " finished a(n) " << pizza.getRecipe().getType()
+                        << std::endl; // TODO: Remove
+        thread::Print() << std::this_thread::get_id() << "'s pizza queue size: " << this->_pizzas.size()
+                        << std::endl; // TODO: Remove
     }
 
-    std::cout << std::this_thread::get_id() << " end cooking" << std::endl; // TODO: Remove
+    thread::Print() << std::this_thread::get_id() << " end cooking" << std::endl; // TODO: Remove
 }
 
-bool kitchen::Cook::handle(const pizza::Pizza& pizza)
+bool kitchen::Cook::handle(pizza::Pizza pizza)
 {
     if (this->_state != State::Working)
         return false;
@@ -70,28 +73,20 @@ bool kitchen::Cook::handle(const pizza::Pizza& pizza)
     return true;
 }
 
-void kitchen::Cook::ready(const pizza::Pizza& pizza)
-{
-    this->_kitchen.ready(pizza);
-}
-
 void kitchen::Cook::status() const
 {
-    std::cout << "Cook n°" << this->_thread.get_id() << ":" << std::endl;
-    std::cout << "Action: ";
+    thread::Print print;
+
+    print << "Cook n°" << this->_thread.get_id() << ":" << std::endl;
+    print << "Action: ";
 
     if (this->_pizzas.empty()) {
-        std::cout << "Waiting for a pizza";
+        print << "Waiting for a pizza";
     } else {
         auto& pizza = this->_pizzas.front();
 
-        std::cout << "Cooking a(n) " << pizza.getSize() << " " << pizza.getRecipe().getType();
+        print << "Cooking a(n) " << pizza.getSize() << " " << pizza.getRecipe().getType();
     }
 
-    std::cout << std::endl;
-}
-
-void kitchen::Cook::wait()
-{
-    this->_thread.join();
+    print << std::endl;
 }

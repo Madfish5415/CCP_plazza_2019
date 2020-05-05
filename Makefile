@@ -40,6 +40,7 @@ PROJ_SRC			=		kitchen/Cook.cpp			\
 							reception/Manager.cpp		\
 							reception/Parser.cpp		\
 							reception/Reception.cpp		\
+							thread/Print.cpp			\
 
 TEST_SRC			=
 

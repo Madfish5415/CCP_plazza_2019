@@ -19,8 +19,9 @@ kitchen::Kitchen::Kitchen(unsigned int cooks, const std::map<std::string, unsign
         this->_cooks.emplace_back(*this);
 }
 
-kitchen::Kitchen::~Kitchen() {
-    std::cout << process::This::getId() << " Kitchen::~Kitchen()" << std::endl; // TODO: Remove
+kitchen::Kitchen::~Kitchen()
+{
+    thread::Print() << process::This::getId() << " Kitchen::~Kitchen()" << std::endl; // TODO: Remove
 
     this->_cooks.clear();
 
@@ -56,20 +57,22 @@ bool kitchen::Kitchen::handle(const pizza::Pizza& pizza)
     return this->_cooks.front().handle(pizza);
 }
 
-void kitchen::Kitchen::ready(const pizza::Pizza& pizza)
+void kitchen::Kitchen::ready(pizza::Pizza pizza)
 {
     this->send(pizza);
 }
 
 void kitchen::Kitchen::status() const
 {
-    std::cout << "Kitchen n°" << process::This::getId() << ":" << std::endl;
-    std::cout << "Cooks:" << std::endl;
+    thread::Print print;
+
+    print << "Kitchen n°" << process::This::getId() << ":" << std::endl;
+    print << "Cooks:" << std::endl;
 
     for (const auto& cook : this->_cooks)
         cook.status();
 
-    std::cout << "Storage:" << std::endl;
+    print << "Storage:" << std::endl;
     this->_storage.status();
 }
 

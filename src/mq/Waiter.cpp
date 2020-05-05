@@ -10,6 +10,9 @@
 #include <iostream>
 #include <regex>
 
+#include "../process/Process.hpp"
+#include "../thread/Print.hpp"
+
 mq::Waiter::Waiter() = default;
 
 mq::Waiter::Waiter(const std::string& receiver, const std::string& sender, int flag)
@@ -30,7 +33,7 @@ std::vector<std::string> mq::Waiter::receiveMessage(unsigned int* priority)
 {
     static int count = 0;
 
-    std::cout << count << ") receiver: " << this->_receiver.getName() << std::endl; // TODO: Remove
+    thread::Print() << count << ") receiver: " << this->_receiver.getName() << std::endl; // TODO: Remove
 
     std::string string = this->_receiver.receive(priority);
     std::string find = string;
@@ -44,7 +47,7 @@ std::vector<std::string> mq::Waiter::receiveMessage(unsigned int* priority)
         find = match.suffix();
     }
 
-    std::cout << count << ") received: " << string << std::endl; // TODO: Remove
+    thread::Print() << count << ") received: " << string << std::endl; // TODO: Remove
     count++;
 
     return message;
@@ -54,7 +57,7 @@ void mq::Waiter::sendMessage(const std::vector<std::string>& message, unsigned i
 {
     static int count = 0;
 
-    std::cout << count << ") sender: " << this->_sender.getName() << std::endl; // TODO: Remove
+    thread::Print() << count << ") sender: " << this->_sender.getName() << std::endl; // TODO: Remove
 
     std::string string;
 
@@ -66,6 +69,6 @@ void mq::Waiter::sendMessage(const std::vector<std::string>& message, unsigned i
 
     this->_sender.send(string, priority);
 
-    std::cout << count << ") sent: " << string << std::endl; // TODO: Remove
+    thread::Print() << count << ") sent: " << string << std::endl; // TODO: Remove
     count++;
 }

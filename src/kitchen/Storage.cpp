@@ -9,6 +9,8 @@
 
 #include <iostream>
 
+#include "../thread/Print.hpp"
+
 kitchen::Storage::Storage(const std::map<std::string, unsigned int>& ingredients) : _ingredients(ingredients)
 {
 }
@@ -47,6 +49,8 @@ void kitchen::Storage::removeIngredients(const std::map<std::string, unsigned in
 
 void kitchen::Storage::status() const
 {
+    thread::Print print;
+
     for (const auto& ingredient : this->_ingredients)
-        std::cout << "- " << ingredient.first << " x" << ingredient.second << std::endl;
+        print << "- " << ingredient.first << " x" << ingredient.second << std::endl;
 }
