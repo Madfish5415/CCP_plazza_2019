@@ -63,8 +63,13 @@ void reception::Manager::updateKitchens()
     auto i = this->_kitchens.begin();
 
     for (; i != this->_kitchens.end();) {
+        if (i->getPizzas()) {
+            i++;
+            continue;
+        }
+
         auto now = std::chrono::system_clock::now();
-        std::chrono::duration<double> elapsed = i->getLast() - now;
+        std::chrono::duration<double> elapsed = now - i->getLast();
 
         if (elapsed.count() >= MAX_KITCHEN_WAITING) {
             thread::Print() << "[MANAGER] Destroy a kitchen " << std::endl; // TODO: Remove
