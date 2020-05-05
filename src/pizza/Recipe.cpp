@@ -9,8 +9,6 @@
 
 #include <regex>
 
-#include "../thread/Print.hpp"
-
 pizza::Recipe::Recipe() : _cookTime(0)
 {
 }

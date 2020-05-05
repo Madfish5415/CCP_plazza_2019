@@ -10,13 +10,29 @@
 
 #include "../kitchen/Kitchen.hpp"
 #include "../pizza/Pizza.hpp"
+#include "../process/Kitchen.hpp"
 
 namespace reception {
 
 class Manager {
+  private:
+    unsigned int _cooks;
+    std::map<std::string, unsigned int> _ingredients;
+    std::list<process::Kitchen> _kitchens;
+
   public:
-    Manager();
+    Manager(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients);
     ~Manager();
+
+  public:
+    void handle(const pizza::Pizza& pizza);
+    void manage();
+    void status();
+
+  private:
+    void createKitchen();
+    void updateKitchens();
+    void receivePizza();
 };
 
 } // namespace reception

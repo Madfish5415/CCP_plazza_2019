@@ -9,16 +9,15 @@
 
 #include <iostream>
 
-process::Kitchen::Kitchen(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients) : _cooks(cooks)
+#include "../def/def.hpp"
+#include "../thread/Print.hpp"
+
+process::Kitchen::Kitchen(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients,
+    const std::string& mq1, const std::string& mq2)
+    : _cooks(cooks), _waiter(mq1, mq2, O_CREAT)
 {
-    (void)(ingredients);
-
-    std::string mario = "/mario";
-    std::string luigi = "/luigi";
-
-    this->_waiter = mq::Waiter(mario, luigi, O_CREAT);
-    this->_process = Process([&cooks, &ingredients, &mario, &luigi]() {
-        kitchen::Kitchen k(cooks, ingredients, luigi, mario);
+    this->_process = Process([&cooks, &ingredients, &mq1, &mq2]() {
+        kitchen::Kitchen k(cooks, ingredients, mq2, mq1);
 
         k.cook();
     });
@@ -32,9 +31,24 @@ process::Kitchen::~Kitchen()
     this->_waiter.close();
 }
 
-int process::Kitchen::getPizzas() const
+unsigned int process::Kitchen::getPizzas() const
 {
     return this->_pizzas;
+}
+
+std::chrono::time_point<std::chrono::system_clock> process::Kitchen::getLast() const
+{
+    return this->_last;
+}
+
+bool process::Kitchen::handle(const pizza::Pizza& pizza)
+{
+    if (this->_pizzas >= this->_cooks * MAX_PIZZAS)
+        return false;
+
+    this->send(pizza);
+
+    return true;
 }
 
 void process::Kitchen::status()
@@ -46,36 +60,22 @@ pizza::Pizza process::Kitchen::receive()
 {
     std::vector<std::string> message = this->_waiter.receiveMessage(nullptr);
 
-    if (message[0] != "PIZZA")
-        throw std::exception(); // TODO: Custom Error class
+    if (message[0] == "PIZZA") {
+        pizza::Pizza pizza;
 
-    pizza::Pizza pizza;
+        pizza.unpack(message[1]);
 
-    pizza.unpack(message[1]);
-    this->_pizzas -= 1;
+        this->_pizzas -= 1;
+        this->_last = std::chrono::system_clock::now();
 
-    return pizza;
+        return pizza;
+    }
+
+    throw std::exception(); // TODO: Temporary, for testing only
 }
 
 void process::Kitchen::send(const pizza::Pizza& pizza)
 {
     this->_waiter.sendMessage({"PIZZA", pizza.pack()}, 1);
     this->_pizzas += 1;
-}
-
-void process::Kitchen::run()
-{
-    int counter = 0;
-
-    while (counter != 3) {
-        pizza::Pizza pizza;
-
-        try {
-            pizza = this->receive();
-        } catch (std::exception& e) {
-            continue;
-        }
-
-        counter++;
-    }
 }

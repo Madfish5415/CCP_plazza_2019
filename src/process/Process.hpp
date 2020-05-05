@@ -15,8 +15,6 @@
 #include <functional>
 #include <stdexcept>
 
-#include "../thread/Print.hpp"
-
 namespace process {
 
 class This {

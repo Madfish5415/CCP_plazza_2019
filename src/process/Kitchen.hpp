@@ -19,23 +19,26 @@ namespace process {
 
 class Kitchen {
   private:
+    unsigned int _cooks;
     mq::Waiter _waiter;
     Process _process;
-    int _cooks;
-    int _pizzas = 0;
+    unsigned int _pizzas = 0;
+    std::chrono::time_point<std::chrono::system_clock> _last;
 
   public:
-    Kitchen(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients);
+    Kitchen(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients, const std::string& mq1,
+        const std::string& mq2);
     ~Kitchen();
 
   public:
-    int getPizzas() const;
+    unsigned int getPizzas() const;
+    std::chrono::time_point<std::chrono::system_clock> getLast() const;
 
   public:
+    bool handle(const pizza::Pizza& pizza);
     pizza::Pizza receive();
     void send(const pizza::Pizza& pizza);
     void status();
-    void run();
 };
 
 } // namespace process
