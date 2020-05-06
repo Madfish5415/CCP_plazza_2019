@@ -1,287 +1,268 @@
 @startuml
 
-namespace communication {
-
-interface IWaiter {
-    + virtual ~IWaiter() = 0;
-
-    + key_t getKey() const = 0;
-    + std::vector<std::string>& getMessages() const = 0;
-
-    + void fetch() = 0;
-    + void send(const std::string& message) = 0;
-    + std::string pop() = 0;
-}
-
-class Waiter {
-    - int _key;
-    - std::vector<std::string> _messages;
-
-    + Waiter();
-    + Waiter(int key);
-    + ~Waiter() override;
-
-    + int getKey() const override;
-    + std::vector<std::string>& getMessages() const override;
-
-    + void fetch() override;
-    + void send(const std::string& message) override;
-    + std::string pop() override;
-}
-IWaiter <|-- Waiter
-
-}
-
 namespace kitchen {
 
-enum CookState {
-    CookWaiting,
-    CookCooking
+enum CState {
+    Working,
+    Finished
 }
-ICook +-- CookState
-
-interface ICook {
-    + virtual ~ICook() = 0;
-
-    + std::list<std::shared_ptr<IPizza>>& getPizzas() const = 0;
-    + CookState getState() const = 0;
-    + std::thread& getThread() const = 0;
-
-    + bool handle(std::shared_ptr<IPizza> pizza) = 0;
-    + void cook() = 0;
-}
-
-enum KitchenState {
-    KitchenWaiting,
-    KitchenCooking
-}
-IKitchen +-- KitchenState
-
-interface IKitchen {
-    + virtual ~IKitchen() = 0;
-
-    + std::list<ICook>& getCooks() const override;
-    + KitchenState getState() const override;
-    + Storage getStorage() const override;
-    + Process getProcess() const override;
-    + Waiter getWaiter() const override;
-
-    + void cook();
-    + void ready(std::shared_ptr<IPizza> pizza) override;
-}
-
-interface IStorage {
-    + virtual ~IStorage() = 0;
-
-    + std::map<std::string, int>& getIngredients() const = 0;
-
-    + void addIngredients(const std::map<std::string, int>& ingredients) override;
-    + bool hasIngredients(const std::map<std::string, int>& ingredients) const override;
-    + void removeIngredient(const std::map<std::string, int>& ingredients) override;
-}
+Cook +-- CState
 
 class Cook {
     - Kitchen &_kitchen;
-    - int _maxPizzas;
-    - bool _working;
-    - CookState _state;
-    - std::list<std::shared_ptr<IPizza>> _pizzas;
+    - State _state;
     - std::thread _thread;
+    - std::list<std::shared_ptr<pizza::Pizza>> _pizzas;
 
-    + Cook(Kitchen& kitchen, int maxPizzas);
+    + Cook(Kitchen& kitchen);
     + ~Cook() override;
 
-    + std::list<std::shared_ptr<IPizza>>& getPizzas() const override;
-    + CookState getState() const override;
-    + std::thread& getThread() const override;
+    + std::list<std::shared_ptr<pizza::Pizza>>& getPizzas() const;
+    + State getState() const;
+    + void setState(State state);
 
-    + bool handle(std::shared_ptr<IPizza> pizza) override;
+    + bool handle(const std::shared_ptr<pizza::Pizza> pizza);
+    + void status() const;
 
     - void cook() override;
 }
-ICook <|-- Cook
+
+enum KState {
+    Working,
+    Finished
+}
+Kitchen +-- KState
+
+class KSettings {
+    + unsigned int cooks
+    + unsigned int maxPizzasPerCook
+    + unsigned float multiplier
+}
+Kitchen +-- KSettings
 
 class Kitchen {
+    - Settings _settings;
     - Storage _storage;
-    - KitchenState _state;
-    - std::list<ICook> _cooks;
-    - Process _process;
     - Waiter _waiter;
+    - State _state;
+    - std::list<ICook> _cooks;
 
-    + Kitchen(int maxCooks, int maxPizzasPerCook);
-    + ~Kitchen() override;
+    + Kitchen(const Settings& description, const std::map<std::string, unsigned int>& ingredients, const std::string& receiver, const std::string& sender);
+    + ~Kitchen();
 
-    + std::list<ICook>& getCooks() const override;
-    + KitchenState getState() const override;
-    + Storage getStorage() const override;
-    + Waiter getWaiter() const override;
+    + Settings& getSettings() const;
+    + Storage& getStorage() const;
 
-    + void cook();
-    + void ready(std::shared_ptr<IPizza> pizza) override;
+    + void ready(const std::shared_ptr<pizza::Pizza> pizza);
+    + void status() const;
+
+    - void cook();
+    - void give(const std::shared_ptr<pizza::Pizza> pizza);
 }
-IKitchen <|-- Kitchen
 
 class Storage {
-    - std::map<std::string, int> _ingredients;
+    - std::map<std::string, unsigned int> _ingredients;
     - std::mutex _mutex;
 
-    + Storage();
+    + Storage(const std::map<std::string, unsigned int>& ingredients);
     + ~Storage() override;
 
-    + std::map<std::string, int>& getIngredients() const override;
-
-    + void addIngredients(const std::map<std::string, int>& ingredients) override;
-    + bool hasIngredients(const std::map<std::string, int>& ingredients) const override;
-    + void removeIngredient(const std::map<std::string, int>& ingredients) override;
+    + void add(const std::map<std::string, int>& ingredients);
+    + bool has(const std::map<std::string, int>& ingredients) const;
+    + void remove(const std::map<std::string, int>& ingredients);
 }
-IStorage <|-- Storage
+
+}
+
+namespace mq {
+
+class POSIX {
+    - std::string _name;
+    - int _flags;
+    - attr atrr;
+    - int _fd;
+
+    + POSIX();
+    + POSIX(std::string name, int flags);
+    + POSIX(std::string name, int flags, int mode, const attr& attr);
+    + ~POSIX();
+
+    + std::string getName();
+    + attr getAttr();
+
+    + void close();
+    + std::string receive(unsigned int *priority);
+    + void send(const std::string& message, unsigned int priority);
+}
+
+class Waiter {
+    - POSIX _receiver;
+    - POSIX _sender;
+
+    + Waiter();
+    + Waiter(const std::string& receiver, const std::string& sender);
+    + Waiter(const std::string& receiver, const std::string& sender, int flags);
+    + ~Waiter();
+
+    + void close();
+    + std::vector<std::string> receive(unsigned int *priority);
+    + void send(const std::vector<std::string>& message, unsigned int priority);
+}
 
 }
 
 namespace pizza {
 
 class Factory {
-    + using Constructor = std::function<std::shared_ptr<IPizza>()>;
-
-    + static std::shared_ptr<IPizza> Create(PizzaType type, PizzaSize size);
-    + static void Register(PizzaType type, Constructor constructor);
-
-    - static std::map<PizzaType, Constructor> constructors();
+    + Factory();
+    + ~Factory();
 }
 
-enum PizzaSize {
-    S = 1,
-    M = 2,
-    L = 4,
-    XL = 8,
-    XXL = 16
-}
-IPizza +-- PizzaSize
+class Pizza {
+    - Recipe _recipe;
+    - std::string _size;
+    - int _order;
 
-enum PizzaStatus {
-    UNCOOKED,
-    COOKED
-}
-IPizza +-- PizzaStatus
+    + Pizza();
+    + Pizza(Recipe recipe, const std::string& size, int order);
+    + ~Pizza();
 
-enum PizzaType {
-    Regina = 1,
-    Margarita = 2,
-    Americana = 4,
-    Fantasia = 8
-}
-IPizza +-- PizzaType
+    + const Recipe& getRecipe() const;
+    + std::string getSize() const;
+    + int getOrder();
 
-interface IPizza {
-    + virtual ~IPizza() = 0;
-
-    + int getCookTime() const = 0;
-    + std::map<std::string, int>& getIngredients() const = 0;
-    + PizzaSize getSize() const = 0;
-    + void setSize(PizzaSize size) = 0;
-    + PizzaStatus getStatus() const = 0;
-    + PizzaType getType() const = 0;
-
-    + std::string pack() const = 0;
-    + void unpack(const std::string& pack) const = 0;
+    + std::string pack() const;
+    + void unpack(const std::string& pack);
 }
 
-abstract Pizza {
-    - int _cookTime;
-    - std::map<std::string, int> _ingredients;
-    - PizzaSize _size;
-    - PizzaStatus _status;
-    - PizzaType _type;
+class Recipe {
+    + std::string _type;
+    + std::map<std::string, unsigned int> _ingredients;
+    + int _cookTime;
 
-    + APizza(PizzaType type, int cookTime, std::map<std::string, int>& ingredients);
-    + ~APizza() override = 0;
+    + Recipe();
+    + Recipe(const std::string& type, const std::map<std::string, unsigned int>& ingredients, int cookTime);
+    + ~Recipe();
 
-    + int getCookTime() const override;
-    + std::map<std::string, int>& getIngredients() override;
-    + PizzaSize getSize() const override;
-    + void setSize(PizzaSize size) override;
-    + PizzaStatus getStatus() const override;
-    + PizzaType getType() const override;
+    + std::string getType() const;
+    + const std::map<std::string, unsigned int>& getIngredients() const;
+    + int getCookTime() const;
 
-    + std::string pack() const override;
-    + void unpack(const std::string& pack) const override;
+    + std::string pack() const;
+    + void unpack(const std::string& pack);
 }
-IPizza <|-- Pizza
+
+class Recipes {
+    + std::map<std::string, Recipe> _recipes;
+
+    + Recipes();
+    + ~Recipes();
+
+    + bool has(const std::string& recipe);
+
+    + void load(const std::string& path);
+}
+
+class Sizes {
+    + std::set<std::string> _ingredients;
+
+    + Sizes();
+    + ~Sizes();
+
+    + bool has(const std::string& size) const;
+
+    + void load(const std::string& path);
+}
 
 }
 
 namespace process {
-    class Process {
-        - int _pid;
 
-        + template<typename Function, typename T, typename... TArgs> Process(Function&& function, T&& instance, TArgs&&... args, std::enable_if_t<std::is_member_function_pointer<Function>::value, int> = 0)
-        + template<typename Function, typename... TArgs> explicit Process(Function&& function, TArgs&&... args)
-        + ~Process()
+class Kitchen {
+    - unsigned int _cooks;
+    - Waiter _waiter;
+    - Process _process;
+    - unsigned int _pizzas;
+    - std::chrono _last;
 
-        + int get_id() const;
+    + Kitchen(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients, const std::string& receiver, const std::string& sender);
+    + ~Kitchen();
 
-        + void join();
+    + unsigned int getPizzas() const;
+    + std::chrono getLast() const;
 
-        - void for_sleep(int seconds);
-        - void for_usleep(int useconds);
-    }
+    + bool handle(const pizza::Pizza& pizza);
+    + void status();
+}
+
+class This {
+    + static int getId();
+
+    + template<typename R, typename P> static void sleepFor(std::chrono::duration<R, P> time);
+}
+
+class Process {
+    - int _id;
+    - int _status;
+
+    + Process();
+    + template<typename Callable, typename... Args> explicit Process(Callable&& callable, Args&&... args);
+    + ~Process();
+
+    + int getId() const;
+    + int getStatus() const;
+
+    + void join();
+}
+
 }
 
 namespace reception {
 
-interface IOrder {
-    + virtual ~IOrder() = 0;
-
-    + std::list<std::shared_ptr<IPizza>>& getPizzas() const = 0;
-
-    + void ready(IPizza& pizza) = 0;
+class Input {
+    + static void clear();
+    + static std::string get();
 }
 
-interface IReception {
-    + virtual ~IReception() = 0;
+class Manager {
+    - std::map<std::string, unsigned int> _ingredients;
+    - std::list<Kitchen> _kitchens;
+    - std::map<unsigned int, Order> _orders;
+    - std::thread _thread;
 
-    + std::string getInput() const = 0;
-    + std::list<IOrder>& getOrders() const = 0;
+    + Manager(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients);
+    + ~Manager();
 
-    + void ready(IOrder& order) = 0;
+    + void handle(const Order& order);
+    + void manage();
+    + void status();
+
+    - void createKitchen()
+    - void updateKitchens();
+    - void updateOrders();
 }
 
 class Order {
-    - std::list<std::shared_ptr<IPizza>> _pizzas;
+    - std::queue<pizza::Pizza> pending;
+    - std::queue<pizza::Pizza> ready;
 
     + Order();
-    + ~Order() override;
-
-    + std::list<std::shared_ptr<IPizza>>& getPizzas() const override;
-
-    + void ready(IPizza& pizza) const override;
+    + ~Order();
 }
-IOrder <|-- Order
 
 class Parser {
-    - std::vector<std::tuple<std::string, std::string, std::string, unsigned int>> _pizzaList;
-    - std::string _command;
-
-    + Parser(const std::string& formatted);
+    + explicit Parser(const std::string& command);
     + ~Parser();
 
-    + std::shared_ptr<IOrder> parse();
+    + Order parse();
 }
 
-class Reception {
-    - std::list<Kitchen> _kitchens;
-    - std::list<IOrder> _orders;
-    - Waiter _waiter;
-
+class Reception() {
     + Reception();
-    + ~Reception() override;
+    + ~Reception();
 
-    + std::string getInput() const override;
-    + std::list<IOrder>& getOrders() const override;
-
-    + void ready(IOrder& order) override;
+    + void run(float multiplier, unsigned int cooks, unsigned int interval);
 }
-IReception <|-- Reception
 
 }
 
