@@ -21,7 +21,7 @@ RM					=		rm -rf
 
 LDLIBS				=		-lpthread -lrt
 
-MAIN_SRC			=		main.cpp
+MAIN_SRC			=		stress_test.cpp
 
 PROJ_SRC			=		kitchen/Cook.cpp			\
 							kitchen/Kitchen.cpp			\

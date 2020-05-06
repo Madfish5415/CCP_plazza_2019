@@ -55,7 +55,7 @@ void reception::Manager::createKitchen()
 
     this->_kitchens.emplace_back(this->_cooks, this->_ingredients, mq1, mq2);
 
-    kitchenID++;
+    kitchenID+=2;
 }
 
 void reception::Manager::updateKitchens()

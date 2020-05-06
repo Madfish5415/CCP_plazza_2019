@@ -14,6 +14,8 @@
 #include <stdexcept>
 #include <utility>
 
+#include "../thread/Print.hpp"
+
 mq::POSIX::POSIX() = default;
 
 mq::POSIX::POSIX(std::string name, int flags) : _name(std::move(name)), _flags(flags)
@@ -61,6 +63,8 @@ std::string mq::POSIX::receive(unsigned int* priority)
 
 void mq::POSIX::send(const std::string& message, unsigned int priority)
 {
+    if (this->_fd == -1)
+        thread::Print() << "\n\n====== ERROR File descriptor = -1 ====== \n\n" << std::endl;
     if (mq_send(this->_fd, message.c_str(), message.length(), priority) == -1)
         throw std::runtime_error(strerror(errno));
 }
