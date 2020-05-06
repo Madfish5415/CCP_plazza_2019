@@ -9,22 +9,20 @@ enum CState {
 Cook +-- CState
 
 class Cook {
-    - Kitchen &_kitchen;
+    - Kitchen& _kitchen;
     - State _state;
     - std::thread _thread;
-    - std::list<std::shared_ptr<pizza::Pizza>> _pizzas;
+    - std::queue<std::shared_ptr<pizza::Pizza>> _pizzas;
 
-    + Cook(Kitchen& kitchen);
-    + ~Cook() override;
+    + Cook(const Kitchen& kitchen);
+    + ~Cook();
 
-    + std::list<std::shared_ptr<pizza::Pizza>>& getPizzas() const;
-    + State getState() const;
-    + void setState(State state);
+    + std::queue<std::shared_ptr<pizza::Pizza>>& getPizzas() const;
 
     + bool handle(const std::shared_ptr<pizza::Pizza> pizza);
     + void status() const;
 
-    - void cook() override;
+    - void cook();
 }
 
 enum KState {
@@ -43,29 +41,35 @@ Kitchen +-- KSettings
 class Kitchen {
     - Settings _settings;
     - Storage _storage;
-    - Waiter _waiter;
+    - mq::Waiter _waiter;
     - State _state;
-    - std::list<ICook> _cooks;
+    - std::list<Cook> _cooks;
 
-    + Kitchen(const Settings& description, const std::map<std::string, unsigned int>& ingredients, const std::string& receiver, const std::string& sender);
+    + Kitchen(const Settings& settings, const std::map<std::string, unsigned int>& ingredients, const std::string& receiver, const std::string& sender);
     + ~Kitchen();
 
-    + Settings& getSettings() const;
+    + Settings& getSettings();
     + Storage& getStorage() const;
 
     + void ready(const std::shared_ptr<pizza::Pizza> pizza);
     + void status() const;
 
     - void cook();
-    - void give(const std::shared_ptr<pizza::Pizza> pizza);
 }
+
+class Settings {
+    + unsigned int cooks;
+    + unsigned int maxPerCook;
+    + unsigned int fillInterval;
+    + float timeMultiplier;
+};
 
 class Storage {
     - std::map<std::string, unsigned int> _ingredients;
     - std::mutex _mutex;
 
     + Storage(const std::map<std::string, unsigned int>& ingredients);
-    + ~Storage() override;
+    + ~Storage();
 
     + void add(const std::map<std::string, int>& ingredients);
     + bool has(const std::map<std::string, int>& ingredients) const;
@@ -76,28 +80,41 @@ class Storage {
 
 namespace mq {
 
+class Attributes {
+    + long int flags;
+    + long int maxMsg;
+    + long int maxMsgSize;
+    + long int curMsgInQueue;
+    + long int _internal[4];
+}
+POSIX +-- Attributes
+
 class POSIX {
     - std::string _name;
     - int _flags;
-    - attr atrr;
+    - int _mode;
+    - Attributes _attributes;
     - int _fd;
 
     + POSIX();
     + POSIX(std::string name, int flags);
-    + POSIX(std::string name, int flags, int mode, const attr& attr);
+    + POSIX(std::string name, int flags, int mode, const Attributes& attr);
     + ~POSIX();
 
-    + std::string getName();
-    + attr getAttr();
+    + std::string getName() const;
+    + int getFlags() const;
+    + int getMode() const;
+    + Attributes& getAttributes() const;
 
     + void close();
-    + std::string receive(unsigned int *priority);
+    + std::string receive(unsigned int* priority);
     + void send(const std::string& message, unsigned int priority);
 }
 
 class Waiter {
     - POSIX _receiver;
     - POSIX _sender;
+    - std::queue<std::string> _messages;
 
     + Waiter();
     + Waiter(const std::string& receiver, const std::string& sender);
@@ -105,8 +122,9 @@ class Waiter {
     + ~Waiter();
 
     + void close();
-    + std::vector<std::string> receive(unsigned int *priority);
+    + std::vector<std::string> receive(unsigned int* priority);
     + void send(const std::vector<std::string>& message, unsigned int priority);
+    + void update();
 }
 
 }
@@ -114,64 +132,63 @@ class Waiter {
 namespace pizza {
 
 class Factory {
-    + Factory();
-    + ~Factory();
+    + static std::shared_ptr<Pizza> create(const std::string& recipe, const std::string& size);
 }
+
+class Ingredients {
+    + static std::set<std::string>& get();
+
+    - static std::set<std::string>& _ingredients;
+};
 
 class Pizza {
     - Recipe _recipe;
     - std::string _size;
-    - int _order;
+    - unsigned int _order;
 
     + Pizza();
-    + Pizza(Recipe recipe, const std::string& size, int order);
+    + Pizza(const Recipe& recipe, const std::string& size, unsigned int order);
     + ~Pizza();
 
     + const Recipe& getRecipe() const;
     + std::string getSize() const;
-    + int getOrder();
+    + unsigned int getOrder() const;
 
     + std::string pack() const;
     + void unpack(const std::string& pack);
 }
 
 class Recipe {
-    + std::string _type;
-    + std::map<std::string, unsigned int> _ingredients;
-    + int _cookTime;
+    - std::string _type;
+    - std::map<std::string, unsigned int> _ingredients;
+    - unsigned int _cookTime;
 
     + Recipe();
-    + Recipe(const std::string& type, const std::map<std::string, unsigned int>& ingredients, int cookTime);
+    + Recipe(const std::string& _type, const std::map<std::string, unsigned int>& ingredients, unsigned int cookTime);
     + ~Recipe();
 
     + std::string getType() const;
     + const std::map<std::string, unsigned int>& getIngredients() const;
-    + int getCookTime() const;
+    + unsigned int getCookTime() const;
 
     + std::string pack() const;
     + void unpack(const std::string& pack);
 }
 
 class Recipes {
-    + std::map<std::string, Recipe> _recipes;
+    + static std::map<std::string, Recipe>& get();
 
-    + Recipes();
-    + ~Recipes();
+    + static void load(const std::string& path);
 
-    + bool has(const std::string& recipe);
-
-    + void load(const std::string& path);
+    - static std::map<std::string, Recipe>& _recipes;
 }
 
 class Sizes {
-    + std::set<std::string> _ingredients;
+    + static std::set<std::string>& get();
 
-    + Sizes();
-    + ~Sizes();
+    + static void load(const std::string& size);
 
-    + bool has(const std::string& size) const;
-
-    + void load(const std::string& path);
+    - static std::set<std::string>& _sizes;
 }
 
 }
@@ -179,20 +196,20 @@ class Sizes {
 namespace process {
 
 class Kitchen {
-    - unsigned int _cooks;
-    - Waiter _waiter;
+    - kitchen::Settings _settings;
+    - mq::Waiter _waiter;
     - Process _process;
-    - unsigned int _pizzas;
-    - std::chrono _last;
+    - unsigned int _pending;
+    - std::chrono::time_point<std::chrono::system_clock> _last;
 
-    + Kitchen(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients, const std::string& receiver, const std::string& sender);
+    + Kitchen(const kitchen::Settings& settings, const std::map<std::string, unsigned int>& ingredients, const std::string& receiver, const std::string& sender);
     + ~Kitchen();
 
-    + unsigned int getPizzas() const;
-    + std::chrono getLast() const;
+    + unsigned int getPending() const;
+    + std::chrono::time_point<std::chrono::system_clock> getLast() const;
 
-    + bool handle(const pizza::Pizza& pizza);
-    + void status();
+    + void handle(const std::shared_ptr<pizza::Pizza> pizza);
+    + void status() const;
 }
 
 class This {
@@ -206,7 +223,7 @@ class Process {
     - int _status;
 
     + Process();
-    + template<typename Callable, typename... Args> explicit Process(Callable&& callable, Args&&... args);
+    + template<typename T, typename... TArgs> explicit Process(T&& callable, TArgs&&... args);
     + ~Process();
 
     + int getId() const;
@@ -225,43 +242,54 @@ class Input {
 }
 
 class Manager {
+    - kitchen::Settings _settings;
     - std::map<std::string, unsigned int> _ingredients;
-    - std::list<Kitchen> _kitchens;
+    - std::list<kitchen::Kitchen> _kitchens;
     - std::map<unsigned int, Order> _orders;
     - std::thread _thread;
 
-    + Manager(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients);
+    + Manager(const kitchen::Settings& settings, const std::map<std::string, unsigned int>& ingredients);
     + ~Manager();
 
     + void handle(const Order& order);
-    + void manage();
-    + void status();
+    + void status() const;
 
-    - void createKitchen()
-    - void updateKitchens();
-    - void updateOrders();
+    + void createKitchen();
+    + void updateKitchens();
+    + void updateOrders();
+
+    - void manage();
 }
 
 class Order {
-    - std::queue<pizza::Pizza> pending;
-    - std::queue<pizza::Pizza> ready;
-
-    + Order();
-    + ~Order();
+    + std::queue<std::shared_ptr<pizza::Pizza>> pizzas;
+    + unsigned int ready;
 }
 
 class Parser {
-    + explicit Parser(const std::string& command);
-    + ~Parser();
-
-    + Order parse();
+    + static std::shared_ptr<Order> parse(const std::string& command);
 }
 
 class Reception() {
+    + Reception(const kitchen::Settings& settings);
     + Reception();
-    + ~Reception();
 
-    + void run(float multiplier, unsigned int cooks, unsigned int interval);
+    + void run();
+}
+
+}
+
+namespace thread {
+
+class Print {
+    - static std::recursive_mutex _mutex;
+    - std::unique_lock<std::recursive_mutex> _lock;
+
+    + Print();
+    + ~Print();
+
+    + template<typename T> Print& operator<<(const T& t);
+    + Print& operator<<(std::ostream& (*os)(std::ostream&));
 }
 
 }
