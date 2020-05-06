@@ -10,7 +10,7 @@ TEST_NAME			=		tests/unit_tests
 TEST_SH_NAME		=		tests/tests.sh
 
 COV_DIR				=		obj
-INCL_DIR			=		include
+INCL_DIR			=		src
 OBJ_DIR				=		obj
 SRC_DIR				=		src
 TEST_DIR			=		tests
@@ -21,12 +21,33 @@ RM					=		rm -rf
 
 MAIN_SRC			=		main.cpp
 
-PROJ_SRC			=
+PROJ_SRC			=		kitchen/Cook.cpp					\
+							kitchen/Kitchen.cpp					\
+							kitchen/Settings.cpp				\
+							kitchen/Storage.cpp					\
+							mq/POSIX.cpp						\
+							mq/Waiter.cpp						\
+							pizza/Factory.cpp					\
+							pizza/Ingredients.cpp				\
+							pizza/Pizza.cpp						\
+							pizza/Recipe.cpp					\
+							pizza/Recipes.cpp					\
+							pizza/Sizes.cpp						\
+							process/Kitchen.cpp					\
+							process/Process.cpp					\
+							reception/Input.cpp					\
+							reception/Manager.cpp				\
+							reception/Order.cpp					\
+							reception/Parser.cpp				\
+							reception/Reception.cpp				\
+							thread/Print.cpp					\
 
 TEST_SRC			=
 
-CFLAGS				+=		-I $(INCL_DIR)
+CFLAGS				+=		-I $(INCL_DIR) -std=c++17
 CFLAGS				+=		-W -Wall -Wextra -Werror
+
+LDLIBS				=		-lpthread -lrt
 
 MAIN_OBJ			=		$(MAIN_SRC:%.cpp=$(OBJ_DIR)/%.o)
 
