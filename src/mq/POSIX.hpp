@@ -14,9 +14,12 @@ namespace mq {
 
 class POSIX {
   public:
-    class Attributes {
-      public:
-
+    struct Attributes {
+        long int flags {};
+        long int maxMsg {};
+        long int maxMsgSize {};
+        long int curMsgInQueue {};
+        long int _internal[4] {};
     };
 
   private:
@@ -40,7 +43,7 @@ class POSIX {
 
   public:
     void close();
-    std::string receive(unsigned int *priority);
+    std::string receive(unsigned int* priority);
     void send(const std::string& message, unsigned int priority);
 };
 

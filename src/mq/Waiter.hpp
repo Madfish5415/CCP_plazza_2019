@@ -30,7 +30,7 @@ class Waiter {
 
   public:
     void close();
-    std::vector<std::string> receive(unsigned int *priority);
+    std::vector<std::string> receive(unsigned int* priority);
     void send(const std::vector<std::string>& message, unsigned int priority);
     void update();
 };

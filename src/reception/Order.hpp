@@ -18,7 +18,7 @@ namespace reception {
 class Order {
   public:
     std::queue<std::shared_ptr<pizza::Pizza>> pizzas;
-    unsigned int ready = 0;
+    unsigned int ready {};
 };
 
 } // namespace reception

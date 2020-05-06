@@ -18,6 +18,6 @@ class Settings {
     float timeMultiplier;
 };
 
-}
+} // namespace kitchen
 
 #endif // CPP_PLAZZA_2019_SRC_KITCHEN_SETTINGS_HPP
