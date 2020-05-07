@@ -14,23 +14,25 @@
 #include <string>
 
 #include "POSIX.hpp"
+#include "SystemV.hpp"
 
 namespace mq {
 
 class Waiter {
   private:
-    POSIX _receiver;
-    POSIX _sender;
+    SystemV _receiver;
+    SystemV _sender;
 
   public:
     Waiter();
-    Waiter(const std::string& receiver, const std::string& sender, int flag = 0);
+    Waiter(int receiver, int sender);
+    Waiter(int receiver, int sender, int flags);
     ~Waiter();
 
   public:
     void close();
-    std::vector<std::string> receiveMessage(unsigned int* priority);
-    void sendMessage(const std::vector<std::string>& message, unsigned int priority);
+    std::vector<std::string> receiveMessage(long* priority);
+    void sendMessage(const std::vector<std::string>& message, long priority);
 };
 
 } // namespace mq

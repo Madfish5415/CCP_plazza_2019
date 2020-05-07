@@ -27,6 +27,7 @@ PROJ_SRC			=		kitchen/Cook.cpp			\
 							kitchen/Kitchen.cpp			\
 							kitchen/Storage.cpp			\
 							mq/POSIX.cpp				\
+							mq/SystemV.cpp				\
                             mq/Waiter.cpp				\
 							pizza/Factory.cpp			\
 							pizza/Ingredients.cpp		\

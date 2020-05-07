@@ -12,12 +12,12 @@
 #include "../def/def.hpp"
 #include "../thread/Print.hpp"
 
-process::Kitchen::Kitchen(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients,
-    const std::string& mq1, const std::string& mq2)
-    : _cooks(cooks), _waiter(mq1, mq2, O_CREAT)
+process::Kitchen::Kitchen(
+    unsigned int cooks, const std::map<std::string, unsigned int>& ingredients, int receiver, int sender)
+    : _cooks(cooks), _waiter(receiver, sender, IPC_CREAT)
 {
-    this->_process = Process([&cooks, &ingredients, &mq1, &mq2]() {
-        kitchen::Kitchen k(cooks, ingredients, mq2, mq1);
+    this->_process = Process([&cooks, &ingredients, receiver, sender]() {
+        kitchen::Kitchen k(cooks, ingredients, sender, receiver);
 
         k.cook();
     });

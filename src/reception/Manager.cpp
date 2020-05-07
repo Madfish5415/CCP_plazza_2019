@@ -46,16 +46,14 @@ void reception::Manager::status()
 
 void reception::Manager::createKitchen()
 {
-    static int kitchenID = 0;
+    static int kitchenID = 1;
 
     thread::Print() << "[MANAGER] Create new kitchen with local ID: " << kitchenID << std::endl; // TODO: Remove
 
-    const std::string mq1 = "/kitchen" + std::to_string(kitchenID) + "-mq1";
-    const std::string mq2 = "/kitchen" + std::to_string(kitchenID) + "-mq2";
+    int receiver = kitchenID++;
+    int sender = kitchenID++;
 
-    this->_kitchens.emplace_back(this->_cooks, this->_ingredients, mq1, mq2);
-
-    kitchenID+=2;
+    this->_kitchens.emplace_back(this->_cooks, this->_ingredients, receiver, sender);
 }
 
 void reception::Manager::updateKitchens()

@@ -12,8 +12,8 @@
 #include "../process/Process.hpp"
 #include "../thread/Print.hpp"
 
-kitchen::Kitchen::Kitchen(unsigned int cooks, const std::map<std::string, unsigned int>& ingredients,
-    const std::string& receiver, const std::string& sender)
+kitchen::Kitchen::Kitchen(
+    unsigned int cooks, const std::map<std::string, unsigned int>& ingredients, int receiver, int sender)
     : _storage(ingredients), _waiter(receiver, sender), _state(Working)
 {
     for (unsigned int i = 0; i < cooks; ++i)

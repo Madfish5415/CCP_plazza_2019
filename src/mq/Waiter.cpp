@@ -14,9 +14,12 @@
 
 mq::Waiter::Waiter() = default;
 
-mq::Waiter::Waiter(const std::string& receiver, const std::string& sender, int flag)
-    : _receiver(receiver, O_RDWR | O_NONBLOCK | flag, 0666, {.maxMsg = 10, .maxMsgSize = 8192}),
-      _sender(sender, O_RDWR | O_NONBLOCK | flag, 0666, {.maxMsg = 10, .maxMsgSize = 8192})
+mq::Waiter::Waiter(int receiver, int sender) : _receiver(receiver, 0666), _sender(sender, 0666)
+{
+}
+
+mq::Waiter::Waiter(int receiver, int sender, int flags)
+    : _receiver(receiver, flags | 0666), _sender(sender, flags | 0666)
 {
 }
 
@@ -28,11 +31,11 @@ void mq::Waiter::close()
     this->_sender.close();
 }
 
-std::vector<std::string> mq::Waiter::receiveMessage(unsigned int* priority)
+std::vector<std::string> mq::Waiter::receiveMessage(long* priority)
 {
     static int count = 0;
 
-    std::string string = this->_receiver.receive(priority);
+    std::string string = this->_receiver.receive(priority, IPC_NOWAIT);
     std::string find = string;
     std::regex word(R"(([^\s]+))");
     std::smatch match;
@@ -44,14 +47,14 @@ std::vector<std::string> mq::Waiter::receiveMessage(unsigned int* priority)
         find = match.suffix();
     }
 
-    thread::Print() << "[WAITER-" << count << "] Receiver: " << this->_receiver.getName() << std::endl; // TODO: Remove
+    thread::Print() << "[WAITER-" << count << "] Receiver: " << this->_receiver.getKey() << std::endl; // TODO: Remove
     thread::Print() << "[WAITER-" << count << "] Received: " << string << std::endl; // TODO: Remove
     count++;
 
     return message;
 }
 
-void mq::Waiter::sendMessage(const std::vector<std::string>& message, unsigned int priority)
+void mq::Waiter::sendMessage(const std::vector<std::string>& message, long priority)
 {
     static int count = 0;
 
@@ -63,9 +66,9 @@ void mq::Waiter::sendMessage(const std::vector<std::string>& message, unsigned i
         string += item;
     }
 
-    this->_sender.send(string, priority);
+    this->_sender.send(string, priority, 0);
 
-    thread::Print() << "[WAITER-" << count << "] Sender: " << this->_sender.getName() << std::endl; // TODO: Remove
+    thread::Print() << "[WAITER-" << count << "] Sender: " << this->_sender.getKey() << std::endl; // TODO: Remove
     thread::Print() << "[WAITER-" << count << "] Sent: " << string << std::endl; // TODO: Remove
     count++;
 }
