@@ -16,14 +16,14 @@
 namespace pizza {
 
 class Recipes {
+  private:
+    static std::map<std::string, Recipe>& _recipes;
+
   public:
     static std::map<std::string, Recipe>& get();
 
   public:
     static void load(const std::string& path);
-
-  private:
-    static std::map<std::string, Recipe>& _recipes;
 };
 
 } // namespace pizza

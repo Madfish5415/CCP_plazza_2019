@@ -14,14 +14,14 @@
 namespace pizza {
 
 class Sizes {
+  private:
+    static std::set<std::string>& _sizes;
+
   public:
     static std::set<std::string>& get();
 
   public:
     static void load(const std::string& size);
-
-  private:
-    static std::set<std::string>& _sizes;
 };
 
 } // namespace pizza

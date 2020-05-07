@@ -18,6 +18,7 @@
 namespace reception {
 
 class Manager {
+  private:
     kitchen::Settings _settings;
     std::map<std::string, unsigned int> _ingredients;
     std::list<kitchen::Kitchen> _kitchens;

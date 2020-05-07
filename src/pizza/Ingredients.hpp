@@ -14,11 +14,11 @@
 namespace pizza {
 
 class Ingredients {
-  public:
-    static std::set<std::string>& get();
-
   private:
     static std::set<std::string>& _ingredients;
+
+  public:
+    static std::set<std::string>& get();
 };
 
 } // namespace pizza
