@@ -20,13 +20,14 @@ class Storage {
     std::mutex _mutex;
 
   public:
-    Storage(const std::map<std::string, unsigned int>& ingredients);
+    explicit Storage(std::map<std::string, unsigned int>  ingredients);
     ~Storage();
 
   public:
     void add(const std::map<std::string, unsigned int>& ingredients);
     bool has(const std::map<std::string, unsigned int>& ingredients) const;
     void remove(const std::map<std::string, unsigned int>& ingredients);
+    void status() const;
 };
 
 } // namespace kitchen
