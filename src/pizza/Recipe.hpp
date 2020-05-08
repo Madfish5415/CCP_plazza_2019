@@ -25,12 +25,12 @@ class Recipe {
     ~Recipe();
 
   public:
-    std::string getType() const;
-    const std::map<std::string, unsigned int>& getIngredients() const;
-    unsigned int getCookTime() const;
+    [[nodiscard]] std::string getType() const;
+    [[nodiscard]] const std::map<std::string, unsigned int>& getIngredients() const;
+    [[nodiscard]] unsigned int getCookTime() const;
 
   public:
-    std::string pack() const;
+    [[nodiscard]] std::string pack() const;
     void unpack(const std::string& pack);
 };
 

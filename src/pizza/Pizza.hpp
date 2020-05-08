@@ -22,16 +22,16 @@ class Pizza {
 
   public:
     Pizza();
-    Pizza(const Recipe& recipe, const std::string& size, unsigned int order);
+    Pizza(const Recipe& recipe, std::string size, unsigned int order);
     ~Pizza();
 
   public:
-    const Recipe& getRecipe() const;
-    std::string getSize() const;
-    unsigned int getOrder() const;
+    [[nodiscard]] const Recipe& getRecipe() const;
+    [[nodiscard]] std::string getSize() const;
+    [[nodiscard]] unsigned int getOrder() const;
 
   public:
-    std::string pack() const;
+    [[nodiscard]] std::string pack() const;
     void unpack(const std::string& pack);
 };
 
