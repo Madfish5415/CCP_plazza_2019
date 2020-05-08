@@ -61,26 +61,36 @@ void kitchen::Kitchen::status() const
 void kitchen::Kitchen::cook()
 {
     while (this->_state != State::Finished) {
-        std::vector<std::string> message;
+        auto pizza = this->ask();
 
-        try {
-            message = this->_waiter.receive(nullptr);
-        } catch (std::exception& e) {
-            continue;
-        }
-
-        if (message[0] == "PIZZA") {
-            auto pizza = std::make_shared<pizza::Pizza>();
-
-            pizza->unpack(message[1]);
-
+        if (pizza)
             this->handle(pizza);
-        } else if (message[0] == "STATUS") {
-            this->status();
-        } else if (message[0] == "STOP") {
-            this->_state = Finished;
-        }
     }
+}
+
+std::shared_ptr<pizza::Pizza> kitchen::Kitchen::ask()
+{
+    std::vector<std::string> message;
+
+    try {
+        message = this->_waiter.receive(nullptr);
+    } catch (std::exception&) {
+        return nullptr;
+    }
+
+    if (message[0] == "PIZZA") {
+        auto pizza = std::make_shared<pizza::Pizza>();
+
+        pizza->unpack(message[1]);
+
+        return pizza;
+    } else if (message[0] == "STATUS") {
+        this->status();
+    } else if (message[0] == "STOP") {
+        this->_state = Finished;
+    }
+
+    return nullptr;
 }
 
 bool kitchen::Kitchen::handle(std::shared_ptr<pizza::Pizza> pizza)

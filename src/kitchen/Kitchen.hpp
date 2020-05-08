@@ -44,6 +44,7 @@ class Kitchen {
 
   private:
     void cook();
+    std::shared_ptr<pizza::Pizza> ask();
     bool handle(std::shared_ptr<pizza::Pizza> pizza);
 };
 
