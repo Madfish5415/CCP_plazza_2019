@@ -9,6 +9,7 @@
 #define CPP_PLAZZA_2019_SRC_RECEPTION_PARSER_HPP
 
 #include <memory>
+#include <vector>
 
 #include "Order.hpp"
 
