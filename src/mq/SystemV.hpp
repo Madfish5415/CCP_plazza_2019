@@ -36,13 +36,13 @@ class SystemV {
     ~SystemV();
 
   public:
-    int getKey() const;
-    int getFlags() const;
+    [[nodiscard]] int getKey() const;
+    [[nodiscard]] int getFlags() const;
 
   public:
-    void close();
-    std::string receive(long* type, int flag);
-    void send(const std::string& message, long type, int flag);
+    void close() const;
+    std::string receive(long* type, int flag) const;
+    void send(const std::string& message, long type, int flag) const;
 };
 
 } // namespace mq

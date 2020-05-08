@@ -18,11 +18,11 @@ class Pizza {
   private:
     Recipe _recipe;
     std::string _size;
-    unsigned int _order {};
+    unsigned int _order;
 
   public:
     Pizza();
-    Pizza(const Recipe& recipe, std::string  size, unsigned int order);
+    Pizza(const Recipe& recipe, std::string size, unsigned int order);
     ~Pizza();
 
   public:

@@ -35,15 +35,17 @@ class Kitchen {
     ~Kitchen();
 
   public:
-    Settings& getSettings();
-    Storage& getStorage() const;
+    [[nodiscard]] const Settings& getSettings() const;
+    Storage& getStorage();
 
   public:
-    void ready(const std::shared_ptr<pizza::Pizza> pizza);
+    void ready(std::shared_ptr<pizza::Pizza> pizza);
     void status() const;
 
   private:
     void cook();
+    std::shared_ptr<pizza::Pizza> ask();
+    bool handle(std::shared_ptr<pizza::Pizza> pizza);
 };
 
 } // namespace kitchen

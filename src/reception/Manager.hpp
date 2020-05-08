@@ -8,38 +8,45 @@
 #ifndef CPP_PLAZZA_2019_SRC_RECEPTION_MANAGER_HPP
 #define CPP_PLAZZA_2019_SRC_RECEPTION_MANAGER_HPP
 
+#include <list>
 #include <map>
+#include <mutex>
 #include <string>
+#include <thread>
 
 #include "Order.hpp"
-#include "kitchen/Kitchen.hpp"
 #include "kitchen/Settings.hpp"
+#include "process/Kitchen.hpp"
 
 namespace reception {
 
 class Manager {
+  public:
+    enum State { Working, Finished };
+
   private:
     kitchen::Settings _settings;
     std::map<std::string, unsigned int> _ingredients;
-    std::list<kitchen::Kitchen> _kitchens;
-    std::map<unsigned int, Order> _orders;
+    State _state;
     std::thread _thread;
+    std::mutex _mutex;
+    std::list<process::Kitchen> _kitchens;
+    std::map<unsigned int, Order> _orders;
 
   public:
-    Manager(const kitchen::Settings& settings, const std::map<std::string, unsigned int>& ingredients);
+    Manager(const kitchen::Settings& settings, std::map<std::string, unsigned int> ingredients);
     ~Manager();
 
   public:
     void handle(const Order& order);
     void status() const;
 
-  public:
-    void createKitchen();
-    void updateKitchens();
-    void updateOrders();
-
   private:
     void manage();
+    void createKitchen();
+    void askKitchens();
+    void updateKitchens();
+    void updateOrders();
 };
 
 } // namespace reception
