@@ -34,10 +34,10 @@ class Cook {
     ~Cook();
 
   public:
-    const std::queue<std::shared_ptr<pizza::Pizza>>& getPizzas() const;
+    [[nodiscard]] const std::queue<std::shared_ptr<pizza::Pizza>>& getPizzas() const;
 
   public:
-    bool handle(const std::shared_ptr<pizza::Pizza> pizza);
+    bool handle(std::shared_ptr<pizza::Pizza> pizza);
     void status() const;
 
   private:
