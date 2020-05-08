@@ -9,13 +9,22 @@
 #define CPP_PLAZZA_2019_SRC_RECEPTION_PARSER_HPP
 
 #include <memory>
+#include <vector>
 
 #include "Order.hpp"
 
 namespace reception {
 
 class Parser {
+  private:
+    static unsigned int _order;
+
+  public:
     static std::shared_ptr<Order> parse(const std::string& command);
+
+  private:
+    static void fill(std::shared_ptr<Order> order, const std::string& subCommand);
+    static std::vector<std::string> toSubCommands(std::string command);
 };
 
 } // namespace reception

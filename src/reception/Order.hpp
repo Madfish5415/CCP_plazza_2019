@@ -9,7 +9,7 @@
 #define CPP_PLAZZA_2019_SRC_RECEPTION_ORDER_HPP
 
 #include <memory>
-#include <queue>
+#include <list>
 
 #include "pizza/Pizza.hpp"
 
@@ -17,8 +17,16 @@ namespace reception {
 
 class Order {
   public:
-    std::queue<std::shared_ptr<pizza::Pizza>> pizzas;
+    unsigned int id {};
+    std::list<std::shared_ptr<pizza::Pizza>> pizzas {};
     unsigned int ready {};
+
+  public:
+    Order();
+    ~Order();
+
+  public:
+    void display() const;
 };
 
 } // namespace reception
