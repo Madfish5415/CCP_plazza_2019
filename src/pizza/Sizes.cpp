@@ -6,3 +6,19 @@
 */
 
 #include "Sizes.hpp"
+
+#include <fstream>
+
+std::set<std::string>& pizza::Sizes::get()
+{
+    return Sizes::_sizes;
+}
+
+void pizza::Sizes::load(const std::string& path)
+{
+    std::ifstream file(path);
+    std::string line;
+
+    while (std::getline(file, line))
+        Sizes::_sizes.emplace(line);
+}
