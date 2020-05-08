@@ -25,7 +25,7 @@ class Kitchen {
     kitchen::Settings _settings;
     mq::Waiter _waiter;
     Process _process;
-    unsigned int _pending;
+    unsigned int _pending {};
     std::chrono::time_point<std::chrono::system_clock> _last;
 
   public:
