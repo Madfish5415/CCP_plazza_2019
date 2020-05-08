@@ -40,7 +40,7 @@ class Kitchen {
   public:
     std::shared_ptr<pizza::Pizza> ask();
     bool handle(std::shared_ptr<pizza::Pizza> pizza);
-    void status();
+    void status() const;
 };
 
 } // namespace process

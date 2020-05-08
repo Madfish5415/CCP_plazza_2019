@@ -6,3 +6,25 @@
 */
 
 #include "Input.hpp"
+
+#include <iostream>
+
+void reception::Input::clear()
+{
+    std::cin.clear();
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+}
+
+std::string reception::Input::get()
+{
+    std::string input;
+
+    while (!(std::cin >> input)) {
+        if (std::cin.fail())
+            continue;
+
+        Input::clear();
+    }
+
+    return input;
+}

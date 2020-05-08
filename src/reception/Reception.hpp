@@ -8,13 +8,17 @@
 #ifndef CPP_PLAZZA_2019_SRC_RECEPTION_RECEPTION_HPP
 #define CPP_PLAZZA_2019_SRC_RECEPTION_RECEPTION_HPP
 
+#include "Manager.hpp"
 #include "kitchen/Settings.hpp"
 
 namespace reception {
 
 class Reception {
+  private:
+    Manager _manager;
+
   public:
-    Reception(const kitchen::Settings& settings);
+    explicit Reception(const kitchen::Settings& settings, std::map<std::string, unsigned int> ingredients);
     ~Reception();
 
   public:
