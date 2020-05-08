@@ -6,3 +6,8 @@
 */
 
 #include "Ingredients.hpp"
+
+std::set<std::string>& pizza::Ingredients::get()
+{
+    return Ingredients::_ingredients;
+}

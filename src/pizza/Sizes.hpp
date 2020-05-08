@@ -21,7 +21,7 @@ class Sizes {
     static std::set<std::string>& get();
 
   public:
-    static void load(const std::string& size);
+    static void load(const std::string& path);
 };
 
 } // namespace pizza
