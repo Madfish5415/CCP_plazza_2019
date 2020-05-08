@@ -31,8 +31,7 @@ class Kitchen {
     std::list<Cook> _cooks;
 
   public:
-    Kitchen(const Settings& settings, const std::map<std::string, unsigned int>& ingredients,
-        const std::string& receiver, const std::string& sender);
+    Kitchen(const Settings& settings, const std::map<std::string, unsigned int>& ingredients, int receiver, int sender);
     ~Kitchen();
 
   public:

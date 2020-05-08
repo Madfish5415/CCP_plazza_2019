@@ -12,20 +12,20 @@
 #include <string>
 #include <vector>
 
-#include "POSIX.hpp"
+#include "SystemV.hpp"
 
 namespace mq {
 
 class Waiter {
   private:
-    POSIX _receiver;
-    POSIX _sender;
+    SystemV _receiver;
+    SystemV _sender;
     std::queue<std::string> _messages;
 
   public:
     Waiter();
-    Waiter(const std::string& receiver, const std::string& sender);
-    Waiter(const std::string& receiver, const std::string& sender, int flags);
+    Waiter(int receiver, int sender);
+    Waiter(int receiver, int sender, int flags);
     ~Waiter();
 
   public:

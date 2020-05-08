@@ -30,11 +30,11 @@ class Cook {
     std::queue<std::shared_ptr<pizza::Pizza>> _pizzas;
 
   public:
-    Cook(const Kitchen& kitchen);
+    explicit Cook(Kitchen& kitchen);
     ~Cook();
 
   public:
-    std::queue<std::shared_ptr<pizza::Pizza>>& getPizzas() const;
+    const std::queue<std::shared_ptr<pizza::Pizza>>& getPizzas() const;
 
   public:
     bool handle(const std::shared_ptr<pizza::Pizza> pizza);

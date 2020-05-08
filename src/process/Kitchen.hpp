@@ -29,8 +29,8 @@ class Kitchen {
     std::chrono::time_point<std::chrono::system_clock> _last;
 
   public:
-    Kitchen(const kitchen::Settings& settings, const std::map<std::string, unsigned int>& ingredients,
-        const std::string& receiver, const std::string& sender);
+    Kitchen(const kitchen::Settings& settings, const std::map<std::string, unsigned int>& ingredients, int receiver,
+        int sender);
     ~Kitchen();
 
   public:
