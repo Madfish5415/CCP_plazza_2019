@@ -24,8 +24,19 @@ class Print {
 
   public:
     template<typename T>
-    Print& operator<<(const T& t);
-    Print& operator<<(std::ostream& (*os)(std::ostream&));
+    Print& operator<<(const T& t)
+    {
+        std::cout << t;
+
+        return *this;
+    }
+
+    Print& operator<<(std::ostream& (*os)(std::ostream&))
+    {
+        std::cout << os;
+
+        return *this;
+    }
 };
 
 } // namespace thread
