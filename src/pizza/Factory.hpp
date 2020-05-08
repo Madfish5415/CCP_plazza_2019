@@ -16,7 +16,7 @@ namespace pizza {
 
 class Factory {
   public:
-    static std::shared_ptr<Pizza> create(const std::string& recipe, const std::string& size, unsigned int order);
+    static Pizza create(const std::string& recipe, const std::string& size, unsigned int order);
 };
 
 } // namespace pizza

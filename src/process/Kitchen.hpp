@@ -38,8 +38,8 @@ class Kitchen {
     [[nodiscard]] std::chrono::time_point<std::chrono::system_clock> getLast() const;
 
   public:
-    std::shared_ptr<pizza::Pizza> ask();
-    bool handle(std::shared_ptr<pizza::Pizza> pizza);
+    pizza::Pizza ask();
+    bool handle(pizza::Pizza pizza);
     void status() const;
 };
 

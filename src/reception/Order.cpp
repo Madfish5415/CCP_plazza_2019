@@ -20,5 +20,5 @@ void reception::Order::display() const
     print << "Order n°" << this->id << ":" << std::endl;
 
     for (const auto& pizza : this->pizzas)
-        print << "- " << pizza->getRecipe().getType() << std::endl;
+        print << "- " << pizza.getRecipe().getType() << std::endl;
 }

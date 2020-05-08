@@ -23,7 +23,17 @@ int main()
     for (const auto& ingredient : pizza::Ingredients::get())
         ingredients.emplace(ingredient, 5);
 
-    reception::Reception r(settings, ingredients);
+    reception::Manager manager(settings, ingredients);
 
-    r.run();
+    int orderID = 1;
+    pizza::Recipe recipe1("recipe1", {{"item1", 1}, {"item2", 1}}, 1);
+    pizza::Recipe recipe2("recipe2", {{"item3", 1}, {"item4", 1}}, 1);
+    pizza::Pizza pizza1(recipe1, "M", orderID);
+    pizza::Pizza pizza2(recipe2, "XL", orderID);
+    reception::Order order;
+
+    order.id = orderID;
+    order.pizzas.emplace_back(pizza1);
+
+    manager.handle(order);
 }

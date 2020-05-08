@@ -31,14 +31,14 @@ class Manager {
     std::thread _thread;
     std::mutex _mutex;
     std::list<process::Kitchen> _kitchens;
-    std::map<unsigned int, std::shared_ptr<Order>> _orders;
+    std::map<unsigned int, Order> _orders;
 
   public:
     Manager(const kitchen::Settings& settings, std::map<std::string, unsigned int> ingredients);
     ~Manager();
 
   public:
-    void handle(std::shared_ptr<Order> order);
+    void handle(Order order);
     void status();
 
   private:

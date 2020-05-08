@@ -40,12 +40,12 @@ class Kitchen {
 
   public:
     void cook();
-    void ready(std::shared_ptr<pizza::Pizza> pizza);
+    void ready(pizza::Pizza pizza);
     void status();
 
   private:
-    std::shared_ptr<pizza::Pizza> ask();
-    bool handle(std::shared_ptr<pizza::Pizza> pizza);
+    pizza::Pizza ask();
+    bool handle(pizza::Pizza pizza);
 };
 
 } // namespace kitchen

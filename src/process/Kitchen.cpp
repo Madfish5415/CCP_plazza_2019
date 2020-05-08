@@ -40,20 +40,14 @@ std::chrono::time_point<std::chrono::system_clock> process::Kitchen::getLast() c
     return this->_last;
 }
 
-std::shared_ptr<pizza::Pizza> process::Kitchen::ask()
+pizza::Pizza process::Kitchen::ask()
 {
-    std::vector<std::string> message;
-
-    try {
-        message = this->_waiter.receive(nullptr);
-    } catch (std::exception&) {
-        return nullptr;
-    }
+    auto message = this->_waiter.receive(nullptr);
 
     if (message[0] == "PIZZA") {
-        auto pizza = std::make_shared<pizza::Pizza>();
+        pizza::Pizza pizza;
 
-        pizza->unpack(message[1]);
+        pizza.unpack(message[1]);
 
         this->_pending -= 1;
         this->_last = std::chrono::system_clock::now();
@@ -61,15 +55,15 @@ std::shared_ptr<pizza::Pizza> process::Kitchen::ask()
         return pizza;
     }
 
-    return nullptr;
+    throw std::exception(); // TODO: Custom Error class
 }
 
-bool process::Kitchen::handle(std::shared_ptr<pizza::Pizza> pizza)
+bool process::Kitchen::handle(pizza::Pizza pizza)
 {
     if (this->_pending >= this->_settings.cooks * MAX_PIZZAS)
         return false;
 
-    std::vector<std::string> message = {"PIZZA", pizza->pack()};
+    std::vector<std::string> message = {"PIZZA", pizza.pack()};
 
     this->_waiter.send(message, 1);
 

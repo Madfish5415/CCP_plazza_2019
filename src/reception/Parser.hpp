@@ -20,10 +20,10 @@ class Parser {
     static unsigned int& _order();
 
   public:
-    static std::shared_ptr<Order> parse(const std::string& command);
+    static Order parse(const std::string& command);
 
   private:
-    static void fill(std::shared_ptr<Order> order, const std::string& subCommand);
+    static void fill(Order order, const std::string& subCommand);
     static std::vector<std::string> toSubCommands(std::string command);
 };
 

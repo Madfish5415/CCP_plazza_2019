@@ -21,11 +21,11 @@ reception::Manager::~Manager()
     this->_thread.join();
 }
 
-void reception::Manager::handle(std::shared_ptr<Order> order)
+void reception::Manager::handle(Order order)
 {
     std::lock_guard<std::mutex> guard(this->_mutex);
 
-    this->_orders.emplace(order->id, order);
+    this->_orders.emplace(order.id, order);
 
     this->_kitchens.sort([](const process::Kitchen& a, const process::Kitchen& b) {
         return (a.getPending() < b.getPending());
@@ -34,7 +34,7 @@ void reception::Manager::handle(std::shared_ptr<Order> order)
     if (this->_kitchens.empty())
         this->createKitchen();
 
-    for (const auto& pizza : order->pizzas) {
+    for (const auto& pizza : order.pizzas) {
         bool handled = this->_kitchens.front().handle(pizza);
 
         if (!handled) {
@@ -78,14 +78,17 @@ void reception::Manager::createKitchen()
 void reception::Manager::askKitchens()
 {
     for (auto& kitchen : this->_kitchens) {
-        auto pizza = kitchen.ask();
+        pizza::Pizza pizza;
 
-        if (pizza == nullptr)
+        try {
+            pizza = kitchen.ask();
+        } catch (std::exception&) {
             continue;
+        }
 
-        auto order = this->_orders.at(pizza->getOrder());
+        auto order = this->_orders.at(pizza.getOrder());
 
-        order->ready++;
+        order.ready++;
     }
 }
 
@@ -106,10 +109,10 @@ void reception::Manager::updateKitchens()
 void reception::Manager::updateOrders()
 {
     for (const auto& order : this->_orders) {
-        if (order.second->ready != order.second->pizzas.size())
+        if (order.second.ready != order.second.pizzas.size())
             continue;
 
-        order.second->display();
+        order.second.display();
 
         this->_orders.erase(order.first);
     }

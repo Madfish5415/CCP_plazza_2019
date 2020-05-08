@@ -18,12 +18,12 @@ unsigned int& reception::Parser::_order()
     return order;
 }
 
-std::shared_ptr<reception::Order> reception::Parser::parse(const std::string& command)
+reception::Order reception::Parser::parse(const std::string& command)
 {
-    auto order = std::make_shared<Order>();
+    Order order;
     auto subCommands = Parser::toSubCommands(command);
 
-    order->id = ++Parser::_order();
+    order.id = ++Parser::_order();
 
     for (const auto& subCommand : subCommands)
         Parser::fill(order, subCommand);
@@ -31,7 +31,7 @@ std::shared_ptr<reception::Order> reception::Parser::parse(const std::string& co
     return order;
 }
 
-void reception::Parser::fill(std::shared_ptr<Order> order, const std::string& subCommand)
+void reception::Parser::fill(Order order, const std::string& subCommand)
 {
     std::regex regex(R"(^\s*([a-zA-Z]+)\s+([A-Z]+)\s+x([1-9][0-9]*)\s*$)");
     std::smatch matches;
@@ -46,7 +46,7 @@ void reception::Parser::fill(std::shared_ptr<Order> order, const std::string& su
     for (unsigned int i = 0; i < amount; ++i) {
         auto pizza = pizza::Factory::create(matches.str(1), matches.str(2), Parser::_order());
 
-        order->pizzas.push_back(pizza);
+        order.pizzas.push_back(pizza);
     }
 }
 

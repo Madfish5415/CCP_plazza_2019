@@ -18,7 +18,7 @@ namespace reception {
 class Order {
   public:
     unsigned int id {};
-    std::list<std::shared_ptr<pizza::Pizza>> pizzas {};
+    std::list<pizza::Pizza> pizzas {};
     unsigned int ready {};
 
   public:

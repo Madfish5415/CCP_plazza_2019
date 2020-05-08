@@ -10,10 +10,10 @@
 #include "Recipes.hpp"
 #include "Sizes.hpp"
 
-std::shared_ptr<pizza::Pizza> pizza::Factory::create(
+pizza::Pizza pizza::Factory::create(
     const std::string& recipe, const std::string& size, unsigned int order)
 {
-    auto pizza = std::make_shared<pizza::Pizza>(Recipes::get().at(recipe), *Sizes::get().find(size), order);
+    pizza::Pizza pizza(Recipes::get().at(recipe), *Sizes::get().find(size), order);
 
     return pizza;
 }

@@ -21,12 +21,12 @@ kitchen::Cook::~Cook()
     this->_thread.join();
 }
 
-const std::queue<std::shared_ptr<pizza::Pizza>>& kitchen::Cook::getPizzas() const
+const std::queue<pizza::Pizza>& kitchen::Cook::getPizzas() const
 {
     return this->_pizzas;
 }
 
-bool kitchen::Cook::handle(std::shared_ptr<pizza::Pizza> pizza)
+bool kitchen::Cook::handle(pizza::Pizza pizza)
 {
     if (this->_state != State::Working)
         return false;
@@ -50,7 +50,7 @@ void kitchen::Cook::status() const
     } else {
         auto& pizza = this->_pizzas.front();
 
-        print << "Cooking a(n) " << pizza->getSize() << " " << pizza->getRecipe().getType();
+        print << "Cooking a(n) " << pizza.getSize() << " " << pizza.getRecipe().getType();
     }
 
     print << std::endl;
@@ -63,7 +63,7 @@ void kitchen::Cook::cook()
             continue;
 
         auto& pizza = this->_pizzas.front();
-        auto& ingredients = pizza->getRecipe().getIngredients();
+        auto& ingredients = pizza.getRecipe().getIngredients();
         auto& storage = this->_kitchen.getStorage();
 
         if (!storage.has(ingredients))
@@ -71,7 +71,7 @@ void kitchen::Cook::cook()
 
         storage.remove(ingredients);
 
-        auto cookTime = pizza->getRecipe().getCookTime();
+        auto cookTime = pizza.getRecipe().getCookTime();
         auto timeMultiplier = this->_kitchen.getSettings().timeMultiplier;
         auto sleepTime = (unsigned int)((float)(cookTime) * timeMultiplier);
 

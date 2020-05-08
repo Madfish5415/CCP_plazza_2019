@@ -37,9 +37,9 @@ kitchen::Storage& kitchen::Kitchen::getStorage()
     return this->_storage;
 }
 
-void kitchen::Kitchen::ready(std::shared_ptr<pizza::Pizza> pizza)
+void kitchen::Kitchen::ready(pizza::Pizza pizza)
 {
-    std::vector<std::string> message = {"PIZZA", pizza->pack()};
+    std::vector<std::string> message = {"PIZZA", pizza.pack()};
 
     this->_waiter.send(message, 1);
 }
@@ -61,27 +61,26 @@ void kitchen::Kitchen::status()
 void kitchen::Kitchen::cook()
 {
     while (this->_state != State::Finished) {
-        auto pizza = this->ask();
+        pizza::Pizza pizza;
 
-        if (pizza)
-            this->handle(pizza);
+        try {
+            pizza = this->ask();
+        } catch (std::exception&) {
+            continue;
+        }
+
+        this->handle(pizza);
     }
 }
 
-std::shared_ptr<pizza::Pizza> kitchen::Kitchen::ask()
+pizza::Pizza kitchen::Kitchen::ask()
 {
-    std::vector<std::string> message;
-
-    try {
-        message = this->_waiter.receive(nullptr);
-    } catch (std::exception&) {
-        return nullptr;
-    }
+    auto message = this->_waiter.receive(nullptr);
 
     if (message[0] == "PIZZA") {
-        auto pizza = std::make_shared<pizza::Pizza>();
+        pizza::Pizza pizza;
 
-        pizza->unpack(message[1]);
+        pizza.unpack(message[1]);
 
         return pizza;
     } else if (message[0] == "STATUS") {
@@ -90,10 +89,10 @@ std::shared_ptr<pizza::Pizza> kitchen::Kitchen::ask()
         this->_state = Finished;
     }
 
-    return nullptr;
+    throw std::exception(); // TODO: Custom Error class
 }
 
-bool kitchen::Kitchen::handle(std::shared_ptr<pizza::Pizza> pizza)
+bool kitchen::Kitchen::handle(pizza::Pizza pizza)
 {
     this->_cooks.sort([](const Cook& a, const Cook& b) {
         return (a.getPizzas().size() < b.getPizzas().size());
