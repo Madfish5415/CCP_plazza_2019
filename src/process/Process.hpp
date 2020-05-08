@@ -33,8 +33,8 @@ class Process {
     ~Process();
 
   public:
-    int getId() const;
-    int getStatus() const;
+    [[nodiscard]] int getId() const;
+    [[nodiscard]] int getStatus() const;
 
   public:
     void join();
