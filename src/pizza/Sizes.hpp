@@ -15,7 +15,7 @@ namespace pizza {
 
 class Sizes {
   private:
-    static std::set<std::string>& _sizes;
+    static std::set<std::string>& _sizes();
 
   public:
     static std::set<std::string>& get();

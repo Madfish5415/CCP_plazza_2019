@@ -11,9 +11,16 @@
 
 #include "Ingredients.hpp"
 
+std::map<std::string, pizza::Recipe>& pizza::Recipes::_recipes()
+{
+    static std::map<std::string, pizza::Recipe> recipes;
+
+    return recipes;
+}
+
 std::map<std::string, pizza::Recipe>& pizza::Recipes::get()
 {
-    return Recipes::_recipes;
+    return Recipes::_recipes();
 }
 
 void pizza::Recipes::load(const std::string& path)
@@ -26,7 +33,7 @@ void pizza::Recipes::load(const std::string& path)
 
         recipe.unpack(line);
 
-        Recipes::_recipes.emplace(recipe.getType(), recipe);
+        Recipes::_recipes().emplace(recipe.getType(), recipe);
 
         for (const auto& ingredient : recipe.getIngredients())
             Ingredients::get().emplace(ingredient.first);

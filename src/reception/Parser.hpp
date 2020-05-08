@@ -17,7 +17,7 @@ namespace reception {
 
 class Parser {
   private:
-    static unsigned int _order;
+    static unsigned int& _order();
 
   public:
     static std::shared_ptr<Order> parse(const std::string& command);

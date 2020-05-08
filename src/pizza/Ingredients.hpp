@@ -15,7 +15,7 @@ namespace pizza {
 
 class Ingredients {
   private:
-    static std::set<std::string>& _ingredients;
+    static std::set<std::string>& _ingredients();
 
   public:
     static std::set<std::string>& get();

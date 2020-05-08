@@ -17,7 +17,7 @@ namespace pizza {
 
 class Recipes {
   private:
-    static std::map<std::string, Recipe>& _recipes;
+    static std::map<std::string, Recipe>& _recipes();
 
   public:
     static std::map<std::string, Recipe>& get();

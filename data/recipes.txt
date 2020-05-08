@@ -1,0 +1,1 @@
+type="regina";ingredients="doe":1;cookTime=1;

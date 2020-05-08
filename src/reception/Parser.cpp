@@ -11,12 +11,19 @@
 
 #include "pizza/Factory.hpp"
 
+unsigned int& reception::Parser::_order()
+{
+    static unsigned int order;
+
+    return order;
+}
+
 std::shared_ptr<reception::Order> reception::Parser::parse(const std::string& command)
 {
     auto order = std::make_shared<Order>();
     auto subCommands = Parser::toSubCommands(command);
 
-    order->id = Parser::_order++;
+    order->id = ++Parser::_order();
 
     for (const auto& subCommand : subCommands)
         Parser::fill(order, subCommand);
@@ -37,7 +44,7 @@ void reception::Parser::fill(std::shared_ptr<Order> order, const std::string& su
     unsigned int amount = std::stoi(matches.str(3));
 
     for (unsigned int i = 0; i < amount; ++i) {
-        auto pizza = pizza::Factory::create(matches.str(1), matches.str(2), Parser::_order);
+        auto pizza = pizza::Factory::create(matches.str(1), matches.str(2), Parser::_order());
 
         order->pizzas.push_back(pizza);
     }

@@ -7,7 +7,14 @@
 
 #include "Print.hpp"
 
-thread::Print::Print() : _lock(thread::Print::_mutex)
+std::recursive_mutex& thread::Print::_mutex()
+{
+    static std::recursive_mutex mutex;
+
+    return mutex;
+}
+
+thread::Print::Print() : _lock(thread::Print::_mutex())
 {
 }
 

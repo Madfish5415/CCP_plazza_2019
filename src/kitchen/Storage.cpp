@@ -17,12 +17,16 @@ kitchen::Storage::~Storage() = default;
 
 void kitchen::Storage::add(const std::map<std::string, unsigned int>& ingredients)
 {
+    std::lock_guard<std::mutex> guard(this->_mutex);
+
     for (const auto& ingredient : ingredients)
         this->_ingredients[ingredient.first] += ingredient.second;
 }
 
-bool kitchen::Storage::has(const std::map<std::string, unsigned int>& ingredients) const
+bool kitchen::Storage::has(const std::map<std::string, unsigned int>& ingredients)
 {
+    std::lock_guard<std::mutex> guard(this->_mutex);
+
     for (const auto& ingredient : ingredients) {
         if (this->_ingredients.count(ingredient.first) == 0)
             return false;
@@ -35,6 +39,8 @@ bool kitchen::Storage::has(const std::map<std::string, unsigned int>& ingredient
 
 void kitchen::Storage::remove(const std::map<std::string, unsigned int>& ingredients)
 {
+    std::lock_guard<std::mutex> guard(this->_mutex);
+
     for (const auto& ingredient : ingredients) {
         if (this->_ingredients.count(ingredient.first) == 0)
             throw std::exception(); // TODO: Custom Error class
@@ -45,7 +51,7 @@ void kitchen::Storage::remove(const std::map<std::string, unsigned int>& ingredi
     }
 }
 
-void kitchen::Storage::status() const
+void kitchen::Storage::status()
 {
     thread::Print print;
 

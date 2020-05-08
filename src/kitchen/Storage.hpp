@@ -25,9 +25,9 @@ class Storage {
 
   public:
     void add(const std::map<std::string, unsigned int>& ingredients);
-    bool has(const std::map<std::string, unsigned int>& ingredients) const;
+    bool has(const std::map<std::string, unsigned int>& ingredients);
     void remove(const std::map<std::string, unsigned int>& ingredients);
-    void status() const;
+    void status();
 };
 
 } // namespace kitchen

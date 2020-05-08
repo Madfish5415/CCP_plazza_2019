@@ -39,7 +39,7 @@ class Manager {
 
   public:
     void handle(std::shared_ptr<Order> order);
-    void status() const;
+    void status();
 
   private:
     void manage();

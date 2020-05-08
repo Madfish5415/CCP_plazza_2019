@@ -15,7 +15,7 @@ namespace thread {
 
 class Print {
   private:
-    static std::recursive_mutex _mutex;
+    static std::recursive_mutex& _mutex();
     std::unique_lock<std::recursive_mutex> _lock;
 
   public:

@@ -23,7 +23,7 @@ reception::Manager::~Manager()
 
 void reception::Manager::handle(std::shared_ptr<Order> order)
 {
-    auto lock = std::lock_guard(this->_mutex);
+    std::lock_guard<std::mutex> guard(this->_mutex);
 
     this->_orders.emplace(order->id, order);
 
@@ -45,9 +45,9 @@ void reception::Manager::handle(std::shared_ptr<Order> order)
     }
 }
 
-void reception::Manager::status() const
+void reception::Manager::status()
 {
-    auto lock = std::lock_guard(this->_mutex);
+    std::lock_guard<std::mutex> guard(this->_mutex);
 
     for (const auto& kitchen : this->_kitchens)
         kitchen.status();
@@ -56,6 +56,8 @@ void reception::Manager::status() const
 void reception::Manager::manage()
 {
     while (this->_state != Finished) {
+        std::lock_guard<std::mutex> guard(this->_mutex);
+
         this->askKitchens();
         this->updateKitchens();
         this->updateOrders();
@@ -64,8 +66,6 @@ void reception::Manager::manage()
 
 void reception::Manager::createKitchen()
 {
-    auto lock = std::lock_guard(this->_mutex);
-
     static int receiver = 1;
     static int sender = 2;
 
@@ -77,8 +77,6 @@ void reception::Manager::createKitchen()
 
 void reception::Manager::askKitchens()
 {
-    auto lock = std::lock_guard(this->_mutex);
-
     for (auto& kitchen : this->_kitchens) {
         auto pizza = kitchen.ask();
 
@@ -93,8 +91,6 @@ void reception::Manager::askKitchens()
 
 void reception::Manager::updateKitchens()
 {
-    auto lock = std::lock_guard(this->_mutex);
-
     for (auto i = this->_kitchens.begin(); i != this->_kitchens.end(); ++i) {
         if (i->getPending())
             continue;
@@ -109,8 +105,6 @@ void reception::Manager::updateKitchens()
 
 void reception::Manager::updateOrders()
 {
-    auto lock = std::lock_guard(this->_mutex);
-
     for (const auto& order : this->_orders) {
         if (order.second->ready != order.second->pizzas.size())
             continue;

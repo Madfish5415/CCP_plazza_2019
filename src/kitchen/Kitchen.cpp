@@ -44,7 +44,7 @@ void kitchen::Kitchen::ready(std::shared_ptr<pizza::Pizza> pizza)
     this->_waiter.send(message, 1);
 }
 
-void kitchen::Kitchen::status() const
+void kitchen::Kitchen::status()
 {
     thread::Print print;
 

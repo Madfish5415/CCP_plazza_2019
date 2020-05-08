@@ -8,19 +8,16 @@
 #include "Recipe.hpp"
 
 #include <regex>
+#include <utility>
 
-pizza::Recipe::Recipe()
+pizza::Recipe::Recipe() = default;
+
+pizza::Recipe::Recipe(std::string type, std::map<std::string, unsigned int> ingredients, unsigned int cookTime)
+    : _type(std::move(type)), _ingredients(std::move(ingredients)), _cookTime(cookTime)
 {
 }
 
-pizza::Recipe::Recipe(
-    const std::string& _type, const std::map<std::string, unsigned int>& ingredients, unsigned int cookTime)
-{
-}
-
-pizza::Recipe::~Recipe()
-{
-}
+pizza::Recipe::~Recipe() = default;
 
 std::string pizza::Recipe::getType() const
 {

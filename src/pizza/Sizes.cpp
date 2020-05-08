@@ -9,9 +9,16 @@
 
 #include <fstream>
 
+std::set<std::string>& pizza::Sizes::_sizes()
+{
+    static std::set<std::string> sizes;
+
+    return sizes;
+}
+
 std::set<std::string>& pizza::Sizes::get()
 {
-    return Sizes::_sizes;
+    return Sizes::_sizes();
 }
 
 void pizza::Sizes::load(const std::string& path)
@@ -20,5 +27,6 @@ void pizza::Sizes::load(const std::string& path)
     std::string line;
 
     while (std::getline(file, line))
-        Sizes::_sizes.emplace(line);
+        Sizes::_sizes().emplace(line);
 }
+

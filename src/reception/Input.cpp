@@ -19,7 +19,7 @@ std::string reception::Input::get()
 {
     std::string input;
 
-    while (!(std::cin >> input)) {
+    while (!std::getline(std::cin, input)) {
         if (std::cin.fail())
             continue;
 

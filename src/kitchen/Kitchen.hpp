@@ -39,11 +39,11 @@ class Kitchen {
     Storage& getStorage();
 
   public:
+    void cook();
     void ready(std::shared_ptr<pizza::Pizza> pizza);
-    void status() const;
+    void status();
 
   private:
-    void cook();
     std::shared_ptr<pizza::Pizza> ask();
     bool handle(std::shared_ptr<pizza::Pizza> pizza);
 };

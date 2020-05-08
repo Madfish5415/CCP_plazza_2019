@@ -7,10 +7,17 @@
 
 #include "Kitchen.hpp"
 
+#include "kitchen/Kitchen.hpp"
+
 process::Kitchen::Kitchen(
     const kitchen::Settings& settings, const std::map<std::string, unsigned int>& ingredients, int receiver, int sender)
     : _settings(settings), _waiter(receiver, sender, IPC_CREAT)
 {
+    this->_process = Process([&settings, &ingredients, receiver, sender]() {
+        kitchen::Kitchen k(settings, ingredients, sender, receiver);
+
+        k.cook();
+    });
 }
 
 process::Kitchen::~Kitchen()
@@ -69,7 +76,7 @@ bool process::Kitchen::handle(std::shared_ptr<pizza::Pizza> pizza)
     return true;
 }
 
-void process::Kitchen::status()
+void process::Kitchen::status() const
 {
     std::vector<std::string> message = {"STATUS"};
 

@@ -14,6 +14,7 @@ mq::SystemV::SystemV() = default;
 
 mq::SystemV::SystemV(int key, int flags) : _key(key), _flags(flags)
 {
+    this->_fd = msgget(key, flags);
 }
 
 mq::SystemV::~SystemV() = default;
