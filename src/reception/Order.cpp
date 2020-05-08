@@ -6,3 +6,19 @@
 */
 
 #include "Order.hpp"
+
+#include <thread/Print.hpp>
+
+reception::Order::Order() = default;
+
+reception::Order::~Order() = default;
+
+void reception::Order::display() const
+{
+    thread::Print print;
+
+    print << "Order n°" << this->id << ":" << std::endl;
+
+    for (const auto& pizza : this->pizzas)
+        print << "- " << pizza->getRecipe().getType() << std::endl;
+}
