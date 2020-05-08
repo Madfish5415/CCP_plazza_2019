@@ -25,7 +25,7 @@ class Kitchen {
     kitchen::Settings _settings;
     mq::Waiter _waiter;
     Process _process;
-    unsigned int _pending;
+    unsigned int _pending {};
     std::chrono::time_point<std::chrono::system_clock> _last;
 
   public:
@@ -34,12 +34,13 @@ class Kitchen {
     ~Kitchen();
 
   public:
-    unsigned int getPending() const;
-    std::chrono::time_point<std::chrono::system_clock> getLast() const;
+    [[nodiscard]] unsigned int getPending() const;
+    [[nodiscard]] std::chrono::time_point<std::chrono::system_clock> getLast() const;
 
   public:
-    void handle(const std::shared_ptr<pizza::Pizza> pizza);
-    void status() const;
+    std::shared_ptr<pizza::Pizza> ask();
+    bool handle(std::shared_ptr<pizza::Pizza> pizza);
+    void status();
 };
 
 } // namespace process
