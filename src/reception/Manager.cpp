@@ -5,6 +5,8 @@
 ** Manager.cpp
 */
 
+#include "Print.hpp"
+
 #include "Manager.hpp"
 
 #include <utility>
@@ -26,6 +28,8 @@ void reception::Manager::handle(Order order)
     std::lock_guard<std::mutex> guard(this->_mutex);
 
     this->_orders.emplace(order.id, order);
+
+    thread::Print() << "=== Handle a order " << order.id << " ===" << std::endl;
 
     this->_kitchens.sort([](const process::Kitchen& a, const process::Kitchen& b) {
         return (a.getPending() < b.getPending());
@@ -55,6 +59,8 @@ void reception::Manager::status()
 
 void reception::Manager::manage()
 {
+    thread::Print() << "=== Start managing the plazza ===" << std::endl;
+
     while (this->_state != Finished) {
         std::lock_guard<std::mutex> guard(this->_mutex);
 
@@ -68,6 +74,8 @@ void reception::Manager::createKitchen()
 {
     static int receiver = 1;
     static int sender = 2;
+
+    thread::Print() << "=== Creating a new Kitchen | Receiver: " << receiver << " Sender: " << sender << " ===" << std::endl;
 
     this->_kitchens.emplace_back(this->_settings, this->_ingredients, receiver, sender);
 
@@ -94,6 +102,7 @@ void reception::Manager::askKitchens()
 
 void reception::Manager::updateKitchens()
 {
+    thread::Print() << "=== Updating Kitchens ===" << std::endl;
     for (auto i = this->_kitchens.begin(); i != this->_kitchens.end(); ++i) {
         if (i->getPending())
             continue;
@@ -108,9 +117,14 @@ void reception::Manager::updateKitchens()
 
 void reception::Manager::updateOrders()
 {
+    thread::Print() << "=== Updating Orders === " << std::endl;
     for (const auto& order : this->_orders) {
-        if (order.second.ready != order.second.pizzas.size())
+        if (order.second.ready != order.second.pizzas.size()) {
+            thread::Print() << "=== All the pizzas of the order are not ready yet ! ===" << std::endl;
             continue;
+        }
+
+        thread::Print() << "=== All the pizzas are ready man ! ===" << std::endl;
 
         order.second.display();
 

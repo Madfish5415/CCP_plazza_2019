@@ -12,6 +12,8 @@
 #include "pizza/Recipes.hpp"
 #include "pizza/Sizes.hpp"
 
+#include "Print.hpp"
+
 int main()
 {
     pizza::Recipes::load("./data/recipes.txt");
@@ -34,6 +36,10 @@ int main()
 
     order.id = orderID;
     order.pizzas.emplace_back(pizza1);
+    order.pizzas.emplace_back(pizza2);
 
+    thread::Print() << "=== Starting program ===" << std::endl;
+    manager.status();
     manager.handle(order);
+    manager.status();
 }

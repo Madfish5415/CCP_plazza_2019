@@ -5,6 +5,8 @@
 ** Waiter.cpp
 */
 
+#include "Print.hpp"
+
 #include "Waiter.hpp"
 
 #include <regex>
@@ -42,6 +44,12 @@ std::vector<std::string> mq::Waiter::receive(long *priority) const
         find = match.suffix();
     }
 
+    thread::Print() << "Waiter === Received: ";
+    for (auto msg : message) {
+        thread::Print() << msg << " ";
+    }
+    thread::Print() << " ===" << std::endl;
+
     return message;
 }
 
@@ -54,6 +62,8 @@ void mq::Waiter::send(const std::vector<std::string> &message, long priority) co
             string += " ";
         string += item;
     }
+
+    thread::Print() << "Waiter === Send: " << string << " ===" << std::endl;
 
     this->_sender.send(string, priority, 0);
 }
