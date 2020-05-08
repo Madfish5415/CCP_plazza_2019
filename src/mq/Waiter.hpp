@@ -29,9 +29,9 @@ class Waiter {
     ~Waiter();
 
   public:
-    void close();
-    std::vector<std::string> receive(long* priority);
-    void send(const std::vector<std::string>& message, long priority);
+    void close() const;
+    std::vector<std::string> receive(long* priority) const;
+    void send(const std::vector<std::string>& message, long priority) const;
 };
 
 } // namespace mq

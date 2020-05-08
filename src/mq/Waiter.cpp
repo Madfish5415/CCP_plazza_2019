@@ -22,13 +22,13 @@ mq::Waiter::Waiter(int receiver, int sender, int flags)
 
 mq::Waiter::~Waiter() = default;
 
-void mq::Waiter::close()
+void mq::Waiter::close() const
 {
     this->_receiver.close();
     this->_sender.close();
 }
 
-std::vector<std::string> mq::Waiter::receive(long *priority)
+std::vector<std::string> mq::Waiter::receive(long *priority) const
 {
     std::string string = this->_receiver.receive(priority, IPC_NOWAIT);
     std::string find = string;
@@ -45,7 +45,7 @@ std::vector<std::string> mq::Waiter::receive(long *priority)
     return message;
 }
 
-void mq::Waiter::send(const std::vector<std::string> &message, long priority)
+void mq::Waiter::send(const std::vector<std::string> &message, long priority) const
 {
     std::string string;
 
