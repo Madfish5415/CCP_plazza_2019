@@ -6,3 +6,9 @@
 */
 
 #include "Print.hpp"
+
+thread::Print::Print() : _lock(thread::Print::_mutex)
+{
+}
+
+thread::Print::~Print() = default;
