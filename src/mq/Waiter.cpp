@@ -53,6 +53,10 @@ void mq::Waiter::close() const
 
 std::vector<std::string> mq::Waiter::receive(long *priority) const
 {
+    #ifdef LOG_HARDDEBUG
+        thread::Print() << "mq::Waiter::receive(): start" << std::endl;
+    #endif
+
     std::string string = this->_receiver.receive(priority, IPC_NOWAIT);
 
 #ifdef LOG_DEBUG
