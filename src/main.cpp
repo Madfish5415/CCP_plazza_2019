@@ -5,11 +5,11 @@
 ** main.cpp
 */
 
-#include <pizza/Factory.hpp>
 #include <pizza/Ingredients.hpp>
 #include <pizza/Recipes.hpp>
 #include <pizza/Sizes.hpp>
 #include <reception/Manager.hpp>
+#include <reception/Reception.hpp>
 
 int main()
 {
@@ -28,19 +28,7 @@ int main()
     for (const auto& ingredient : pizza::Ingredients::get())
         ingredients.emplace(ingredient, MAX_INGREDIENT_UNIT);
 
-    reception::Manager manager(settings, ingredients);
+    reception::Reception reception(settings, ingredients);
 
-    reception::Order order;
-
-    auto regina = pizza::Factory::create("regina", "XL", order.getId());
-
-    order.add(regina);
-
-    manager.status();
-    manager.handle(order);
-    manager.status();
-    process::This::sleepFor(std::chrono::seconds(1));
-    manager.status();
-    process::This::sleepFor(std::chrono::seconds(1));
-    manager.status();
+    reception.run();
 }
