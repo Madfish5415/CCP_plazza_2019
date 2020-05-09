@@ -91,6 +91,7 @@ bool process::Kitchen::handle(pizza::Pizza pizza)
     std::vector<std::string> message = {"PIZZA", pizza.pack()};
 
     this->_waiter.send(message, 1);
+    this->_pending += 1;
 
     thread::Print() << "process::Kitchen::handle(): end" << std::endl; // TODO: Remove
 

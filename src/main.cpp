@@ -27,16 +27,14 @@ int main()
 
     reception::Manager manager(settings, ingredients);
 
-    int orderID = 1;
+    reception::Order order;
     pizza::Recipe recipe1("recipe1", {{"item1", 1}, {"item2", 1}}, 1);
     pizza::Recipe recipe2("recipe2", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Pizza pizza1(recipe1, "M", orderID);
-    pizza::Pizza pizza2(recipe2, "XL", orderID);
-    reception::Order order;
+    pizza::Pizza pizza1(recipe1, "M", order.getId());
+    pizza::Pizza pizza2(recipe2, "XL", order.getId());
 
-    order.id = orderID;
-    order.pizzas.emplace_back(pizza1);
-    order.pizzas.emplace_back(pizza2);
+    order.add(pizza1);
+    order.add(pizza2);
 
     manager.status();
     manager.handle(order);

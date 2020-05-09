@@ -35,12 +35,12 @@ void reception::Manager::handle(Order order)
 
     std::lock_guard<std::mutex> guard(this->_mutex);
 
-    this->_orders.emplace(order.id, order);
+    this->_orders.emplace(order.getId(), order);
 
-    thread::Print() << "reception::Manager::handle(): Order n°" << order.id
+    thread::Print() << "reception::Manager::handle(): Order n°" << order.getId()
                     << " with following pizzas:" << std::endl; // TODO: Remove
 
-    for (const auto& pizza : order.pizzas)
+    for (const auto& pizza : order.getPizzas())
         thread::Print() << "- " << pizza.pack() << std::endl; // TODO: Remove
 
     this->_kitchens.sort([](const process::Kitchen& a, const process::Kitchen& b) {
@@ -50,7 +50,7 @@ void reception::Manager::handle(Order order)
     if (this->_kitchens.empty())
         this->createKitchen();
 
-    for (const auto& pizza : order.pizzas) {
+    for (const auto& pizza : order.getPizzas()) {
         bool handled = this->_kitchens.front().handle(pizza);
 
         if (!handled) {
@@ -79,7 +79,7 @@ void reception::Manager::manage()
 {
     thread::Print() << "reception::Manager::manage(): start" << std::endl; // TODO: Remove
 
-    while (this->_state != Finished) {
+    while ((this->_state != Finished) || !this->_kitchens.empty()) {
         std::lock_guard<std::mutex> guard(this->_mutex);
 
         this->updateKitchens();
@@ -113,25 +113,26 @@ void reception::Manager::askKitchens()
     // thread::Print() << "reception::Manager::askKitchens(): start" << std::endl; // TODO: Remove
 
     for (auto& kitchen : this->_kitchens) {
-        thread::Print() << "reception::Manager::askKitchens(): Asking a kitchen..." << std::endl; // TODO: Remove
+        // thread::Print() << "reception::Manager::askKitchens(): Asking a kitchen..." << std::endl; // TODO: Remove
 
         pizza::Pizza pizza;
 
         try {
             pizza = kitchen.ask();
         } catch (std::exception&) {
-            thread::Print() << "reception::Manager::askKitchens(): No pizza found." << std::endl; // TODO: Remove
+            // thread::Print() << "reception::Manager::askKitchens(): No pizza found." << std::endl; // TODO: Remove
             continue;
         }
 
-        thread::Print() << "reception::Manager::askKitchens(): Pizza found." << std::endl; // TODO: Remove
+        thread::Print() << "reception::Manager::askKitchens(): Pizza found: " << pizza.pack()
+                        << std::endl; // TODO: Remove
 
         auto order = this->_orders.at(pizza.getOrder());
 
-        order.ready++;
+        order.ready();
 
-        thread::Print() << "reception::Manager::askKitchens(): Order n°" << order.id << ": Ready: " << order.ready
-                        << std::endl; // TODO: Remove
+        thread::Print() << "reception::Manager::askKitchens(): Order n°" << order.getId()
+                        << ": Pending: " << order.getPending() << std::endl; // TODO: Remove
     }
 
     // thread::Print() << "reception::Manager::askKitchens(): end" << std::endl; // TODO: Remove
@@ -142,10 +143,12 @@ void reception::Manager::updateKitchens()
     // thread::Print() << "reception::Manager::updateKitchens(): start" << std::endl; // TODO: Remove
 
     for (auto i = this->_kitchens.begin(); i != this->_kitchens.end(); ++i) {
-        thread::Print() << "reception::Manager::updateKitchens(): Updating a kitchen..." << std::endl; // TODO: Remove
+        // thread::Print() << "reception::Manager::updateKitchens(): Updating a kitchen..." << std::endl; // TODO:
+        // Remove
 
         if (i->getPending()) {
-            thread::Print() << "reception::Manager::updateKitchens(): Kitchen is working" << std::endl; // TODO: Remove
+            // thread::Print() << "reception::Manager::updateKitchens(): Kitchen is working" << std::endl; // TODO:
+            // Remove
             continue;
         }
 
@@ -170,11 +173,11 @@ void reception::Manager::updateOrders()
     // thread::Print() << "reception::Manager::updateOrders(): start" << std::endl; // TODO: Remove
 
     for (const auto& order : this->_orders) {
-        thread::Print() << "reception::Manager::updateOrders(): Order n°" << order.first
-                        << ": Ready: " << order.second.ready << std::endl; // TODO: Remove
+        /*thread::Print() << "reception::Manager::updateOrders(): Order n°" << order.first
+                        << ": Ready: " << order.second.ready << std::endl; // TODO: Remove*/
 
-        if (order.second.ready != order.second.pizzas.size()) {
-            thread::Print() << "reception::Manager::updateOrders(): Order not yet ready" << std::endl;
+        if (!order.second.isComplete()) {
+            // thread::Print() << "reception::Manager::updateOrders(): Order not yet ready" << std::endl;
             continue;
         }
 

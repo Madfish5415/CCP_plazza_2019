@@ -40,6 +40,7 @@ std::string pizza::Pizza::pack() const
 
     string += "recipe={" + this->_recipe.pack() + "};";
     string += "size=\"" + this->_size + "\";";
+    string += "order=" + std::to_string(this->_order) + ";";
 
     return string;
 }
@@ -48,10 +49,13 @@ void pizza::Pizza::unpack(const std::string& pack)
 {
     std::regex recipe("recipe=\\{(.*?)\\};");
     std::regex size("size=\"(.*?)\";");
+    std::regex order("order=(\\d+);");
     std::smatch match;
 
     if (std::regex_search(pack, match, recipe))
         this->_recipe.unpack(match.str(1));
     if (std::regex_search(pack, match, size))
         this->_size = match.str(1);
+    if (std::regex_search(pack, match, order))
+        this->_order = std::stoi(match.str(1));
 }

@@ -16,17 +16,28 @@
 namespace reception {
 
 class Order {
-  public:
-    unsigned int id {};
-    std::list<pizza::Pizza> pizzas {};
-    unsigned int ready {};
+  private:
+    unsigned int _id;
+    std::list<pizza::Pizza> _pizzas;
+    unsigned int _ready;
 
   public:
-    Order();
+    explicit Order();
     ~Order();
 
   public:
+    [[nodiscard]] unsigned int getId() const;
+    [[nodiscard]] const std::list<pizza::Pizza>& getPizzas() const;
+    [[nodiscard]] unsigned int getPending() const;
+    [[nodiscard]] bool isComplete() const;
+
+  public:
+    void add(pizza::Pizza pizza);
     void display() const;
+    void ready();
+
+  private:
+    static unsigned int id();
 };
 
 } // namespace reception
