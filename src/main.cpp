@@ -10,6 +10,7 @@
 #include <pizza/Recipes.hpp>
 #include <pizza/Sizes.hpp>
 #include <reception/Manager.hpp>
+#include <reception/Reception.hpp>
 #include <error/ErrorManager.hpp>
 
 int main(int argc, char **argv)
@@ -25,5 +26,16 @@ int main(int argc, char **argv)
         .maxWaiting = MAX_WAITING
     };
 
+    pizza::Recipes::load(RECIPES_PATH);
+    pizza::Sizes::load(SIZES_PATH);
+
+    std::map<std::string, unsigned int> ingredients;
+
+    for (const auto& ingredient : pizza::Ingredients::get())
+        ingredients.emplace(ingredient, MAX_INGREDIENT_UNIT);
+
+    std::unique_ptr<reception::Reception> reception(new reception::Reception(settings, ingredients));
+
+    reception->run();
     return 0;
 }
