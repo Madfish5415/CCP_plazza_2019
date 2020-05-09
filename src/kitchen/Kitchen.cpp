@@ -7,8 +7,6 @@
 
 #include "Kitchen.hpp"
 
-#include <utility>
-
 #include "process/Process.hpp"
 #include "thread/Print.hpp"
 
@@ -61,6 +59,8 @@ void kitchen::Kitchen::status()
 void kitchen::Kitchen::cook()
 {
     while (this->_state != State::Finished) {
+        this->refill();
+
         pizza::Pizza pizza;
 
         try {
@@ -101,4 +101,13 @@ bool kitchen::Kitchen::handle(pizza::Pizza pizza)
     bool handled = this->_cooks.front().handle(pizza);
 
     return handled;
+}
+
+void kitchen::Kitchen::refill()
+{
+    auto now = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->_storage.getLast());
+
+    if (elapsed.count() >= this->_settings.refillInterval)
+        this->_storage.refill();
 }

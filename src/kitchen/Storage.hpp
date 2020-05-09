@@ -18,15 +18,20 @@ class Storage {
   private:
     std::map<std::string, unsigned int> _ingredients;
     std::mutex _mutex;
+    std::chrono::time_point<std::chrono::system_clock> _last;
 
   public:
     explicit Storage(std::map<std::string, unsigned int> ingredients);
     ~Storage();
 
   public:
+    std::chrono::time_point<std::chrono::system_clock> getLast();
+
+  public:
     void add(const std::map<std::string, unsigned int>& ingredients);
     bool has(const std::map<std::string, unsigned int>& ingredients);
     void remove(const std::map<std::string, unsigned int>& ingredients);
+    void refill();
     void status();
 };
 

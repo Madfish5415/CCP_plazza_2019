@@ -20,7 +20,6 @@ class Waiter {
   private:
     SystemV _receiver;
     SystemV _sender;
-    std::queue<std::string> _messages;
 
   public:
     Waiter();

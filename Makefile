@@ -44,7 +44,7 @@ PROJ_SRC			=		kitchen/Cook.cpp					\
 
 TEST_SRC			=
 
-CFLAGS				+=		-I $(INCL_DIR) -std=c++17 -I $(INCL_DIR)/thread
+CFLAGS				+=		-I $(INCL_DIR) -std=c++17
 CFLAGS				+=		-W -Wall -Wextra -Werror
 
 LDLIBS				=		-lpthread -lrt

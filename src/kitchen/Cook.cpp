@@ -30,7 +30,7 @@ bool kitchen::Cook::handle(pizza::Pizza pizza)
 {
     if (this->_state != State::Working)
         return false;
-    if (this->_pizzas.size() >= MAX_PIZZAS)
+    if (this->_pizzas.size() >= this->_kitchen.getSettings().maxPerCook)
         return false;
 
     this->_pizzas.push(pizza);
@@ -47,14 +47,11 @@ void kitchen::Cook::status() const
 
     if (this->_pizzas.empty()) {
         print << "Waiting for a pizza" << std::endl;
-        ;
     } else {
         auto& pizza = this->_pizzas.front();
 
         print << "Cooking a(n) " << pizza.getSize() << " " << pizza.getRecipe().getType() << std::endl;
     }
-
-    print << std::endl;
 }
 
 void kitchen::Cook::cook()
@@ -76,7 +73,7 @@ void kitchen::Cook::cook()
         auto timeMultiplier = this->_kitchen.getSettings().timeMultiplier;
         auto sleepTime = (unsigned int)((float)(cookTime)*timeMultiplier);
 
-        std::this_thread::sleep_for(std::chrono::seconds(sleepTime));
+        std::this_thread::sleep_for(std::chrono::milliseconds (sleepTime));
 
         this->_kitchen.ready(pizza);
         this->_pizzas.pop();
