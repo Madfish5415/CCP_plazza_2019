@@ -12,5 +12,7 @@
 #define MAX_INGREDIENT_UNIT (5)
 #define MAX_PER_COOK (2)
 #define MAX_WAITING (5000)
+#define RECIPES_PATH ("./data/recipes.txt")
+#define SIZES_PATH ("./data/sizes.txt")
 
 #endif // CPP_PLAZZA_2019_SRC_DEF_MAX_HPP
