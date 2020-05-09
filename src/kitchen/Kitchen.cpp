@@ -97,7 +97,7 @@ void kitchen::Kitchen::cook()
 
 pizza::Pizza kitchen::Kitchen::ask()
 {
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): start" << std::endl; // TODO: Remove
+    // thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): start" << std::endl; // TODO: Remove
 
     auto message = this->_waiter.receive(nullptr);
 
@@ -122,7 +122,7 @@ pizza::Pizza kitchen::Kitchen::ask()
         this->_state = Finished;
     }
 
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): end" << std::endl; // TODO: Remove
+    // thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): end" << std::endl; // TODO: Remove
 
     throw std::exception(); // TODO: Custom Error class
 }

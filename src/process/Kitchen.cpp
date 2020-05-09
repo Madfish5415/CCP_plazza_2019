@@ -52,7 +52,7 @@ std::chrono::time_point<std::chrono::system_clock> process::Kitchen::getLast() c
 
 pizza::Pizza process::Kitchen::ask()
 {
-    thread::Print() << "process::Kitchen::ask(): start" << std::endl; // TODO: Remove
+    // thread::Print() << "process::Kitchen::ask(): start" << std::endl; // TODO: Remove
 
     auto message = this->_waiter.receive(nullptr);
 
@@ -71,7 +71,7 @@ pizza::Pizza process::Kitchen::ask()
         return pizza;
     }
 
-    thread::Print() << "process::Kitchen::ask(): end" << std::endl; // TODO: Remove
+    // thread::Print() << "process::Kitchen::ask(): end" << std::endl; // TODO: Remove
 
     throw std::exception(); // TODO: Custom Error class
 }

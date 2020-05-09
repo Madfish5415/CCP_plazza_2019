@@ -14,13 +14,19 @@
 reception::Manager::Manager(const kitchen::Settings& settings, std::map<std::string, unsigned int> ingredients)
     : _settings(settings), _ingredients(std::move(ingredients)), _state(Working), _thread(&Manager::manage, this)
 {
+    thread::Print() << "reception::Manager::Manager(): start" << std::endl; // TODO: Remove
+    thread::Print() << "reception::Manager::Manager(): end" << std::endl; // TODO: Remove
 }
 
 reception::Manager::~Manager()
 {
+    thread::Print() << "reception::Manager::~Manager(): start" << std::endl; // TODO: Remove
+
     this->_state = Finished;
 
     this->_thread.join();
+
+    thread::Print() << "reception::Manager::~Manager(): end" << std::endl; // TODO: Remove
 }
 
 void reception::Manager::handle(Order order)
@@ -32,7 +38,7 @@ void reception::Manager::handle(Order order)
     this->_orders.emplace(order.id, order);
 
     thread::Print() << "reception::Manager::handle(): Order n°" << order.id
-                    << "with following pizzas:" << std::endl; // TODO: Remove
+                    << " with following pizzas:" << std::endl; // TODO: Remove
 
     for (const auto& pizza : order.pizzas)
         thread::Print() << "- " << pizza.pack() << std::endl; // TODO: Remove
@@ -104,12 +110,12 @@ void reception::Manager::createKitchen()
 
 void reception::Manager::askKitchens()
 {
-    thread::Print() << "reception::Manager::askKitchens(): start" << std::endl; // TODO: Remove
+    // thread::Print() << "reception::Manager::askKitchens(): start" << std::endl; // TODO: Remove
 
     for (auto& kitchen : this->_kitchens) {
-        pizza::Pizza pizza;
-
         thread::Print() << "reception::Manager::askKitchens(): Asking a kitchen..." << std::endl; // TODO: Remove
+
+        pizza::Pizza pizza;
 
         try {
             pizza = kitchen.ask();
@@ -128,12 +134,12 @@ void reception::Manager::askKitchens()
                         << std::endl; // TODO: Remove
     }
 
-    thread::Print() << "reception::Manager::askKitchens(): end" << std::endl; // TODO: Remove
+    // thread::Print() << "reception::Manager::askKitchens(): end" << std::endl; // TODO: Remove
 }
 
 void reception::Manager::updateKitchens()
 {
-    thread::Print() << "reception::Manager::updateKitchens(): start" << std::endl; // TODO: Remove
+    // thread::Print() << "reception::Manager::updateKitchens(): start" << std::endl; // TODO: Remove
 
     for (auto i = this->_kitchens.begin(); i != this->_kitchens.end(); ++i) {
         thread::Print() << "reception::Manager::updateKitchens(): Updating a kitchen..." << std::endl; // TODO: Remove
@@ -156,12 +162,12 @@ void reception::Manager::updateKitchens()
         }
     }
 
-    thread::Print() << "reception::Manager::updateKitchens(): end" << std::endl; // TODO: Remove
+    // thread::Print() << "reception::Manager::updateKitchens(): end" << std::endl; // TODO: Remove
 }
 
 void reception::Manager::updateOrders()
 {
-    thread::Print() << "reception::Manager::updateOrders(): start" << std::endl; // TODO: Remove
+    // thread::Print() << "reception::Manager::updateOrders(): start" << std::endl; // TODO: Remove
 
     for (const auto& order : this->_orders) {
         thread::Print() << "reception::Manager::updateOrders(): Order n°" << order.first
@@ -179,5 +185,5 @@ void reception::Manager::updateOrders()
         thread::Print() << "reception::Manager::updateOrders(): Order ready, erasing it..." << std::endl;
     }
 
-    thread::Print() << "reception::Manager::updateOrders(): end" << std::endl; // TODO: Remove
+    // thread::Print() << "reception::Manager::updateOrders(): end" << std::endl; // TODO: Remove
 }
