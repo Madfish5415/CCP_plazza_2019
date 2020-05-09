@@ -42,7 +42,9 @@ PROJ_SRC			=		kitchen/Cook.cpp					\
 							reception/Reception.cpp				\
 							thread/Print.cpp					\
 
-TEST_SRC			=
+TEST_SRC			=		pizza/RecipeTests.cpp				\
+							pizza/RecipesTests.cpp				\
+							pizza/SizesTests.cpp				\
 
 CFLAGS				+=		-I $(INCL_DIR) -std=c++17 -I $(INCL_DIR)/thread
 CFLAGS				+=		-W -Wall -Wextra -Werror
