@@ -76,6 +76,8 @@ bool process::Kitchen::handle(pizza::Pizza pizza)
 
     std::vector<std::string> message = {"PIZZA", pizza.pack()};
 
+    this->_pending++;
+
     this->_waiter.send(message, 1);
 
     return true;

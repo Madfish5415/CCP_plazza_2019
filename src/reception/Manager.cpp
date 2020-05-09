@@ -64,8 +64,8 @@ void reception::Manager::manage()
     while (this->_state != Finished) {
         std::lock_guard<std::mutex> guard(this->_mutex);
 
-        this->updateKitchens();
         this->askKitchens();
+        this->updateKitchens();
         this->updateOrders();
     }
 }
