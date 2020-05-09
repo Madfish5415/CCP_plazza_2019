@@ -16,6 +16,7 @@ namespace reception {
 class Reception {
   private:
     Manager _manager;
+    bool _running;
 
   public:
     explicit Reception(const kitchen::Settings& settings, std::map<std::string, unsigned int> ingredients);

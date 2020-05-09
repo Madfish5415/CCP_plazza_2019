@@ -5,7 +5,6 @@
 ** main.cpp
 */
 
-#include <pizza/Factory.hpp>
 #include <pizza/Ingredients.hpp>
 #include <pizza/Recipes.hpp>
 #include <pizza/Sizes.hpp>
