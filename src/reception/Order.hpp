@@ -8,8 +8,8 @@
 #ifndef CPP_PLAZZA_2019_SRC_RECEPTION_ORDER_HPP
 #define CPP_PLAZZA_2019_SRC_RECEPTION_ORDER_HPP
 
-#include <memory>
 #include <list>
+#include <memory>
 
 #include "pizza/Pizza.hpp"
 

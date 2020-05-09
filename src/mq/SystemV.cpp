@@ -5,12 +5,12 @@
 ** SystemV.cpp
 */
 
-#include "Print.hpp"
-
 #include "SystemV.hpp"
 
 #include <cstring>
 #include <stdexcept>
+
+#include "Print.hpp"
 
 mq::SystemV::SystemV() = default;
 

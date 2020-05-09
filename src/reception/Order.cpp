@@ -9,7 +9,8 @@
 
 #include <thread/Print.hpp>
 
-reception::Order::Order() : _id(Order::id()), _ready(0) {
+reception::Order::Order() : _id(Order::id()), _ready(0)
+{
 }
 
 reception::Order::~Order() = default;

@@ -29,4 +29,3 @@ void pizza::Sizes::load(const std::string& path)
     while (std::getline(file, line))
         Sizes::_sizes().emplace(line);
 }
-
