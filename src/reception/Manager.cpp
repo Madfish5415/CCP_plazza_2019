@@ -64,8 +64,8 @@ void reception::Manager::manage()
     while (this->_state != Finished) {
         std::lock_guard<std::mutex> guard(this->_mutex);
 
-        this->askKitchens();
         this->updateKitchens();
+        this->askKitchens();
         this->updateOrders();
     }
 }
@@ -88,15 +88,21 @@ void reception::Manager::askKitchens()
     for (auto& kitchen : this->_kitchens) {
         pizza::Pizza pizza;
 
+        thread::Print() << "=== Asking kitchens ===" << std::endl;
+
         try {
             pizza = kitchen.ask();
         } catch (std::exception&) {
             continue;
         }
 
+        thread::Print() << "=== Kitchen has a ready pizza ! ===" << std::endl;
+
         auto order = this->_orders.at(pizza.getOrder());
 
         order.ready++;
+
+        thread::Print() << "=== Order n" << order.id << " has " << order.ready << " ready pizzas ===" << std::endl;
     }
 }
 
@@ -104,14 +110,22 @@ void reception::Manager::updateKitchens()
 {
     thread::Print() << "=== Updating Kitchens ===" << std::endl;
     for (auto i = this->_kitchens.begin(); i != this->_kitchens.end(); ++i) {
-        if (i->getPending())
+        if (i->getPending()) {
+            thread::Print() << "=== Kitchen is working on pizzas ===" << std::endl;
             continue;
+        }
+
+        thread::Print() << "=== Kitchen is stopped and waiting ===" << std::endl;
 
         auto now = std::chrono::system_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - i->getLast());
 
-        if (elapsed.count() >= MAX_KITCHEN_WAITING)
+        thread::Print() << "=== Elapsed time of the kitchen: " << elapsed.count() << " ===" << std::endl;
+
+        if (elapsed.count() >= MAX_KITCHEN_WAITING) {
+            thread::Print() << "=== Erasing a kitchen ===" << std::endl;
             i = --this->_kitchens.erase(i);
+        }
     }
 }
 
@@ -119,6 +133,9 @@ void reception::Manager::updateOrders()
 {
     thread::Print() << "=== Updating Orders === " << std::endl;
     for (const auto& order : this->_orders) {
+
+        thread::Print() << "=== Order n" << order.first << " has " << order.second.ready << " pizzas ===" << std::endl;
+
         if (order.second.ready != order.second.pizzas.size()) {
             thread::Print() << "=== All the pizzas of the order are not ready yet ! ===" << std::endl;
             continue;

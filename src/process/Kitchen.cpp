@@ -13,7 +13,7 @@
 
 process::Kitchen::Kitchen(
     const kitchen::Settings& settings, const std::map<std::string, unsigned int>& ingredients, int receiver, int sender)
-    : _settings(settings), _waiter(receiver, sender, IPC_CREAT)
+    : _settings(settings), _waiter(receiver, sender, IPC_CREAT), _last(std::chrono::system_clock::now())
 {
     thread::Print() << "Kitchen === Creating new process ===" << std::endl;
     this->_process = Process([&settings, &ingredients, receiver, sender]() {

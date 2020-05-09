@@ -1,4 +1,3 @@
 - Storage auto-fill
 - Handle if the ingredient asked by the pizza exists in the storage
-- On update kitchens, it removes the kitchen because it didn't receive the pizza already
-- On new ready pizza, also change the status of the order, and add to say there is a new pizza ready of the order
+- On update kitchens, it removes the kitchen because it didn't receive the pizza already, so the kitchens are removed and don't receive the ready pizzas
