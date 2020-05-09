@@ -147,8 +147,8 @@ pizza::Pizza kitchen::Kitchen::ask()
         this->_state = Finished;
     }
 
-#ifdef LOG_HARDDEBUG
-    // thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): end" << std::endl;
+#ifdef LOG_DEBUG
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): end" << std::endl;
 #endif
 
     throw std::exception(); // TODO: Custom Error class
