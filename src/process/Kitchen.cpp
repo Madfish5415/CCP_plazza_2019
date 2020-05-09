@@ -85,7 +85,7 @@ pizza::Pizza process::Kitchen::ask()
         return pizza;
     }
 
-#ifdef LOG_HARDDEBUG
+#ifdef LOG_DEBUG
     thread::Print() << "process::Kitchen::ask(): end" << std::endl;
 #endif
 
