@@ -10,37 +10,20 @@
 #include <pizza/Recipes.hpp>
 #include <pizza/Sizes.hpp>
 #include <reception/Manager.hpp>
+#include <error/ErrorManager.hpp>
 
-int main()
+int main(int argc, char **argv)
 {
-    pizza::Recipes::load("./data/recipes.txt");
-    pizza::Sizes::load("./data/sizes.txt");
+    if (ErrorManager::check(argc, argv))
+        return 84;
 
     kitchen::Settings settings {
-        .timeMultiplier = 0.75,
-        .cooks = 2,
-        .refillInterval = 1000,
+        .timeMultiplier = std::stof(argv[1]),
+        .cooks = static_cast<unsigned int>(std::stoi(argv[2])),
+        .refillInterval = static_cast<unsigned int>(std::stoi(argv[3])),
         .maxPerCook = MAX_PER_COOK,
         .maxWaiting = MAX_WAITING
     };
-    std::map<std::string, unsigned int> ingredients;
 
-    for (const auto& ingredient : pizza::Ingredients::get())
-        ingredients.emplace(ingredient, MAX_INGREDIENT_UNIT);
-
-    reception::Manager manager(settings, ingredients);
-
-    reception::Order order;
-
-    auto regina = pizza::Factory::create("regina", "XL", order.getId());
-
-    order.add(regina);
-
-    manager.status();
-    manager.handle(order);
-    manager.status();
-    process::This::sleepFor(std::chrono::seconds(1));
-    manager.status();
-    process::This::sleepFor(std::chrono::seconds(1));
-    manager.status();
+    return 0;
 }
