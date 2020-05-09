@@ -12,19 +12,25 @@
 
 kitchen::Cook::Cook(kitchen::Kitchen& kitchen) : _kitchen(kitchen), _state(Working), _thread(&Cook::cook, this)
 {
-    thread::Print() << "kitchen::Cook::Cook(): start" << std::endl; // TODO: Remove
-    thread::Print() << "kitchen::Cook::Cook(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "kitchen::Cook::Cook(): start" << std::endl;
+    thread::Print() << "kitchen::Cook::Cook(): end" << std::endl;
+#endif
 }
 
 kitchen::Cook::~Cook()
 {
-    thread::Print() << "kitchen::Cook::~Cook(): start" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "kitchen::Cook::~Cook(): start" << std::endl;
+#endif
 
     this->_state = State::Finished;
 
     this->_thread.join();
 
-    thread::Print() << "kitchen::Cook::~Cook(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "kitchen::Cook::~Cook(): end" << std::endl;
+#endif
 }
 
 const std::queue<pizza::Pizza>& kitchen::Cook::getPizzas() const
@@ -34,25 +40,35 @@ const std::queue<pizza::Pizza>& kitchen::Cook::getPizzas() const
 
 bool kitchen::Cook::handle(pizza::Pizza pizza)
 {
+#ifdef LOG_DEBUG
     thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::handle(): start"
-                    << std::endl; // TODO: Remove
+                    << std::endl;
+#endif
 
     if (this->_state != State::Working) {
+#ifdef LOG_DEBUG
         thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::handle(): Cook is finishing"
-                        << std::endl; // TODO: Remove
+                        << std::endl;
+#endif
         return false;
     }
     if (this->_pizzas.size() >= MAX_PIZZAS) {
+#ifdef LOG_DEBUG
         thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::handle(): Cook is saturating"
-                        << std::endl; // TODO: Remove
+                        << std::endl;
+#endif
         return false;
     }
 
-    thread::Print() << "process::Kitchen::handle(): Cook handle pizza" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "process::Kitchen::handle(): Cook handle pizza" << std::endl;
+#endif
 
     this->_pizzas.push(pizza);
 
-    thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::handle(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::handle(): end" << std::endl;
+#endif
 
     return true;
 }
@@ -66,10 +82,8 @@ void kitchen::Cook::status() const
 
     if (this->_pizzas.empty()) {
         print << "Waiting for a pizza" << std::endl;
-        ;
     } else {
         auto& pizza = this->_pizzas.front();
-
         print << "Cooking a(n) " << pizza.getSize() << " " << pizza.getRecipe().getType() << std::endl;
     }
 
@@ -78,7 +92,9 @@ void kitchen::Cook::status() const
 
 void kitchen::Cook::cook()
 {
-    thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::cook(): start" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::cook(): start" << std::endl;
+#endif
 
     while ((this->_state == State::Working) || !this->_pizzas.empty()) {
         if (this->_pizzas.empty())
@@ -88,12 +104,16 @@ void kitchen::Cook::cook()
         auto& ingredients = pizza.getRecipe().getIngredients();
         auto& storage = this->_kitchen.getStorage();
 
+#ifdef LOG_DEBUG
         thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::cook(): Pizza: " << pizza.pack()
-                        << std::endl; // TODO: Remove
+                        << std::endl;
+#endif
 
         if (!storage.has(ingredients)) {
+#ifdef LOG_DEBUG
             thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::cook(): Not enough ingredients"
-                            << std::endl; // TODO: Remove
+                            << std::endl;
+#endif
             continue;
         }
 
@@ -103,9 +123,11 @@ void kitchen::Cook::cook()
         auto timeMultiplier = this->_kitchen.getSettings().timeMultiplier;
         auto sleepTime = (unsigned int)((float)(cookTime)*timeMultiplier);
 
+#ifdef LOG_DEBUG
         thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::cook(): Cook parameters:\n"
                         << "cookTime: " << cookTime << ", timeMultiplier: " << timeMultiplier
-                        << ", sleepTime: " << sleepTime << std::endl; // TODO: Remove
+                        << ", sleepTime: " << sleepTime << std::endl;
+#endif
 
         std::this_thread::sleep_for(std::chrono::seconds(sleepTime));
 
@@ -113,5 +135,7 @@ void kitchen::Cook::cook()
         this->_pizzas.pop();
     }
 
-    thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::cook(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::cook(): end" << std::endl;
+#endif
 }

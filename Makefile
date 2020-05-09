@@ -98,13 +98,16 @@ re:					fclean all
 
 sweet:				all clean
 
-debug:				CFLAGS += -g3
+debug:				CFLAGS += -g3 -DLOG_DEBUG
 debug:				all
 
-debug_re:			CFLAGS += -g3
+debug_hard:			CFLAGS += -g3 -DLOG_DEBUG -DLOG_HARDDEBUG
+debug_hard:			all
+
+debug_re:			CFLAGS += -g3 -DLOG_DEBUG
 debug_re:			re
 
-debug_sweet:		CFLAGS += -g3
+debug_sweet:		CFLAGS += -g3 -DLOG_DEBUG
 debug_sweet:		sweet
 
 $(TEST_NAME):		CFLAGS += -fprofile-arcs -ftest-coverage
@@ -156,6 +159,6 @@ full_re:			full_fclean full
 full_sweet:			full full_clean
 
 .PHONY:				all clean fclean re sweet											\
-					debug debug_re debug_sweet											\
+					debug debug_hard debug_re debug_sweet								\
 					tests_run tests_clean tests_fclean tests_re tests_sweet tests_sh	\
 					full full_clean full_fclean full_re full_sweet						\

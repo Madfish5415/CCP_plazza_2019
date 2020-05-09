@@ -15,37 +15,49 @@ mq::Waiter::Waiter() = default;
 
 mq::Waiter::Waiter(int receiver, int sender) : _receiver(receiver, 0666), _sender(sender, 0666)
 {
-    thread::Print() << "mq::Waiter::Waiter(): start" << std::endl; // TODO: Remove
-    thread::Print() << "mq::Waiter::Waiter(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "mq::Waiter::Waiter(): start" << std::endl;
+    thread::Print() << "mq::Waiter::Waiter(): end" << std::endl;
+#endif
 }
 
 mq::Waiter::Waiter(int receiver, int sender, int flags)
     : _receiver(receiver, flags | 0666), _sender(sender, flags | 0666)
 {
-    thread::Print() << "mq::Waiter::Waiter(): start" << std::endl; // TODO: Remove
-    thread::Print() << "mq::Waiter::Waiter(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "mq::Waiter::Waiter(): start" << std::endl;
+    thread::Print() << "mq::Waiter::Waiter(): end" << std::endl;
+#endif
 }
 
 mq::Waiter::~Waiter() {
-    thread::Print() << "mq::Waiter::~Waiter(): start" << std::endl; // TODO: Remove
-    thread::Print() << "mq::Waiter::~Waiter(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "mq::Waiter::~Waiter(): start" << std::endl;
+    thread::Print() << "mq::Waiter::~Waiter(): end" << std::endl;
+#endif
 }
 
 void mq::Waiter::close() const
 {
-    thread::Print() << "mq::Waiter::close(): start" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "mq::Waiter::close(): start" << std::endl;
+#endif
 
     this->_receiver.close();
     this->_sender.close();
 
-    thread::Print() << "mq::Waiter::close(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "mq::Waiter::close(): end" << std::endl;
+#endif
 }
 
 std::vector<std::string> mq::Waiter::receive(long *priority) const
 {
     std::string string = this->_receiver.receive(priority, IPC_NOWAIT);
 
-    thread::Print() << "[" << this->_receiver.getKey() << "] mq::Waiter::receive(): Message: " << string << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "[" << this->_receiver.getKey() << "] mq::Waiter::receive(): Message: " << string << std::endl;
+#endif
 
     std::string find = string;
     std::regex word(R"(([^\s]+))");
@@ -58,7 +70,9 @@ std::vector<std::string> mq::Waiter::receive(long *priority) const
         find = match.suffix();
     }
 
-    thread::Print() << "[" << this->_receiver.getKey() << "] mq::Waiter::receive(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "[" << this->_receiver.getKey() << "] mq::Waiter::receive(): end" << std::endl;
+#endif
 
     return message;
 }
@@ -73,9 +87,13 @@ void mq::Waiter::send(const std::vector<std::string> &message, long priority) co
         string += item;
     }
 
-    thread::Print() << "[" << this->_sender.getKey() << "] mq::Waiter::send(): Message: " << string << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "[" << this->_sender.getKey() << "] mq::Waiter::send(): Message: " << string << std::endl;
+#endif
 
     this->_sender.send(string, priority, 0);
 
-    thread::Print() << "[" << this->_sender.getKey() << "] mq::Waiter::send(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "[" << this->_sender.getKey() << "] mq::Waiter::send(): end" << std::endl;
+#endif
 }
