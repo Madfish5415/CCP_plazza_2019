@@ -20,15 +20,19 @@ void Parser::parse()
 {
     this->fill();
     for (auto& pizza : _pizzaList) {
-        this->checkPizza(pizza);
+        try {
+            this->checkPizza(pizza);
+        } catch (std::exception& e) {
+            throw e;
+        }
     }
-    for (auto& pizza : _pizzaList) {
-        std::cout << "[" << 0 << "] : " << std::get<0>(pizza) << std::endl;
-        std::cout << "[" << 1 << "] : " << std::get<1>(pizza) << std::endl;
-        std::cout << "[" << 2 << "] : " << std::get<2>(pizza) << std::endl;
-        std::cout << "[" << 3 << "] : " << std::get<3>(pizza) << std::endl;
-        std::cout << std::endl;
-    }
+}
+
+void Parser::parse(const std::string& command)
+{
+    _command = command;
+    _pizzaList.clear();
+    parse();
 }
 
 void Parser::fill()
@@ -46,15 +50,14 @@ void Parser::fill()
 
 void Parser::checkPizza(std::tuple<std::string, std::string, std::string, unsigned int>& pizza)
 {
-    std::regex rgx(R"(^\s*([a-zA-Z]*)\s+([A-Z]*)\s+(x[1-9][0-9]*)\s*$)");
+    std::regex rgx(R"(^\s*([A-Z][a-z]{2,})\s+([A-Z]+)\s+x([1-9][0-9]*)\s*$)");
     std::smatch matches;
 
     if (std::regex_search(std::get<0>(pizza), matches, rgx)) {
         if (matches.size() == 4) {
             std::get<1>(pizza) = matches[1].str();
             std::get<2>(pizza) = matches[2].str();
-            std::get<3>(pizza) =
-                static_cast<unsigned int>(std::stoi(matches[3].str().substr(1, matches[3].str().length())));
+            std::get<3>(pizza) = static_cast<unsigned int>(std::stoi(matches[3].str()));
         } else {
             throw std::exception(); // TODO Create our own exception
         }

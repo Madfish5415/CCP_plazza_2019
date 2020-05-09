@@ -16,12 +16,16 @@ SRC_DIR				=		src
 TEST_DIR			=		tests
 
 AR					=		ar rcs
-CC					=		g++
+CC					=		g++ -std=c++17
 RM					=		rm -rf
 
 MAIN_SRC			=		main.cpp
 
-PROJ_SRC			=		Parser.cpp
+PROJ_SRC			=		Parser.cpp			\
+							Factory.cpp			\
+							Ingredients.cpp		\
+							Sizes.cpp			\
+							Recipes.cpp			\
 
 TEST_SRC			=
 

@@ -18,6 +18,7 @@ class Parser {
 
   public:
     void parse();
+    void parse(const std::string& command);
 
   private:
     void fill();
