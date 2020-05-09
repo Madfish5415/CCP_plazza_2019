@@ -5,18 +5,17 @@
 ** SystemV.cpp
 */
 
-#include "Print.hpp"
-
 #include "SystemV.hpp"
 
 #include <cstring>
 #include <stdexcept>
 
+#include "Print.hpp"
+
 mq::SystemV::SystemV() = default;
 
 mq::SystemV::SystemV(int key, int flags) : _key(key), _flags(flags)
 {
-    thread::Print() << "SystemV === Creating a new queue === " << key << std::endl;
     this->_fd = msgget(key, flags);
 }
 

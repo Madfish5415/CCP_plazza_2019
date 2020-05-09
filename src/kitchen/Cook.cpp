@@ -12,14 +12,11 @@
 
 kitchen::Cook::Cook(kitchen::Kitchen& kitchen) : _kitchen(kitchen), _state(Working), _thread(&Cook::cook, this)
 {
-    thread::Print() << "Cook n" << this->_thread.get_id() << " === I do the best pizzas ! ===" << std::endl;
 }
 
 kitchen::Cook::~Cook()
 {
     this->_state = State::Finished;
-
-    thread::Print() << "Cook n" << this->_thread.get_id() << " === I had enought of this kitchen... ===" << std::endl;
 
     this->_thread.join();
 }
@@ -31,16 +28,10 @@ const std::queue<pizza::Pizza>& kitchen::Cook::getPizzas() const
 
 bool kitchen::Cook::handle(pizza::Pizza pizza)
 {
-    if (this->_state != State::Working) {
-        thread::Print() << "Cook n" << this->_thread.get_id() << " === Cook has finished his work ===" << std::endl;
+    if (this->_state != State::Working)
         return false;
-    }
-    if (this->_pizzas.size() >= MAX_PIZZAS) {
-        thread::Print() << "Cook n" << this->_thread.get_id() << " === Cook has already too much pizzas ===" << std::endl;
+    if (this->_pizzas.size() >= MAX_PIZZAS)
         return false;
-    }
-
-    thread::Print() << "Cook n" << this->_thread.get_id() << " === Cook accept the pizza ===" << std::endl;
 
     this->_pizzas.push(pizza);
 
@@ -55,7 +46,8 @@ void kitchen::Cook::status() const
     print << "Action: ";
 
     if (this->_pizzas.empty()) {
-        print << "Waiting for a pizza" << std::endl;;
+        print << "Waiting for a pizza" << std::endl;
+        ;
     } else {
         auto& pizza = this->_pizzas.front();
 
@@ -67,30 +59,22 @@ void kitchen::Cook::status() const
 
 void kitchen::Cook::cook()
 {
-    thread::Print() << "Cook n" << this->_thread.get_id() << " === Start cooking new pizzas ! ===" << std::endl;
     while ((this->_state == State::Working) || !this->_pizzas.empty()) {
         if (this->_pizzas.empty())
             continue;
 
-        thread::Print() << "Cook n" << this->_thread.get_id() << " === I have " << this->_pizzas.size() << " pizzas ===" << std::endl;
-        thread::Print() << "Cook n" << this->_thread.get_id() << " === A pizza is in preparation ===" << std::endl;
         auto& pizza = this->_pizzas.front();
         auto& ingredients = pizza.getRecipe().getIngredients();
         auto& storage = this->_kitchen.getStorage();
 
-        if (!storage.has(ingredients)) {
-            storage.status();
-            thread::Print() << "Cook n" << this->_thread.get_id() << " === Fuck there is no more ingredients... ===" << std::endl;
+        if (!storage.has(ingredients))
             continue;
-        }
 
         storage.remove(ingredients);
 
         auto cookTime = pizza.getRecipe().getCookTime();
         auto timeMultiplier = this->_kitchen.getSettings().timeMultiplier;
-        auto sleepTime = (unsigned int)((float)(cookTime) * timeMultiplier);
-
-        thread::Print() << "Cook n" << this->_thread.get_id() << " === The pizza is in the hoven ===" << std::endl;
+        auto sleepTime = (unsigned int)((float)(cookTime)*timeMultiplier);
 
         std::this_thread::sleep_for(std::chrono::seconds(sleepTime));
 

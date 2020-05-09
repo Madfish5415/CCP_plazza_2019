@@ -15,7 +15,6 @@ kitchen::Storage::Storage(std::map<std::string, unsigned int> ingredients) : _in
 
 kitchen::Storage::~Storage()
 {
-    thread::Print() << "Storage === The fridge doesn't work anymore... ===" << std::endl;
 }
 
 void kitchen::Storage::add(const std::map<std::string, unsigned int>& ingredients)

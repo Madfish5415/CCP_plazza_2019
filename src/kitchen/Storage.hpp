@@ -20,7 +20,7 @@ class Storage {
     std::mutex _mutex;
 
   public:
-    explicit Storage(std::map<std::string, unsigned int>  ingredients);
+    explicit Storage(std::map<std::string, unsigned int> ingredients);
     ~Storage();
 
   public:
