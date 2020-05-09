@@ -22,6 +22,9 @@ class Sizes {
 
   public:
     static void load(const std::string& path);
+
+  private:
+    static bool filewatcher(const std::string& path);
 };
 
 } // namespace pizza
