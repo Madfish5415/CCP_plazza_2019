@@ -9,7 +9,7 @@
 
 #include <utility>
 
-#include "Print.hpp"
+#include "thread/Print.hpp"
 
 reception::Manager::Manager(const kitchen::Settings& settings, std::map<std::string, unsigned int> ingredients)
     : _settings(settings), _ingredients(std::move(ingredients)), _state(Working), _thread(&Manager::manage, this)
@@ -51,6 +51,8 @@ void reception::Manager::status()
 {
     std::lock_guard<std::mutex> guard(this->_mutex);
 
+    if (this->_kitchens.empty())
+        thread::Print() << "No kitchen working." << std::endl;
     for (const auto& kitchen : this->_kitchens)
         kitchen.status();
 }
@@ -105,9 +107,9 @@ void reception::Manager::updateKitchens()
         }
 
         auto now = std::chrono::system_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - i->getLast());
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - i->getLast());
 
-        if (elapsed.count() >= MAX_KITCHEN_WAITING) {
+        if (elapsed.count() >= this->_settings.maxWaiting) {
             i = this->_kitchens.erase(i);
         } else
             i++;

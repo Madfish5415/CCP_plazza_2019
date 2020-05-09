@@ -7,7 +7,6 @@
 
 #include "Reception.hpp"
 
-#include <thread/Print.hpp>
 #include <utility>
 
 #include "Input.hpp"
@@ -24,8 +23,6 @@ void reception::Reception::run()
 {
     while (true) {
         std::string command = Input::get();
-
-        thread::Print() << command << std::endl;
 
         if (command == "status") {
             this->_manager.status();

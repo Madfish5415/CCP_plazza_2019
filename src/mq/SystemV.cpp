@@ -10,8 +10,6 @@
 #include <cstring>
 #include <stdexcept>
 
-#include "Print.hpp"
-
 mq::SystemV::SystemV() = default;
 
 mq::SystemV::SystemV(int key, int flags) : _key(key), _flags(flags)
@@ -41,7 +39,7 @@ std::string mq::SystemV::receive(long *type, int flag) const
 {
     data data {};
 
-    data.type = (type) ? *type : 0;
+    data.type = (type) ? *type : 1;
 
     memset(data.message, 0, MAX_MESSAGE_SIZE);
 

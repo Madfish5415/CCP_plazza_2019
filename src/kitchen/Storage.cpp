@@ -9,12 +9,18 @@
 
 #include "thread/Print.hpp"
 
-kitchen::Storage::Storage(std::map<std::string, unsigned int> ingredients) : _ingredients(std::move(ingredients))
+kitchen::Storage::Storage(std::map<std::string, unsigned int> ingredients)
+    : _ingredients(std::move(ingredients)), _last(std::chrono::system_clock::now())
 {
 }
 
 kitchen::Storage::~Storage()
 {
+}
+
+std::chrono::time_point<std::chrono::system_clock> kitchen::Storage::getLast()
+{
+    return this->_last;
 }
 
 void kitchen::Storage::add(const std::map<std::string, unsigned int>& ingredients)
@@ -53,8 +59,20 @@ void kitchen::Storage::remove(const std::map<std::string, unsigned int>& ingredi
     }
 }
 
+void kitchen::Storage::refill()
+{
+    std::lock_guard<std::mutex> guard(this->_mutex);
+
+    for (auto& ingredient : this->_ingredients)
+        ingredient.second += 1;
+
+    this->_last = std::chrono::system_clock::now();
+}
+
 void kitchen::Storage::status()
 {
+    std::lock_guard<std::mutex> guard(this->_mutex);
+
     thread::Print print;
 
     for (const auto& ingredient : this->_ingredients)

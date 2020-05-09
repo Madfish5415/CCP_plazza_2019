@@ -7,7 +7,6 @@
 
 #include "Kitchen.hpp"
 
-#include "Print.hpp"
 #include "kitchen/Kitchen.hpp"
 
 process::Kitchen::Kitchen(
@@ -61,7 +60,7 @@ pizza::Pizza process::Kitchen::ask()
 
 bool process::Kitchen::handle(pizza::Pizza pizza)
 {
-    if (this->_pending >= this->_settings.cooks * MAX_PIZZAS)
+    if (this->_pending >= this->_settings.cooks * this->_settings.maxPerCook)
         return false;
 
     std::vector<std::string> message = {"PIZZA", pizza.pack()};
