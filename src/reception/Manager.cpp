@@ -14,34 +14,44 @@
 reception::Manager::Manager(const kitchen::Settings& settings, std::map<std::string, unsigned int> ingredients)
     : _settings(settings), _ingredients(std::move(ingredients)), _state(Working), _thread(&Manager::manage, this)
 {
-    thread::Print() << "reception::Manager::Manager(): start" << std::endl; // TODO: Remove
-    thread::Print() << "reception::Manager::Manager(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::Manager(): start" << std::endl;
+    thread::Print() << "reception::Manager::Manager(): end" << std::endl;
+#endif
 }
 
 reception::Manager::~Manager()
 {
-    thread::Print() << "reception::Manager::~Manager(): start" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::~Manager(): start" << std::endl;
+#endif
 
     this->_state = Finished;
 
     this->_thread.join();
 
-    thread::Print() << "reception::Manager::~Manager(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::~Manager(): end" << std::endl;
+#endif
 }
 
 void reception::Manager::handle(Order order)
 {
-    thread::Print() << "reception::Manager::handle(): start" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::handle(): start" << std::endl;
+#endif
 
     std::lock_guard<std::mutex> guard(this->_mutex);
 
     this->_orders.emplace(order.getId(), order);
 
+#ifdef LOG_DEBUG
     thread::Print() << "reception::Manager::handle(): Order n°" << order.getId()
-                    << " with following pizzas:" << std::endl; // TODO: Remove
+                    << " with following pizzas:" << std::endl;
 
     for (const auto& pizza : order.getPizzas())
-        thread::Print() << "- " << pizza.pack() << std::endl; // TODO: Remove
+        thread::Print() << "- " << pizza.pack() << std::endl;
+#endif
 
     this->_kitchens.sort([](const process::Kitchen& a, const process::Kitchen& b) {
         return (a.getPending() < b.getPending());
@@ -60,24 +70,32 @@ void reception::Manager::handle(Order order)
         }
     }
 
-    thread::Print() << "reception::Manager::handle(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::handle(): end" << std::endl;
+#endif
 }
 
 void reception::Manager::status()
 {
-    thread::Print() << "reception::Manager::status(): start" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::status(): start" << std::endl;
+#endif
 
     std::lock_guard<std::mutex> guard(this->_mutex);
 
     for (const auto& kitchen : this->_kitchens)
         kitchen.status();
 
-    thread::Print() << "reception::Manager::status(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::status(): end" << std::endl;
+#endif
 }
 
 void reception::Manager::manage()
 {
-    thread::Print() << "reception::Manager::manage(): start" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::manage(): start" << std::endl;
+#endif
 
     while ((this->_state != Finished) || !this->_kitchens.empty()) {
         std::lock_guard<std::mutex> guard(this->_mutex);
@@ -87,45 +105,61 @@ void reception::Manager::manage()
         this->updateOrders();
     }
 
-    thread::Print() << "reception::Manager::manage(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::manage(): end" << std::endl;
+#endif
 }
 
 void reception::Manager::createKitchen()
 {
-    thread::Print() << "reception::Manager::createKitchen(): start" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::createKitchen(): start" << std::endl;
+#endif
 
     static int receiver = 1;
     static int sender = 2;
 
     this->_kitchens.emplace_front(this->_settings, this->_ingredients, receiver, sender);
 
+#ifdef LOG_DEBUG
     thread::Print() << "reception::Manager::createKitchen(): receiver: " << receiver << ", sender: " << sender
-                    << std::endl; // TODO: Remove
+                    << std::endl;
+#endif
 
     receiver += 2;
     sender += 2;
 
-    thread::Print() << "reception::Manager::createKitchen(): end" << std::endl; // TODO: Remove
+#ifdef LOG_DEBUG
+    thread::Print() << "reception::Manager::createKitchen(): end" << std::endl;
+#endif
 }
 
 void reception::Manager::askKitchens()
 {
-    // thread::Print() << "reception::Manager::askKitchens(): start" << std::endl; // TODO: Remove
+#ifdef LOG_HARDDEBUG
+    thread::Print() << "reception::Manager::askKitchens(): start" << std::endl;
+#endif
 
     for (auto& kitchen : this->_kitchens) {
-        // thread::Print() << "reception::Manager::askKitchens(): Asking a kitchen..." << std::endl; // TODO: Remove
+#ifdef LOG_HARDDEBUG
+        thread::Print() << "reception::Manager::askKitchens(): Asking a kitchen..." << std::endl;
+#endif
 
         pizza::Pizza pizza;
 
         try {
             pizza = kitchen.ask();
         } catch (std::exception&) {
-            // thread::Print() << "reception::Manager::askKitchens(): No pizza found." << std::endl; // TODO: Remove
+#ifdef LOG_HARDDEBUG
+            thread::Print() << "reception::Manager::askKitchens(): No pizza found." << std::endl;
+#endif
             continue;
         }
 
+#ifdef LOG_DEBUG
         thread::Print() << "reception::Manager::askKitchens(): Pizza found: " << pizza.pack()
-                        << std::endl; // TODO: Remove
+                        << std::endl;
+#endif
 
         auto order = this->_orders[pizza.getOrder()];
 
@@ -133,24 +167,31 @@ void reception::Manager::askKitchens()
 
         this->_orders[pizza.getOrder()] = order;
 
+#ifdef LOG_DEBUG
         thread::Print() << "reception::Manager::askKitchens(): Order n°" << order.getId()
-                        << ": Pending: " << order.getPending() << std::endl; // TODO: Remove
+                        << ": Pending: " << order.getPending() << std::endl;
+#endif
     }
-
-    // thread::Print() << "reception::Manager::askKitchens(): end" << std::endl; // TODO: Remove
+#ifdef LOG_HARDDEBUG
+    thread::Print() << "reception::Manager::askKitchens(): end" << std::endl;
+#endif
 }
 
 void reception::Manager::updateKitchens()
 {
-    // thread::Print() << "reception::Manager::updateKitchens(): start" << std::endl; // TODO: Remove
+#ifdef LOG_HARDDEBUG
+    thread::Print() << "reception::Manager::updateKitchens(): start" << std::endl;
+#endif
 
     for (auto i = this->_kitchens.begin(); i != this->_kitchens.end();) {
-        // thread::Print() << "reception::Manager::updateKitchens(): Updating a kitchen..." << std::endl; // TODO:
-        // Remove
+#ifdef LOG_HARDDEBUG
+        thread::Print() << "reception::Manager::updateKitchens(): Updating a kitchen..." << std::endl;
+#endif
 
         if (i->getPending()) {
-            // thread::Print() << "reception::Manager::updateKitchens(): Kitchen is working" << std::endl; // TODO:
-            // Remove
+#ifdef LOG_HARDDEBUG
+            thread::Print() << "reception::Manager::updateKitchens(): Kitchen is working" << std::endl;
+#endif
             i++;
             continue;
         }
@@ -158,40 +199,56 @@ void reception::Manager::updateKitchens()
         auto now = std::chrono::system_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - i->getLast());
 
-        /*thread::Print() << "reception::Manager::updateKitchens(): Kitchen has been waiting during " << elapsed.count()
-                        << " second(s)" << std::endl; // TODO: Remove*/
+#ifdef LOG_HARDDEBUG
+        thread::Print() << "reception::Manager::updateKitchens(): Kitchen has been waiting during " << elapsed.count()
+                        << " second(s)" << std::endl;
+#endif
 
         if (elapsed.count() >= MAX_KITCHEN_WAITING) {
+#ifdef LOG_DEBUG
             thread::Print() << "reception::Manager::updateKitchens(): Kitchen waiting for too long, erasing it..."
-                            << std::endl; // TODO: Remove
+                            << std::endl;
+#endif
             i = this->_kitchens.erase(i);
         } else
             i++;
     }
 
-    // thread::Print() << "reception::Manager::updateKitchens(): end" << std::endl; // TODO: Remove
+#ifdef LOG_HARDDEBUG
+    thread::Print() << "reception::Manager::updateKitchens(): end" << std::endl;
+#endif
 }
 
 void reception::Manager::updateOrders()
 {
-    // thread::Print() << "reception::Manager::updateOrders(): start" << std::endl; // TODO: Remove
+#ifdef LOG_HARDDEBUG
+    thread::Print() << "reception::Manager::updateOrders(): start" << std::endl;
+#endif
 
     for (auto i = this->_orders.begin(); i != this->_orders.end();) {
-        /*thread::Print() << "reception::Manager::updateOrders(): Order n°" << i->first
-                        << ": Pending: " << i->second.getPending() << std::endl; // TODO: Remove*/
+#ifdef LOG_HARDDEBUG
+        thread::Print() << "reception::Manager::updateOrders(): Order n°" << i->first
+                        << ": Pending: " << i->second.getPending() << std::endl;
+#endif
 
         if (!i->second.isComplete()) {
-            // thread::Print() << "reception::Manager::updateOrders(): Order not yet ready" << std::endl;
+#ifdef LOG_HARDDEBUG
+            thread::Print() << "reception::Manager::updateOrders(): Order not yet ready" << std::endl;
+#endif
             i++;
             continue;
         }
 
         i->second.display();
 
+#ifdef LOG_DEBUG
         thread::Print() << "reception::Manager::updateOrders(): Order ready, erasing it..." << std::endl;
+#endif
 
         i = this->_orders.erase(i);
     }
 
-    // thread::Print() << "reception::Manager::updateOrders(): end" << std::endl; // TODO: Remove
+#ifdef LOG_HARDDEBUG
+    thread::Print() << "reception::Manager::updateOrders(): end" << std::endl;
+#endif
 }
