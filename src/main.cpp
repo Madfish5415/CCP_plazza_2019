@@ -38,5 +38,4 @@ int main()
 
     manager.status();
     manager.handle(order);
-    manager.status();
 }

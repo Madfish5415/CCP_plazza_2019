@@ -127,9 +127,11 @@ void reception::Manager::askKitchens()
         thread::Print() << "reception::Manager::askKitchens(): Pizza found: " << pizza.pack()
                         << std::endl; // TODO: Remove
 
-        auto order = this->_orders.at(pizza.getOrder());
+        auto order = this->_orders[pizza.getOrder()];
 
         order.ready();
+
+        this->_orders[pizza.getOrder()] = order;
 
         thread::Print() << "reception::Manager::askKitchens(): Order n°" << order.getId()
                         << ": Pending: " << order.getPending() << std::endl; // TODO: Remove
@@ -142,27 +144,29 @@ void reception::Manager::updateKitchens()
 {
     // thread::Print() << "reception::Manager::updateKitchens(): start" << std::endl; // TODO: Remove
 
-    for (auto i = this->_kitchens.begin(); i != this->_kitchens.end(); ++i) {
+    for (auto i = this->_kitchens.begin(); i != this->_kitchens.end();) {
         // thread::Print() << "reception::Manager::updateKitchens(): Updating a kitchen..." << std::endl; // TODO:
         // Remove
 
         if (i->getPending()) {
             // thread::Print() << "reception::Manager::updateKitchens(): Kitchen is working" << std::endl; // TODO:
             // Remove
+            i++;
             continue;
         }
 
         auto now = std::chrono::system_clock::now();
         auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - i->getLast());
 
-        thread::Print() << "reception::Manager::updateKitchens(): Kitchen has been waiting during " << elapsed.count()
-                        << " second(s)" << std::endl; // TODO: Remove
+        /*thread::Print() << "reception::Manager::updateKitchens(): Kitchen has been waiting during " << elapsed.count()
+                        << " second(s)" << std::endl; // TODO: Remove*/
 
         if (elapsed.count() >= MAX_KITCHEN_WAITING) {
             thread::Print() << "reception::Manager::updateKitchens(): Kitchen waiting for too long, erasing it..."
                             << std::endl; // TODO: Remove
-            i = --this->_kitchens.erase(i);
-        }
+            i = this->_kitchens.erase(i);
+        } else
+            i++;
     }
 
     // thread::Print() << "reception::Manager::updateKitchens(): end" << std::endl; // TODO: Remove
@@ -172,20 +176,21 @@ void reception::Manager::updateOrders()
 {
     // thread::Print() << "reception::Manager::updateOrders(): start" << std::endl; // TODO: Remove
 
-    for (const auto& order : this->_orders) {
-        /*thread::Print() << "reception::Manager::updateOrders(): Order n°" << order.first
-                        << ": Ready: " << order.second.ready << std::endl; // TODO: Remove*/
+    for (auto i = this->_orders.begin(); i != this->_orders.end();) {
+        /*thread::Print() << "reception::Manager::updateOrders(): Order n°" << i->first
+                        << ": Pending: " << i->second.getPending() << std::endl; // TODO: Remove*/
 
-        if (!order.second.isComplete()) {
+        if (!i->second.isComplete()) {
             // thread::Print() << "reception::Manager::updateOrders(): Order not yet ready" << std::endl;
+            i++;
             continue;
         }
 
-        order.second.display();
-
-        this->_orders.erase(order.first);
+        i->second.display();
 
         thread::Print() << "reception::Manager::updateOrders(): Order ready, erasing it..." << std::endl;
+
+        i = this->_orders.erase(i);
     }
 
     // thread::Print() << "reception::Manager::updateOrders(): end" << std::endl; // TODO: Remove

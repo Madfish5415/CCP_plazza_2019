@@ -45,7 +45,7 @@ std::vector<std::string> mq::Waiter::receive(long *priority) const
 {
     std::string string = this->_receiver.receive(priority, IPC_NOWAIT);
 
-    thread::Print() << "mq::Waiter::receive(): Message: " << string << std::endl; // TODO: Remove
+    thread::Print() << "[" << this->_receiver.getKey() << "] mq::Waiter::receive(): Message: " << string << std::endl; // TODO: Remove
 
     std::string find = string;
     std::regex word(R"(([^\s]+))");
@@ -58,7 +58,7 @@ std::vector<std::string> mq::Waiter::receive(long *priority) const
         find = match.suffix();
     }
 
-    thread::Print() << "mq::Waiter::receive(): end" << std::endl; // TODO: Remove
+    thread::Print() << "[" << this->_receiver.getKey() << "] mq::Waiter::receive(): end" << std::endl; // TODO: Remove
 
     return message;
 }
@@ -73,9 +73,9 @@ void mq::Waiter::send(const std::vector<std::string> &message, long priority) co
         string += item;
     }
 
-    thread::Print() << "mq::Waiter::send(): Message: " << string << std::endl; // TODO: Remove
+    thread::Print() << "[" << this->_sender.getKey() << "] mq::Waiter::send(): Message: " << string << std::endl; // TODO: Remove
 
     this->_sender.send(string, priority, 0);
 
-    thread::Print() << "mq::Waiter::send(): end" << std::endl; // TODO: Remove
+    thread::Print() << "[" << this->_sender.getKey() << "] mq::Waiter::send(): end" << std::endl; // TODO: Remove
 }
