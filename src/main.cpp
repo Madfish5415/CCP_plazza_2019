@@ -38,7 +38,6 @@ int main()
     order.pizzas.emplace_back(pizza1);
     order.pizzas.emplace_back(pizza2);
 
-    thread::Print() << "=== Starting program ===" << std::endl;
     manager.status();
     manager.handle(order);
     manager.status();

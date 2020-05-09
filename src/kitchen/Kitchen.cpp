@@ -16,18 +16,27 @@ kitchen::Kitchen::Kitchen(
     const kitchen::Settings& settings, const std::map<std::string, unsigned int>& ingredients, int receiver, int sender)
     : _settings(settings), _storage(ingredients), _waiter(receiver, sender), _state(Working)
 {
-    thread::Print() << "Kitchen Proc === Creating new kitchen ===" << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::Kitchen(): start"
+                    << std::endl; // TODO: Remove
+
     for (unsigned int i = 0; i < settings.cooks; ++i)
         this->_cooks.emplace_back(*this);
+
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::Kitchen(): end"
+                    << std::endl; // TODO: Remove
 }
 
 kitchen::Kitchen::~Kitchen()
 {
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::~Kitchen(): start"
+                    << std::endl; // TODO: Remove
+
     this->_cooks.clear();
 
-    thread::Print() << "Kitchen Proc === The fire is in the kitchen shut it down ! ===" << std::endl;
-
     this->_waiter.close();
+
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::~Kitchen(): end"
+                    << std::endl; // TODO: Remove
 }
 
 const kitchen::Settings& kitchen::Kitchen::getSettings() const
@@ -42,11 +51,14 @@ kitchen::Storage& kitchen::Kitchen::getStorage()
 
 void kitchen::Kitchen::ready(pizza::Pizza pizza)
 {
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ready(): start"
+                    << std::endl; // TODO: Remove
+
     std::vector<std::string> message = {"PIZZA", pizza.pack()};
 
-    thread::Print() << "Kitchen Proc === Pizza is ready ! ===" << std::endl;
-
     this->_waiter.send(message, 1);
+
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ready(): end" << std::endl; // TODO: Remove
 }
 
 void kitchen::Kitchen::status()
@@ -65,7 +77,9 @@ void kitchen::Kitchen::status()
 
 void kitchen::Kitchen::cook()
 {
-    thread::Print() << "Kitchen Proc === Cooking a pizza ===" << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::cook(): start"
+                    << std::endl; // TODO: Remove
+
     while (this->_state != State::Finished) {
         pizza::Pizza pizza;
 
@@ -77,44 +91,55 @@ void kitchen::Kitchen::cook()
 
         this->handle(pizza);
     }
+
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::cook(): end" << std::endl; // TODO: Remove
 }
 
 pizza::Pizza kitchen::Kitchen::ask()
 {
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): start" << std::endl; // TODO: Remove
+
     auto message = this->_waiter.receive(nullptr);
 
-    thread::Print() << "Kitchen Proc === Looking for new messages... ===" << std::endl;
-
     if (message[0] == "PIZZA") {
-        pizza::Pizza pizza;
+        thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): PIZZA received"
+                        << std::endl; // TODO: Remove
 
-        thread::Print() << "Kitchen Proc === Pizza received ===" << std::endl;
+        pizza::Pizza pizza;
 
         pizza.unpack(message[1]);
 
         return pizza;
     } else if (message[0] == "STATUS") {
-        thread::Print() << "Kitchen Proc === Status asked ===" << std::endl;
+        thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): STATUS received"
+                        << std::endl; // TODO: Remove
 
         this->status();
     } else if (message[0] == "STOP") {
-        thread::Print() << "Kitchen Proc === It's time for me leave you... ===" << std::endl;
+        thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): STOP received"
+                        << std::endl; // TODO: Remove
 
         this->_state = Finished;
     }
 
-    thread::Print() << "Kitchen Proc === WTF is this message ? ===" << std::endl;
-    throw std::exception(); // TODO: Custom Error class
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): end" << std::endl; // TODO: Remove
 
+    throw std::exception(); // TODO: Custom Error class
 }
 
 bool kitchen::Kitchen::handle(pizza::Pizza pizza)
 {
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::handle(): start"
+                    << std::endl; // TODO: Remove
+
     this->_cooks.sort([](const Cook& a, const Cook& b) {
         return (a.getPizzas().size() < b.getPizzas().size());
     });
 
-    thread::Print() << "Kitchen Proc === New pizza for the coook ===" << std::endl;
+    bool handled = this->_cooks.front().handle(pizza);
 
-    return this->_cooks.front().handle(pizza);
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::handle(): end"
+                    << std::endl; // TODO: Remove
+
+    return handled;
 }
