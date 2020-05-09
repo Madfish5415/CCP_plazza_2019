@@ -97,7 +97,7 @@ void reception::Manager::createKitchen()
     static int receiver = 1;
     static int sender = 2;
 
-    this->_kitchens.emplace_back(this->_settings, this->_ingredients, receiver, sender);
+    this->_kitchens.emplace_front(this->_settings, this->_ingredients, receiver, sender);
 
     thread::Print() << "reception::Manager::createKitchen(): receiver: " << receiver << ", sender: " << sender
                     << std::endl; // TODO: Remove
