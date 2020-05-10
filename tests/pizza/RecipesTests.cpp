@@ -14,7 +14,7 @@
 
 Test(Recipes, Load_01)
 {
-    std::string fileName = "./tests/data/testRecipes1.txt";
+    std::string fileName = "./data/testRecipes1.txt";
     std::ofstream outfile (fileName);
 
     outfile << "type=\"regina\";ingredients=\"doe\":1;cookTime=1;" << std::endl
@@ -37,7 +37,7 @@ Test(Recipes, Load_01)
 
 Test(Recipes, Load_02)
 {
-    std::string fileName = "./tests/data/testRecipes2.txt";
+    std::string fileName = "./data/testRecipes2.txt";
     std::ofstream outfile (fileName);
 
     outfile << "type=\"regina\";ingredients=\"doe\":1;cookTime=1;" << std::endl

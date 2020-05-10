@@ -14,7 +14,7 @@
 
 Test(Sizes, Load_01)
 {
-    std::string fileName = "./tests/data/testSizes1.txt";
+    std::string fileName = "./data/testSizes1.txt";
     std::ofstream outfile (fileName);
 
     outfile << "S" << std::endl << "M" << std::endl << "L" << std::endl;
@@ -35,7 +35,7 @@ Test(Sizes, Load_01)
 
 Test(Sizes, Load_02)
 {
-    std::string fileName = "./tests/data/testSizes2.txt";
+    std::string fileName = "./data/testSizes2.txt";
     std::ofstream outfile (fileName);
 
     outfile << "S 1" << std::endl << "M 2" << std::endl << "L 3" << std::endl;
@@ -56,7 +56,7 @@ Test(Sizes, Load_02)
 
 Test(Sizes, Load_03)
 {
-    std::string fileName = "./tests/data/testSizes3.txt";
+    std::string fileName = "./data/testSizes3.txt";
     std::ofstream outfile (fileName);
 
     outfile << "SS 01" << std::endl << "MX 02" << std::endl << "XXL 03" << std::endl;
