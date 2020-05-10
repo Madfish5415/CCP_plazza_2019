@@ -11,19 +11,10 @@
 
 #include "pizza/Factory.hpp"
 
-unsigned int& reception::Parser::_order()
-{
-    static unsigned int order;
-
-    return order;
-}
-
 reception::Order reception::Parser::parse(const std::string& command)
 {
     Order order;
     auto subCommands = Parser::toSubCommands(command);
-
-    order.id = ++Parser::_order();
 
     for (const auto& subCommand : subCommands)
         Parser::fill(order, subCommand);
@@ -31,7 +22,7 @@ reception::Order reception::Parser::parse(const std::string& command)
     return order;
 }
 
-void reception::Parser::fill(Order order, const std::string& subCommand)
+void reception::Parser::fill(Order& order, const std::string& subCommand)
 {
     std::regex regex(R"(^\s*([a-zA-Z]+)\s+([A-Z]+)\s+x([1-9][0-9]*)\s*$)");
     std::smatch matches;
@@ -44,9 +35,9 @@ void reception::Parser::fill(Order order, const std::string& subCommand)
     unsigned int amount = std::stoi(matches.str(3));
 
     for (unsigned int i = 0; i < amount; ++i) {
-        auto pizza = pizza::Factory::create(matches.str(1), matches.str(2), Parser::_order());
+        auto pizza = pizza::Factory::create(matches.str(1), matches.str(2), order.getId());
 
-        order.pizzas.push_back(pizza);
+        order.add(pizza);
     }
 }
 
@@ -63,6 +54,8 @@ std::vector<std::string> reception::Parser::toSubCommands(std::string command)
 
         command.erase(0, pos + delimiter.length());
     }
+
+    subCommands.push_back(command);
 
     return subCommands;
 }

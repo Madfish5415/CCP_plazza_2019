@@ -5,19 +5,28 @@
 ** Pizza.cpp
 */
 
+#include "Print.hpp"
+
 #include "Pizza.hpp"
 
 #include <regex>
 #include <utility>
 
-pizza::Pizza::Pizza() = default;
+pizza::Pizza::Pizza()
+{
+    thread::Print() << "Pizza === Created without params ===" << std::endl;
+}
 
 pizza::Pizza::Pizza(const pizza::Recipe& recipe, std::string size, unsigned int order)
     : _recipe(recipe), _size(std::move(size)), _order(order)
 {
+    thread::Print() << "Pizza === Created normaly with recipe: " << recipe.getType() << " ===" << std::endl;
 }
 
-pizza::Pizza::~Pizza() = default;
+pizza::Pizza::~Pizza()
+{
+    thread::Print() << "Pizza " << this->_recipe.getType() << " === A pizza is destroyed ! ===" << std::endl;
+}
 
 const pizza::Recipe& pizza::Pizza::getRecipe() const
 {
@@ -40,6 +49,7 @@ std::string pizza::Pizza::pack() const
 
     string += "recipe={" + this->_recipe.pack() + "};";
     string += "size=\"" + this->_size + "\";";
+    string += "order=" + std::to_string(this->_order) + ";";
 
     return string;
 }
@@ -48,10 +58,13 @@ void pizza::Pizza::unpack(const std::string& pack)
 {
     std::regex recipe("recipe=\\{(.*?)\\};");
     std::regex size("size=\"(.*?)\";");
+    std::regex order("order=(\\d+);");
     std::smatch match;
 
     if (std::regex_search(pack, match, recipe))
         this->_recipe.unpack(match.str(1));
     if (std::regex_search(pack, match, size))
         this->_size = match.str(1);
+    if (std::regex_search(pack, match, order))
+        this->_order = std::stoi(match.str(1));
 }

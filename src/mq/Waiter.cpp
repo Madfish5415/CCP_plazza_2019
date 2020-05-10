@@ -5,8 +5,6 @@
 ** Waiter.cpp
 */
 
-#include "Print.hpp"
-
 #include "Waiter.hpp"
 
 #include <regex>
@@ -22,7 +20,9 @@ mq::Waiter::Waiter(int receiver, int sender, int flags)
 {
 }
 
-mq::Waiter::~Waiter() = default;
+mq::Waiter::~Waiter()
+{
+}
 
 void mq::Waiter::close() const
 {
@@ -33,6 +33,7 @@ void mq::Waiter::close() const
 std::vector<std::string> mq::Waiter::receive(long *priority) const
 {
     std::string string = this->_receiver.receive(priority, IPC_NOWAIT);
+
     std::string find = string;
     std::regex word(R"(([^\s]+))");
     std::smatch match;
@@ -44,12 +45,6 @@ std::vector<std::string> mq::Waiter::receive(long *priority) const
         find = match.suffix();
     }
 
-    thread::Print() << "Waiter === Received: ";
-    for (auto msg : message) {
-        thread::Print() << msg << " ";
-    }
-    thread::Print() << " ===" << std::endl;
-
     return message;
 }
 
@@ -57,13 +52,11 @@ void mq::Waiter::send(const std::vector<std::string> &message, long priority) co
 {
     std::string string;
 
-    for (const auto& item : message) {
+    for (const auto &item : message) {
         if (item != message.front())
             string += " ";
         string += item;
     }
-
-    thread::Print() << "Waiter === Send: " << string << " ===" << std::endl;
 
     this->_sender.send(string, priority, 0);
 }

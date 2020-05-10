@@ -10,10 +10,14 @@
 #include "Recipes.hpp"
 #include "Sizes.hpp"
 
-pizza::Pizza pizza::Factory::create(
-    const std::string& recipe, const std::string& size, unsigned int order)
+pizza::Pizza pizza::Factory::create(const std::string& recipe, const std::string& size, unsigned int order)
 {
-    pizza::Pizza pizza(Recipes::get().at(recipe), *Sizes::get().find(size), order);
+    auto recipeObj = Recipes::get().at(recipe);
+
+    if (Sizes::get().count(size) == 0)
+        throw std::exception(); // TODO: Custom Error class
+
+    pizza::Pizza pizza(recipeObj, size, order);
 
     return pizza;
 }

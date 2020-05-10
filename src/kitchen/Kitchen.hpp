@@ -46,6 +46,7 @@ class Kitchen {
   private:
     pizza::Pizza ask();
     bool handle(pizza::Pizza pizza);
+    void refill();
 };
 
 } // namespace kitchen

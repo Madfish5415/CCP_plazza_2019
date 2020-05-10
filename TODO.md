@@ -1,3 +1,1 @@
-- Storage auto-fill
 - Handle if the ingredient asked by the pizza exists in the storage
-- On update kitchens, it removes the kitchen because it didn't receive the pizza already, so the kitchens are removed and don't receive the ready pizzas

@@ -27,7 +27,7 @@ class Cook {
     Kitchen& _kitchen;
     State _state;
     std::thread _thread;
-    std::queue<pizza::Pizza> _pizzas;
+    std::queue<pizza::Pizza> _pizzas {};
 
   public:
     explicit Cook(Kitchen& kitchen);

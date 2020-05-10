@@ -6,40 +6,35 @@
 */
 
 #include <pizza/Ingredients.hpp>
+#include <pizza/Recipes.hpp>
+#include <pizza/Sizes.hpp>
+#include <reception/Manager.hpp>
 #include <reception/Reception.hpp>
+#include <error/ErrorManager.hpp>
 
-#include "kitchen/Settings.hpp"
-#include "pizza/Recipes.hpp"
-#include "pizza/Sizes.hpp"
-
-#include "Print.hpp"
-
-int main()
+int main(int argc, char **argv)
 {
-    pizza::Recipes::load("./data/recipes.txt");
-    pizza::Sizes::load("./data/sizes.txt");
+    if (ErrorManager::check(argc, argv))
+        return 84;
 
-    kitchen::Settings settings {.cooks = 2, .maxPerCook = 2, .fillInterval = 1, .timeMultiplier = 1};
+    kitchen::Settings settings {
+        .timeMultiplier = std::stof(argv[1]),
+        .cooks = static_cast<unsigned int>(std::stoi(argv[2])),
+        .refillInterval = static_cast<unsigned int>(std::stoi(argv[3])),
+        .maxPerCook = MAX_PER_COOK,
+        .maxWaiting = MAX_WAITING
+    };
+
+    pizza::Recipes::load(RECIPES_PATH);
+    pizza::Sizes::load(SIZES_PATH);
+
     std::map<std::string, unsigned int> ingredients;
 
     for (const auto& ingredient : pizza::Ingredients::get())
-        ingredients.emplace(ingredient, 5);
+        ingredients.emplace(ingredient, MAX_INGREDIENT_UNIT);
 
-    reception::Manager manager(settings, ingredients);
+    std::unique_ptr<reception::Reception> reception(new reception::Reception(settings, ingredients));
 
-    int orderID = 1;
-    pizza::Recipe recipe1("recipe1", {{"item1", 1}, {"item2", 1}}, 1);
-    pizza::Recipe recipe2("recipe2", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Pizza pizza1(recipe1, "M", orderID);
-    pizza::Pizza pizza2(recipe2, "XL", orderID);
-    reception::Order order;
-
-    order.id = orderID;
-    order.pizzas.emplace_back(pizza1);
-    order.pizzas.emplace_back(pizza2);
-
-    thread::Print() << "=== Starting program ===" << std::endl;
-    manager.status();
-    manager.handle(order);
-    manager.status();
+    reception->run();
+    return 0;
 }

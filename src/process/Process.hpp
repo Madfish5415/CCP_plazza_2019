@@ -23,7 +23,8 @@ class This {
 
   public:
     template<typename R, typename P>
-    static void sleepFor(std::chrono::duration<R, P> time) {
+    static void sleepFor(std::chrono::duration<R, P> time)
+    {
         if (time <= time.zero())
             return;
 
@@ -44,7 +45,8 @@ class Process {
     Process();
 
     template<typename T, typename... TArgs>
-    explicit Process(T&& callable, TArgs&&... args) {
+    explicit Process(T&& callable, TArgs&&... args)
+    {
         this->_id = fork();
 
         if (this->_id == -1)

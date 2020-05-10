@@ -12,10 +12,11 @@ namespace kitchen {
 
 class Settings {
   public:
-    unsigned int cooks;
-    unsigned int maxPerCook;
-    unsigned int fillInterval;
     float timeMultiplier;
+    unsigned int cooks;
+    unsigned int refillInterval;
+    unsigned int maxPerCook;
+    unsigned int maxWaiting;
 };
 
 } // namespace kitchen

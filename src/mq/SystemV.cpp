@@ -5,8 +5,6 @@
 ** SystemV.cpp
 */
 
-#include "Print.hpp"
-
 #include "SystemV.hpp"
 
 #include <cstring>
@@ -16,7 +14,6 @@ mq::SystemV::SystemV() = default;
 
 mq::SystemV::SystemV(int key, int flags) : _key(key), _flags(flags)
 {
-    thread::Print() << "SystemV === Creating a new queue === " << key << std::endl;
     this->_fd = msgget(key, flags);
 }
 
@@ -42,7 +39,7 @@ std::string mq::SystemV::receive(long *type, int flag) const
 {
     data data {};
 
-    data.type = (type) ? *type : 0;
+    data.type = (type) ? *type : 1;
 
     memset(data.message, 0, MAX_MESSAGE_SIZE);
 

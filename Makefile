@@ -21,7 +21,8 @@ RM					=		rm -rf
 
 MAIN_SRC			=		main.cpp
 
-PROJ_SRC			=		kitchen/Cook.cpp					\
+PROJ_SRC			=		error/ErrorManager.cpp				\
+							kitchen/Cook.cpp					\
 							kitchen/Kitchen.cpp					\
 							kitchen/Settings.cpp				\
 							kitchen/Storage.cpp					\
@@ -46,7 +47,7 @@ TEST_SRC			=		pizza/RecipeTests.cpp				\
 							pizza/RecipesTests.cpp				\
 							pizza/SizesTests.cpp				\
 
-CFLAGS				+=		-I $(INCL_DIR) -std=c++17 -I $(INCL_DIR)/thread
+CFLAGS				+=		-I $(INCL_DIR) -std=c++17
 CFLAGS				+=		-W -Wall -Wextra -Werror
 
 LDLIBS				=		-lpthread -lrt

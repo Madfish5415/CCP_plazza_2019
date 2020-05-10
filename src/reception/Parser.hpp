@@ -16,14 +16,11 @@
 namespace reception {
 
 class Parser {
-  private:
-    static unsigned int& _order();
-
   public:
     static Order parse(const std::string& command);
 
   private:
-    static void fill(Order order, const std::string& subCommand);
+    static void fill(Order& order, const std::string& subCommand);
     static std::vector<std::string> toSubCommands(std::string command);
 };
 
