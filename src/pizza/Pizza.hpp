@@ -18,7 +18,7 @@ class Pizza {
   private:
     Recipe _recipe;
     std::string _size;
-    unsigned int _order;
+    unsigned int _order{};
 
   public:
     Pizza();
