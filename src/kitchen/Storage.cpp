@@ -31,7 +31,7 @@ void kitchen::Storage::add(const std::map<std::string, unsigned int>& ingredient
         this->_ingredients[ingredient.first] += ingredient.second;
 }
 
-bool kitchen::Storage::has(const std::map<std::string, unsigned int>& ingredients)
+bool kitchen::Storage::removeHas(const std::map<std::string, unsigned int>& ingredients)
 {
     std::lock_guard<std::mutex> guard(this->_mutex);
 
@@ -41,13 +41,6 @@ bool kitchen::Storage::has(const std::map<std::string, unsigned int>& ingredient
         if (this->_ingredients.at(ingredient.first) < ingredient.second)
             return false;
     }
-
-    return true;
-}
-
-void kitchen::Storage::remove(const std::map<std::string, unsigned int>& ingredients)
-{
-    std::lock_guard<std::mutex> guard(this->_mutex);
 
     for (const auto& ingredient : ingredients) {
         if (this->_ingredients.count(ingredient.first) == 0)
@@ -57,6 +50,8 @@ void kitchen::Storage::remove(const std::map<std::string, unsigned int>& ingredi
 
         this->_ingredients[ingredient.first] -= ingredient.second;
     }
+
+    return true;
 }
 
 void kitchen::Storage::refill()

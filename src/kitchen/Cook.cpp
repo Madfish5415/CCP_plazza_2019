@@ -64,10 +64,8 @@ void kitchen::Cook::cook()
         auto& ingredients = pizza.getRecipe().getIngredients();
         auto& storage = this->_kitchen.getStorage();
 
-        if (!storage.has(ingredients))
+        if (!storage.removeHas(ingredients))
             continue;
-
-        storage.remove(ingredients);
 
         auto cookTime = pizza.getRecipe().getCookTime();
         auto timeMultiplier = this->_kitchen.getSettings().timeMultiplier;
