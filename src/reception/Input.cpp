@@ -20,6 +20,8 @@ std::string reception::Input::get()
     std::string input;
 
     while (!std::getline(std::cin, input)) {
+        if (std::cin.eof())
+            throw std::exception(); // TODO: Custom Error class
         if (std::cin.fail())
             continue;
 

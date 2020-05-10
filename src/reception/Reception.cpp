@@ -24,9 +24,17 @@ void reception::Reception::run()
 {
     while (this->_running) {
         thread::Print() << "> ";
-        std::string command = Input::get();
+        std::string command;
 
-        if (command == "status") {
+        try {
+            command = Input::get();
+        } catch (std::exception&) {
+            break;
+        }
+
+        if (command == "exit") {
+            break;
+        } else if (command == "status") {
             this->_manager.status();
         } else {
             try {
