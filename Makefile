@@ -43,7 +43,9 @@ PROJ_SRC			=		error/ErrorManager.cpp				\
 							reception/Reception.cpp				\
 							thread/Print.cpp					\
 
-TEST_SRC			=
+TEST_SRC			=		pizza/RecipeTests.cpp				\
+							pizza/RecipesTests.cpp				\
+							pizza/SizesTests.cpp				\
 
 CFLAGS				+=		-I $(INCL_DIR) -std=c++17
 CFLAGS				+=		-W -Wall -Wextra -Werror
