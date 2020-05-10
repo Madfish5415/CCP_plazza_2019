@@ -8,6 +8,7 @@
 #include "Kitchen.hpp"
 
 #include "kitchen/Kitchen.hpp"
+#include "thread/Print.hpp"
 
 process::Kitchen::Kitchen(
     const kitchen::Settings& settings, const std::map<std::string, unsigned int>& ingredients, int receiver, int sender)
