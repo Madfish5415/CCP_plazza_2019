@@ -29,8 +29,7 @@ class Storage {
 
   public:
     void add(const std::map<std::string, unsigned int>& ingredients);
-    bool has(const std::map<std::string, unsigned int>& ingredients);
-    void remove(const std::map<std::string, unsigned int>& ingredients);
+    bool removeHas(const std::map<std::string, unsigned int>& ingredients);
     void refill();
     void status();
 };

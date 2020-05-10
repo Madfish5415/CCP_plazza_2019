@@ -60,6 +60,8 @@ void reception::Manager::status()
 void reception::Manager::manage()
 {
     while ((this->_state != Finished) || !this->_kitchens.empty()) {
+        process::This::sleepFor(std::chrono::milliseconds(10));
+
         std::lock_guard<std::mutex> guard(this->_mutex);
 
         this->askKitchens();

@@ -11,9 +11,10 @@
 
 #include "Input.hpp"
 #include "Parser.hpp"
+#include "thread/Print.hpp"
 
 reception::Reception::Reception(const kitchen::Settings& settings, std::map<std::string, unsigned int> ingredients)
-    : _manager(settings, std::move(ingredients))
+    : _manager(settings, std::move(ingredients)), _running(true)
 {
 }
 
@@ -21,15 +22,28 @@ reception::Reception::~Reception() = default;
 
 void reception::Reception::run()
 {
-    while (true) {
-        std::string command = Input::get();
+    while (this->_running) {
+        thread::Print() << "> ";
+        std::string command;
 
-        if (command == "status") {
+        try {
+            command = Input::get();
+        } catch (std::exception&) {
+            break;
+        }
+
+        if (command == "exit") {
+            break;
+        } else if (command == "status") {
             this->_manager.status();
         } else {
-            auto order = Parser::parse(command);
+            try {
+                auto order = Parser::parse(command);
 
-            this->_manager.handle(order);
+                this->_manager.handle(order);
+            } catch (std::exception&) {
+                thread::Print() << "Invalid command." << std::endl;
+            }
         }
     }
 }
