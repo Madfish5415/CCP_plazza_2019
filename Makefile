@@ -108,6 +108,9 @@ debug_hard:			all
 debug_re:			CFLAGS += -g3 -DLOG_DEBUG
 debug_re:			re
 
+debug_hard_re:		CFLAGS += -g3 -DLOG_DEBUG -DLOG_HARDDEBUG
+debug_hard_re:		re
+
 debug_sweet:		CFLAGS += -g3 -DLOG_DEBUG
 debug_sweet:		sweet
 

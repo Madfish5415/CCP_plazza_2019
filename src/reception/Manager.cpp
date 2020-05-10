@@ -177,7 +177,7 @@ void reception::Manager::askKitchens()
 #endif
     }
 
-#ifdef LOG_DEBUG
+#ifdef LOG_HARDDEBUG
     thread::Print() << "reception::Manager::askKitchens(): end" << std::endl;
 #endif
 }

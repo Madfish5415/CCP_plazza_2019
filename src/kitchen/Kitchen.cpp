@@ -175,7 +175,7 @@ void kitchen::Kitchen::refill()
     if (elapsed.count() >= this->_settings.refillInterval)
         this->_storage.refill();
 
-#ifdef LOG_DEBUG
+#ifdef LOG_HARDDEBUG
     thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::refill(): end" << std::endl;
 #endif
 }
