@@ -6,60 +6,35 @@
 */
 
 #include <pizza/Ingredients.hpp>
+#include <pizza/Recipes.hpp>
+#include <pizza/Sizes.hpp>
+#include <reception/Manager.hpp>
 #include <reception/Reception.hpp>
+#include <error/ErrorManager.hpp>
 
-#include "kitchen/Settings.hpp"
-#include "pizza/Recipes.hpp"
-#include "pizza/Sizes.hpp"
-
-#include "Print.hpp"
-
-int main()
+int main(int argc, char **argv)
 {
-    pizza::Recipes::load("./data/recipes.txt");
-    pizza::Sizes::load("./data/sizes.txt");
+    if (ErrorManager::check(argc, argv))
+        return 84;
 
-    kitchen::Settings settings {.cooks = 2, .maxPerCook = 2, .fillInterval = 1, .timeMultiplier = 1};
+    kitchen::Settings settings {
+        .timeMultiplier = std::stof(argv[1]),
+        .cooks = static_cast<unsigned int>(std::stoi(argv[2])),
+        .refillInterval = static_cast<unsigned int>(std::stoi(argv[3])),
+        .maxPerCook = MAX_PER_COOK,
+        .maxWaiting = MAX_WAITING
+    };
+
+    pizza::Recipes::load(RECIPES_PATH);
+    pizza::Sizes::load(SIZES_PATH);
+
     std::map<std::string, unsigned int> ingredients;
 
     for (const auto& ingredient : pizza::Ingredients::get())
-        ingredients.emplace(ingredient, 100);
+        ingredients.emplace(ingredient, MAX_INGREDIENT_UNIT);
 
-    reception::Manager manager(settings, ingredients);
+    std::unique_ptr<reception::Reception> reception(new reception::Reception(settings, ingredients));
 
-    reception::Order order;
-    pizza::Recipe recipe1("recipe1", {{"item1", 1}, {"item2", 1}}, 1);
-    pizza::Recipe recipe2("recipe2", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Recipe recipe3("recipe3", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Recipe recipe4("recipe4", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Recipe recipe5("recipe5", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Recipe recipe6("recipe6", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Recipe recipe7("recipe7", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Recipe recipe8("recipe8", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Recipe recipe9("recipe9", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Recipe recipe10("recipe10", {{"item3", 1}, {"item4", 1}}, 1);
-    pizza::Pizza pizza1(recipe1, "M", order.getId());
-    pizza::Pizza pizza2(recipe2, "XL", order.getId());
-    pizza::Pizza pizza3(recipe3, "M", order.getId());
-    pizza::Pizza pizza4(recipe4, "XL", order.getId());
-    pizza::Pizza pizza5(recipe5, "M", order.getId());
-    pizza::Pizza pizza6(recipe6, "XL", order.getId());
-    pizza::Pizza pizza7(recipe7, "M", order.getId());
-    pizza::Pizza pizza8(recipe8, "XL", order.getId());
-    pizza::Pizza pizza9(recipe9, "M", order.getId());
-    pizza::Pizza pizza10(recipe10, "XL", order.getId());
-
-    order.add(pizza1);
-    order.add(pizza2);
-    order.add(pizza3);
-    order.add(pizza4);
-    order.add(pizza5);
-    order.add(pizza6);
-    order.add(pizza7);
-    order.add(pizza8);
-    order.add(pizza9);
-    order.add(pizza10);
-
-    manager.handle(order);
-    manager.status();
+    reception->run();
+    return 0;
 }

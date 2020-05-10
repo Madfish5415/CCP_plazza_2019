@@ -5,8 +5,6 @@
 ** Waiter.cpp
 */
 
-#include "Print.hpp"
-
 #include "Waiter.hpp"
 
 #include <regex>
@@ -83,9 +81,13 @@ std::vector<std::string> mq::Waiter::receive(long *priority) const
 
 void mq::Waiter::send(const std::vector<std::string> &message, long priority) const
 {
+#ifdef LOG_HARDDEBUG
+    thread::Print() << "mq::Waiter::send(): start" << std::endl;
+#endif
+
     std::string string;
 
-    for (const auto& item : message) {
+    for (const auto &item : message) {
         if (item != message.front())
             string += " ";
         string += item;

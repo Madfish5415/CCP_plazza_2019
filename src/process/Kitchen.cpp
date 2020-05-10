@@ -5,8 +5,6 @@
 ** Kitchen.cpp
 */
 
-#include "Print.hpp"
-
 #include "Kitchen.hpp"
 
 #include "kitchen/Kitchen.hpp"
@@ -98,7 +96,7 @@ bool process::Kitchen::handle(pizza::Pizza pizza)
     thread::Print() << "process::Kitchen::handle(): start" << std::endl;
 #endif
 
-    if (this->_pending >= this->_settings.cooks * MAX_PIZZAS) {
+    if (this->_pending >= this->_settings.cooks * this->_settings.maxPerCook) {
 #ifdef LOG_DEBUG
         thread::Print() << "process::Kitchen::handle(): Kitchen is saturating" << std::endl;
 #endif

@@ -7,8 +7,6 @@
 
 #include "Kitchen.hpp"
 
-#include <utility>
-
 #include "process/Process.hpp"
 #include "thread/Print.hpp"
 
@@ -17,24 +15,21 @@ kitchen::Kitchen::Kitchen(
     : _settings(settings), _storage(ingredients), _waiter(receiver, sender), _state(Working)
 {
 #ifdef LOG_DEBUG
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::Kitchen(): start"
-                    << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::Kitchen(): start" << std::endl;
 #endif
 
     for (unsigned int i = 0; i < settings.cooks; ++i)
         this->_cooks.emplace_back(*this);
 
 #ifdef LOG_DEBUG
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::Kitchen(): end"
-                    << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::Kitchen(): end" << std::endl;
 #endif
 }
 
 kitchen::Kitchen::~Kitchen()
 {
 #ifdef LOG_DEBUG
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::~Kitchen(): start"
-                    << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::~Kitchen(): start" << std::endl;
 #endif
 
     this->_cooks.clear();
@@ -42,8 +37,7 @@ kitchen::Kitchen::~Kitchen()
     this->_waiter.close();
 
 #ifdef LOG_DEBUG
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::~Kitchen(): end"
-                    << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::~Kitchen(): end" << std::endl;
 #endif
 }
 
@@ -60,8 +54,7 @@ kitchen::Storage& kitchen::Kitchen::getStorage()
 void kitchen::Kitchen::ready(pizza::Pizza pizza)
 {
 #ifdef LOG_DEBUG
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ready(): start"
-                    << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ready(): start" << std::endl;
 #endif
 
     std::vector<std::string> message = {"PIZZA", pizza.pack()};
@@ -84,18 +77,18 @@ void kitchen::Kitchen::status()
         cook.status();
 
     print << "Storage:" << std::endl;
-
     this->_storage.status();
 }
 
 void kitchen::Kitchen::cook()
 {
 #ifdef LOG_DEBUG
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::cook(): start"
-                    << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::cook(): start" << std::endl;
 #endif
 
     while (this->_state != State::Finished) {
+        this->refill();
+
         pizza::Pizza pizza;
 
         try {
@@ -122,8 +115,7 @@ pizza::Pizza kitchen::Kitchen::ask()
 
     if (message[0] == "PIZZA") {
 #ifdef LOG_DEBUG
-        thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): PIZZA received"
-                        << std::endl;
+        thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): PIZZA received" << std::endl;
 #endif
 
         pizza::Pizza pizza;
@@ -133,15 +125,13 @@ pizza::Pizza kitchen::Kitchen::ask()
         return pizza;
     } else if (message[0] == "STATUS") {
 #ifdef LOG_DEBUG
-        thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): STATUS received"
-                        << std::endl;
+        thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): STATUS received" << std::endl;
 #endif
 
         this->status();
     } else if (message[0] == "STOP") {
 #ifdef LOG_DEBUG
-        thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): STOP received"
-                        << std::endl;
+        thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::ask(): STOP received" << std::endl;
 #endif
 
         this->_state = Finished;
@@ -157,8 +147,7 @@ pizza::Pizza kitchen::Kitchen::ask()
 bool kitchen::Kitchen::handle(pizza::Pizza pizza)
 {
 #ifdef LOG_DEBUG
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::handle(): start"
-                    << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::handle(): start" << std::endl;
 #endif
 
     this->_cooks.sort([](const Cook& a, const Cook& b) {
@@ -168,9 +157,25 @@ bool kitchen::Kitchen::handle(pizza::Pizza pizza)
     bool handled = this->_cooks.front().handle(pizza);
 
 #ifdef LOG_DEBUG
-    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::handle(): end"
-                    << std::endl;
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::handle(): end" << std::endl;
 #endif
 
     return handled;
+}
+
+void kitchen::Kitchen::refill()
+{
+#ifdef LOG_HARDDEBUG
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::refill(): start" << std::endl;
+#endif
+
+    auto now = std::chrono::system_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - this->_storage.getLast());
+
+    if (elapsed.count() >= this->_settings.refillInterval)
+        this->_storage.refill();
+
+#ifdef LOG_DEBUG
+    thread::Print() << "[" << process::This::getId() << "] kitchen::Kitchen::refill(): end" << std::endl;
+#endif
 }

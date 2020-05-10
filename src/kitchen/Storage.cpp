@@ -9,7 +9,8 @@
 
 #include "thread/Print.hpp"
 
-kitchen::Storage::Storage(std::map<std::string, unsigned int> ingredients) : _ingredients(std::move(ingredients))
+kitchen::Storage::Storage(std::map<std::string, unsigned int> ingredients)
+    : _ingredients(std::move(ingredients)), _last(std::chrono::system_clock::now())
 {
 #ifdef LOG_DEBUG
     thread::Print() << "kitchen::Storage::Storage(): start" << std::endl;
@@ -23,6 +24,11 @@ kitchen::Storage::~Storage()
     thread::Print() << "kitchen::Storage::~Storage(): start" << std::endl;
     thread::Print() << "kitchen::Storage::~Storage(): end" << std::endl;
 #endif
+}
+
+std::chrono::time_point<std::chrono::system_clock> kitchen::Storage::getLast()
+{
+    return this->_last;
 }
 
 void kitchen::Storage::add(const std::map<std::string, unsigned int>& ingredients)
@@ -41,35 +47,31 @@ void kitchen::Storage::add(const std::map<std::string, unsigned int>& ingredient
 #endif
 }
 
-bool kitchen::Storage::has(const std::map<std::string, unsigned int>& ingredients)
+bool kitchen::Storage::removeHas(const std::map<std::string, unsigned int>& ingredients)
 {
 #ifdef LOG_DEBUG
-    thread::Print() << "kitchen::Storage::has(): start" << std::endl;
+    thread::Print() << "kitchen::Storage::removeHas(): start" << std::endl;
 #endif
 
     std::lock_guard<std::mutex> guard(this->_mutex);
 
     for (const auto& ingredient : ingredients) {
-        if (this->_ingredients.count(ingredient.first) == 0)
+        if (this->_ingredients.count(ingredient.first) == 0) {
+#ifdef LOG_DEBUG
+            thread::Print() << "kitchen::Storage::removeHas(): Ingredient not found" << std::endl;
+#endif
+
             return false;
-        if (this->_ingredients.at(ingredient.first) < ingredient.second)
+        }
+
+        if (this->_ingredients.at(ingredient.first) < ingredient.second) {
+#ifdef LOG_DEBUG
+            thread::Print() << "kitchen::Storage::removeHas(): Not enougth ingredients" << std::endl;
+#endif
+
             return false;
+        }
     }
-
-#ifdef LOG_DEBUG
-    thread::Print() << "kitchen::Storage::has(): end" << std::endl;
-#endif
-
-    return true;
-}
-
-void kitchen::Storage::remove(const std::map<std::string, unsigned int>& ingredients)
-{
-#ifdef LOG_DEBUG
-    thread::Print() << "kitchen::Storage::remove(): start" << std::endl;
-#endif
-
-    std::lock_guard<std::mutex> guard(this->_mutex);
 
     for (const auto& ingredient : ingredients) {
         if (this->_ingredients.count(ingredient.first) == 0)
@@ -81,12 +83,34 @@ void kitchen::Storage::remove(const std::map<std::string, unsigned int>& ingredi
     }
 
 #ifdef LOG_DEBUG
-    thread::Print() << "kitchen::Storage::remove(): end" << std::endl;
+    thread::Print() << "kitchen::Storage::removeHas(): end" << std::endl;
+#endif
+
+    return true;
+}
+
+void kitchen::Storage::refill()
+{
+#ifdef LOG_DEBUG
+    thread::Print() << "kitchen::Storage::refill(): start" << std::endl;
+#endif
+
+    std::lock_guard<std::mutex> guard(this->_mutex);
+
+    for (auto& ingredient : this->_ingredients)
+        ingredient.second += 1;
+
+    this->_last = std::chrono::system_clock::now();
+
+#ifdef LOG_DEBUG
+    thread::Print() << "kitchen::Storage::refill(): end" << std::endl;
 #endif
 }
 
 void kitchen::Storage::status()
 {
+    std::lock_guard<std::mutex> guard(this->_mutex);
+
     thread::Print print;
 
     for (const auto& ingredient : this->_ingredients)

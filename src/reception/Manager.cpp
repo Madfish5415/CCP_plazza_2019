@@ -9,7 +9,7 @@
 
 #include <utility>
 
-#include "Print.hpp"
+#include "thread/Print.hpp"
 
 reception::Manager::Manager(const kitchen::Settings& settings, std::map<std::string, unsigned int> ingredients)
     : _settings(settings), _ingredients(std::move(ingredients)), _state(Working), _thread(&Manager::manage, this)
@@ -83,6 +83,8 @@ void reception::Manager::status()
 
     std::lock_guard<std::mutex> guard(this->_mutex);
 
+    if (this->_kitchens.empty())
+        thread::Print() << "No kitchen working." << std::endl;
     for (const auto& kitchen : this->_kitchens)
         kitchen.status();
 
@@ -98,10 +100,12 @@ void reception::Manager::manage()
 #endif
 
     while ((this->_state != Finished) || !this->_kitchens.empty()) {
+        process::This::sleepFor(std::chrono::milliseconds(10));
+
         std::lock_guard<std::mutex> guard(this->_mutex);
 
-        this->updateKitchens();
         this->askKitchens();
+        this->updateKitchens();
         this->updateOrders();
     }
 
@@ -153,12 +157,12 @@ void reception::Manager::askKitchens()
 #ifdef LOG_HARDDEBUG
             thread::Print() << "reception::Manager::askKitchens(): No pizza found." << std::endl;
 #endif
+
             continue;
         }
 
 #ifdef LOG_DEBUG
-        thread::Print() << "reception::Manager::askKitchens(): Pizza found: " << pizza.pack()
-                        << std::endl;
+        thread::Print() << "reception::Manager::askKitchens(): Pizza found: " << pizza.pack() << std::endl;
 #endif
 
         auto order = this->_orders[pizza.getOrder()];
@@ -172,7 +176,8 @@ void reception::Manager::askKitchens()
                         << ": Pending: " << order.getPending() << std::endl;
 #endif
     }
-#ifdef LOG_HARDDEBUG
+
+#ifdef LOG_DEBUG
     thread::Print() << "reception::Manager::askKitchens(): end" << std::endl;
 #endif
 }
@@ -197,18 +202,19 @@ void reception::Manager::updateKitchens()
         }
 
         auto now = std::chrono::system_clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - i->getLast());
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - i->getLast());
 
 #ifdef LOG_HARDDEBUG
         thread::Print() << "reception::Manager::updateKitchens(): Kitchen has been waiting during " << elapsed.count()
                         << " second(s)" << std::endl;
 #endif
 
-        if (elapsed.count() >= MAX_KITCHEN_WAITING) {
+        if (elapsed.count() >= this->_settings.maxWaiting) {
 #ifdef LOG_DEBUG
             thread::Print() << "reception::Manager::updateKitchens(): Kitchen waiting for too long, erasing it..."
                             << std::endl;
 #endif
+
             i = this->_kitchens.erase(i);
         } else
             i++;
@@ -235,6 +241,7 @@ void reception::Manager::updateOrders()
 #ifdef LOG_HARDDEBUG
             thread::Print() << "reception::Manager::updateOrders(): Order not yet ready" << std::endl;
 #endif
+
             i++;
             continue;
         }

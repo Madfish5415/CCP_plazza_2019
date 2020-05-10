@@ -22,7 +22,7 @@ reception::Order reception::Parser::parse(const std::string& command)
     return order;
 }
 
-void reception::Parser::fill(Order order, const std::string& subCommand)
+void reception::Parser::fill(Order& order, const std::string& subCommand)
 {
     std::regex regex(R"(^\s*([a-zA-Z]+)\s+([A-Z]+)\s+x([1-9][0-9]*)\s*$)");
     std::smatch matches;
@@ -54,6 +54,8 @@ std::vector<std::string> reception::Parser::toSubCommands(std::string command)
 
         command.erase(0, pos + delimiter.length());
     }
+
+    subCommands.push_back(command);
 
     return subCommands;
 }

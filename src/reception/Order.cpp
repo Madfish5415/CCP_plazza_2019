@@ -7,9 +7,10 @@
 
 #include "Order.hpp"
 
-#include <thread/Print.hpp>
+#include "thread/Print.hpp"
 
-reception::Order::Order() : _id(Order::id()), _ready(0) {
+reception::Order::Order() : _id(Order::id()), _ready(0)
+{
 }
 
 reception::Order::~Order() = default;
@@ -46,7 +47,7 @@ void reception::Order::display() const
     print << "Order n°" << this->_id << ":" << std::endl;
 
     for (const auto& pizza : this->_pizzas)
-        print << "- " << pizza.getRecipe().getType() << std::endl;
+        print << "- A(n) " << pizza.getSize() << " " << pizza.getRecipe().getType() << std::endl;
 }
 
 void reception::Order::ready()

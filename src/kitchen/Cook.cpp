@@ -41,8 +41,7 @@ const std::queue<pizza::Pizza>& kitchen::Cook::getPizzas() const
 bool kitchen::Cook::handle(pizza::Pizza pizza)
 {
 #ifdef LOG_DEBUG
-    thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::handle(): start"
-                    << std::endl;
+    thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::handle(): start" << std::endl;
 #endif
 
     if (this->_state != State::Working) {
@@ -50,13 +49,16 @@ bool kitchen::Cook::handle(pizza::Pizza pizza)
         thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::handle(): Cook is finishing"
                         << std::endl;
 #endif
+
         return false;
     }
-    if (this->_pizzas.size() >= MAX_PIZZAS) {
+
+    if (this->_pizzas.size() >= this->_kitchen.getSettings().maxPerCook) {
 #ifdef LOG_DEBUG
         thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::handle(): Cook is saturating"
                         << std::endl;
 #endif
+
         return false;
     }
 
@@ -84,10 +86,9 @@ void kitchen::Cook::status() const
         print << "Waiting for a pizza" << std::endl;
     } else {
         auto& pizza = this->_pizzas.front();
+
         print << "Cooking a(n) " << pizza.getSize() << " " << pizza.getRecipe().getType() << std::endl;
     }
-
-    print << std::endl;
 }
 
 void kitchen::Cook::cook()
@@ -109,15 +110,14 @@ void kitchen::Cook::cook()
                         << std::endl;
 #endif
 
-        if (!storage.has(ingredients)) {
+        if (!storage.removeHas(ingredients)) {
 #ifdef LOG_DEBUG
             thread::Print() << "[" << std::this_thread::get_id() << "] kitchen::Cook::cook(): Not enough ingredients"
                             << std::endl;
 #endif
+
             continue;
         }
-
-        storage.remove(ingredients);
 
         auto cookTime = pizza.getRecipe().getCookTime();
         auto timeMultiplier = this->_kitchen.getSettings().timeMultiplier;
@@ -129,7 +129,7 @@ void kitchen::Cook::cook()
                         << ", sleepTime: " << sleepTime << std::endl;
 #endif
 
-        std::this_thread::sleep_for(std::chrono::seconds(sleepTime));
+        std::this_thread::sleep_for(std::chrono::milliseconds(sleepTime));
 
         this->_kitchen.ready(pizza);
         this->_pizzas.pop();

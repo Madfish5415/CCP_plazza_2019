@@ -17,11 +17,11 @@ class Recipe {
   private:
     std::string _type;
     std::map<std::string, unsigned int> _ingredients;
-    unsigned int _cookTime{};
+    unsigned int _cookTime {};
 
   public:
     Recipe();
-    Recipe(std::string  _type, std::map<std::string, unsigned int>  ingredients, unsigned int cookTime);
+    Recipe(std::string _type, std::map<std::string, unsigned int> ingredients, unsigned int cookTime);
     ~Recipe();
 
   public:
