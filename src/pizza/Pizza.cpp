@@ -5,28 +5,19 @@
 ** Pizza.cpp
 */
 
-#include "Print.hpp"
-
 #include "Pizza.hpp"
 
 #include <regex>
 #include <utility>
 
-pizza::Pizza::Pizza()
-{
-    thread::Print() << "Pizza === Created without params ===" << std::endl;
-}
+pizza::Pizza::Pizza() = default;
 
 pizza::Pizza::Pizza(const pizza::Recipe& recipe, std::string size, unsigned int order)
     : _recipe(recipe), _size(std::move(size)), _order(order)
 {
-    thread::Print() << "Pizza === Created normaly with recipe: " << recipe.getType() << " ===" << std::endl;
 }
 
-pizza::Pizza::~Pizza()
-{
-    thread::Print() << "Pizza " << this->_recipe.getType() << " === A pizza is destroyed ! ===" << std::endl;
-}
+pizza::Pizza::~Pizza() = default;
 
 const pizza::Recipe& pizza::Pizza::getRecipe() const
 {
